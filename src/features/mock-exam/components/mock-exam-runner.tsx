@@ -1,0 +1,264 @@
+"use client";
+
+import { useEffect, useState } from "react";
+
+import { buildSessionSummary } from "@/domain/session-rules";
+import type { QuestionBundle } from "@/domain/content-types";
+
+interface MockExamRunnerProps {
+  questionBundles: QuestionBundle[];
+  passThresholdPercent: number;
+  timeLimitMinutes: number;
+}
+
+function formatRemainingTime(totalSeconds: number) {
+  const minutes = Math.floor(totalSeconds / 60)
+    .toString()
+    .padStart(2, "0");
+  const seconds = (totalSeconds % 60).toString().padStart(2, "0");
+
+  return `${minutes}:${seconds}`;
+}
+
+export function MockExamRunner({
+  questionBundles,
+  passThresholdPercent,
+  timeLimitMinutes
+}: MockExamRunnerProps) {
+  const initialSeconds = timeLimitMinutes * 60;
+  const [started, setStarted] = useState(false);
+  const [completed, setCompleted] = useState(false);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [remainingSeconds, setRemainingSeconds] = useState(initialSeconds);
+  const [answers, setAnswers] = useState<Record<string, string>>({});
+
+  useEffect(() => {
+    if (!started || completed) {
+      return;
+    }
+
+    const timer = window.setInterval(() => {
+      setRemainingSeconds((value) => (value > 0 ? value - 1 : 0));
+    }, 1000);
+
+    return () => window.clearInterval(timer);
+  }, [started, completed]);
+
+  useEffect(() => {
+    if (started && !completed && remainingSeconds === 0) {
+      setCompleted(true);
+      setStarted(false);
+    }
+  }, [started, completed, remainingSeconds]);
+
+  const currentBundle = questionBundles[currentIndex];
+  const summary = completed ? buildSessionSummary(questionBundles, answers, passThresholdPercent) : null;
+  const answeredCount = Object.keys(answers).length;
+
+  function startExam() {
+    setStarted(true);
+    setCompleted(false);
+    setCurrentIndex(0);
+    setRemainingSeconds(initialSeconds);
+    setAnswers({});
+  }
+
+  function finishExam() {
+    setCompleted(true);
+    setStarted(false);
+  }
+
+  function resetExam() {
+    setCompleted(false);
+    setStarted(false);
+    setCurrentIndex(0);
+    setRemainingSeconds(initialSeconds);
+    setAnswers({});
+  }
+
+  return (
+    <article className="surface-card mock-exam-runner">
+      {!started && !completed ? (
+        <>
+          <div className="panel-head">
+            <div>
+              <p className="eyebrow">Exam Setup</p>
+              <h2>Start a timed written test simulation.</h2>
+            </div>
+            <span className="chip">{questionBundles.length} questions</span>
+          </div>
+
+          <dl className="detail-list">
+            <div>
+              <dt>Question count</dt>
+              <dd>{questionBundles.length}</dd>
+            </div>
+            <div>
+              <dt>Time limit</dt>
+              <dd>{timeLimitMinutes} min</dd>
+            </div>
+            <div>
+              <dt>Pass threshold</dt>
+              <dd>{passThresholdPercent}%</dd>
+            </div>
+          </dl>
+
+          <p className="small-copy">
+            Explanations stay hidden until the exam is complete. Answers may be changed before you finish.
+          </p>
+
+          <div className="action-row">
+            <button className="primary-button" type="button" onClick={startExam} disabled={questionBundles.length === 0}>
+              Start Mock Exam
+            </button>
+          </div>
+        </>
+      ) : null}
+
+      {started && currentBundle ? (
+        <>
+          <div className="panel-head">
+            <div>
+              <p className="eyebrow">Exam in Progress</p>
+              <h2>{currentBundle.category.labelEn}</h2>
+            </div>
+            <div className="timer-badge">{formatRemainingTime(remainingSeconds)}</div>
+          </div>
+
+          <div className="exam-meta-row">
+            <span className="chip">
+              Question {currentIndex + 1} / {questionBundles.length}
+            </span>
+            <span className="chip">{answeredCount} answered</span>
+          </div>
+
+          <div className="question-index-row" aria-label="Question navigation">
+            {questionBundles.map((bundle, index) => {
+              const answered = Boolean(answers[bundle.question.id]);
+              const active = index === currentIndex;
+
+              return (
+                <button
+                  key={bundle.question.id}
+                  className={[
+                    "question-index-pill",
+                    answered ? "answered" : "",
+                    active ? "active" : ""
+                  ]
+                    .filter(Boolean)
+                    .join(" ")}
+                  type="button"
+                  onClick={() => setCurrentIndex(index)}
+                >
+                  {index + 1}
+                </button>
+              );
+            })}
+          </div>
+
+          <p className="question-stem">{currentBundle.question.englishStem}</p>
+
+          <div className="choice-stack" role="radiogroup" aria-label="Mock exam answer choices">
+            {currentBundle.choices.map((choice) => {
+              const isSelected = answers[currentBundle.question.id] === choice.choiceKey;
+
+              return (
+                <button
+                  key={choice.id}
+                  className={isSelected ? "choice-button selected" : "choice-button"}
+                  type="button"
+                  onClick={() =>
+                    setAnswers((currentAnswers) => ({
+                      ...currentAnswers,
+                      [currentBundle.question.id]: choice.choiceKey
+                    }))
+                  }
+                  aria-pressed={isSelected}
+                >
+                  <span className="choice-key">{choice.choiceKey}</span>
+                  <span>{choice.englishText}</span>
+                </button>
+              );
+            })}
+          </div>
+
+          <div className="exam-actions">
+            <button
+              className="secondary-button"
+              type="button"
+              onClick={() => setCurrentIndex((value) => Math.max(0, value - 1))}
+              disabled={currentIndex === 0}
+            >
+              Previous
+            </button>
+            <button
+              className="secondary-button"
+              type="button"
+              onClick={() => setCurrentIndex((value) => Math.min(questionBundles.length - 1, value + 1))}
+              disabled={currentIndex === questionBundles.length - 1}
+            >
+              Next
+            </button>
+            <button className="primary-button" type="button" onClick={finishExam}>
+              Finish Exam
+            </button>
+          </div>
+        </>
+      ) : null}
+
+      {completed && summary ? (
+        <div className="session-summary">
+          <div className="panel-head">
+            <div>
+              <p className="eyebrow">Results Summary</p>
+              <h2>{summary.passed ? "You passed this mock exam." : "This mock exam needs another pass."}</h2>
+            </div>
+            <span className={summary.passed ? "chip pass" : "chip fail"}>{summary.scorePercent}%</span>
+          </div>
+
+          <dl className="detail-list">
+            <div>
+              <dt>Correct answers</dt>
+              <dd>{summary.correctAnswers}</dd>
+            </div>
+            <div>
+              <dt>Incorrect answers</dt>
+              <dd>{summary.incorrectAnswers}</dd>
+            </div>
+            <div>
+              <dt>Unanswered</dt>
+              <dd>{summary.unansweredQuestions}</dd>
+            </div>
+            <div>
+              <dt>Pass line</dt>
+              <dd>{passThresholdPercent}%</dd>
+            </div>
+          </dl>
+
+          <div className="stack-list">
+            {summary.categoryBreakdown.map((item) => (
+              <div key={item.categoryId} className="list-card">
+                <div>
+                  <span>{item.categoryLabel}</span>
+                  <small>
+                    {item.correct} / {item.total} correct
+                  </small>
+                </div>
+                <strong>{item.accuracyPercent}%</strong>
+              </div>
+            ))}
+          </div>
+
+          <div className="action-row">
+            <button className="primary-button" type="button" onClick={startExam}>
+              Take Another Mock Exam
+            </button>
+            <button className="secondary-button" type="button" onClick={resetExam}>
+              Back to Setup
+            </button>
+          </div>
+        </div>
+      ) : null}
+    </article>
+  );
+}

@@ -1,0 +1,336 @@
+"use client";
+
+import { useState } from "react";
+
+import { buildSessionSummary, isChoiceCorrect } from "@/domain/session-rules";
+import type { QuestionBundle } from "@/domain/content-types";
+import type { CategoryProgressSummary } from "@/lib/sample-dataset";
+
+interface PracticeModeOption {
+  title: string;
+  description: string;
+  value: string;
+}
+
+interface PracticeRunnerProps {
+  questionBundles: QuestionBundle[];
+  categoryProgress: CategoryProgressSummary[];
+  mistakeQuestionIds: string[];
+  practiceModes: PracticeModeOption[];
+}
+
+type PracticeMode = "random" | "category" | "mistakes";
+
+function shuffleBundles(bundles: QuestionBundle[]) {
+  const next = [...bundles];
+
+  for (let index = next.length - 1; index > 0; index -= 1) {
+    const swapIndex = Math.floor(Math.random() * (index + 1));
+    [next[index], next[swapIndex]] = [next[swapIndex], next[index]];
+  }
+
+  return next;
+}
+
+export function PracticeRunner({
+  questionBundles,
+  categoryProgress,
+  mistakeQuestionIds,
+  practiceModes
+}: PracticeRunnerProps) {
+  const [mode, setMode] = useState<PracticeMode>("random");
+  const [selectedCategoryId, setSelectedCategoryId] = useState<string>(categoryProgress[0]?.category.id ?? "");
+  const [sessionBundles, setSessionBundles] = useState<QuestionBundle[]>([]);
+  const [answers, setAnswers] = useState<Record<string, string>>({});
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [selectedChoiceKey, setSelectedChoiceKey] = useState<string | null>(null);
+  const [submitted, setSubmitted] = useState(false);
+  const [completed, setCompleted] = useState(false);
+
+  const currentBundle = sessionBundles[currentIndex];
+  const summary = completed ? buildSessionSummary(sessionBundles, answers, 80) : null;
+
+  function buildBundleSet() {
+    if (mode === "mistakes") {
+      return questionBundles.filter((bundle) => mistakeQuestionIds.includes(bundle.question.id));
+    }
+
+    if (mode === "category") {
+      return questionBundles.filter((bundle) => bundle.category.id === selectedCategoryId);
+    }
+
+    return shuffleBundles(questionBundles);
+  }
+
+  function startSession() {
+    const nextBundles = buildBundleSet();
+
+    setSessionBundles(nextBundles);
+    setAnswers({});
+    setCurrentIndex(0);
+    setSelectedChoiceKey(null);
+    setSubmitted(false);
+    setCompleted(false);
+  }
+
+  function submitCurrentAnswer() {
+    if (!currentBundle || !selectedChoiceKey) {
+      return;
+    }
+
+    setAnswers((currentAnswers) => ({
+      ...currentAnswers,
+      [currentBundle.question.id]: selectedChoiceKey
+    }));
+    setSubmitted(true);
+  }
+
+  function moveNext() {
+    if (!currentBundle) {
+      return;
+    }
+
+    if (currentIndex === sessionBundles.length - 1) {
+      setCompleted(true);
+      setSelectedChoiceKey(null);
+      setSubmitted(false);
+      return;
+    }
+
+    setCurrentIndex((value) => value + 1);
+    setSelectedChoiceKey(null);
+    setSubmitted(false);
+  }
+
+  const availableBundleCount = buildBundleSet().length;
+
+  return (
+    <section className="practice-session-grid">
+      <article className="surface-card">
+        <div className="panel-head">
+          <div>
+            <p className="eyebrow">Practice Setup</p>
+            <h2>Choose the next study set</h2>
+          </div>
+          <span className="chip">{availableBundleCount} question(s)</span>
+        </div>
+
+        <div className="mode-toggle" role="tablist" aria-label="Practice mode">
+          {(["random", "category", "mistakes"] as PracticeMode[]).map((option) => (
+            <button
+              key={option}
+              className={mode === option ? "mode-button active" : "mode-button"}
+              type="button"
+              onClick={() => setMode(option)}
+            >
+              {option === "random" ? "Random" : option === "category" ? "By Category" : "Mistakes First"}
+            </button>
+          ))}
+        </div>
+
+        <div className="stack-list">
+          {practiceModes.map((item) => (
+            <div key={item.title} className="list-card">
+              <div>
+                <span>{item.title}</span>
+                <small>{item.description}</small>
+              </div>
+              <strong>{item.value}</strong>
+            </div>
+          ))}
+        </div>
+
+        {mode === "category" ? (
+          <div className="category-picker" aria-label="Category picker">
+            {categoryProgress.map((item) => (
+              <button
+                key={item.category.id}
+                className={selectedCategoryId === item.category.id ? "category-chip active" : "category-chip"}
+                type="button"
+                onClick={() => setSelectedCategoryId(item.category.id)}
+              >
+                {item.category.labelEn}
+              </button>
+            ))}
+          </div>
+        ) : null}
+
+        <div className="action-row">
+          <button className="primary-button" type="button" onClick={startSession} disabled={availableBundleCount === 0}>
+            Start Set
+          </button>
+        </div>
+
+        {availableBundleCount === 0 ? (
+          <p className="small-copy">No questions currently match this practice setup.</p>
+        ) : null}
+
+        <div className="compact-metrics">
+          {categoryProgress.map((item) => (
+            <div key={item.category.id} className="compact-metric">
+              <span>{item.category.labelEn}</span>
+              <strong>{item.accuracyPercent}%</strong>
+            </div>
+          ))}
+        </div>
+      </article>
+
+      <article className="surface-card practice-runner">
+        {!currentBundle && !completed ? (
+          <div className="empty-state">
+            <p className="eyebrow">Ready</p>
+            <h2>Start a set to begin answering.</h2>
+            <p className="small-copy">
+              Practice mode reveals the explanation as soon as you submit, so you can correct the rule while it is
+              still fresh.
+            </p>
+          </div>
+        ) : null}
+
+        {currentBundle && !completed ? (
+          <>
+            <div className="panel-head">
+              <div>
+                <p className="eyebrow">Practice Question</p>
+                <h2>{currentBundle.category.labelEn}</h2>
+              </div>
+              <span className="chip">
+                {currentIndex + 1} / {sessionBundles.length}
+              </span>
+            </div>
+
+            <div className="progress-track" aria-hidden="true">
+              <div
+                className="progress-fill"
+                style={{ width: `${((currentIndex + 1) / Math.max(sessionBundles.length, 1)) * 100}%` }}
+              />
+            </div>
+
+            <p className="question-stem">{currentBundle.question.englishStem}</p>
+
+            <div className="choice-stack" role="radiogroup" aria-label="Answer choices">
+              {currentBundle.choices.map((choice) => {
+                const isSelected = selectedChoiceKey === choice.choiceKey;
+                const showCorrect = submitted && choice.isCorrect;
+                const showIncorrect = submitted && isSelected && !choice.isCorrect;
+
+                return (
+                  <button
+                    key={choice.id}
+                    className={[
+                      "choice-button",
+                      isSelected ? "selected" : "",
+                      showCorrect ? "correct" : "",
+                      showIncorrect ? "incorrect" : ""
+                    ]
+                      .filter(Boolean)
+                      .join(" ")}
+                    type="button"
+                    onClick={() => setSelectedChoiceKey(choice.choiceKey)}
+                    aria-pressed={isSelected}
+                    disabled={submitted}
+                  >
+                    <span className="choice-key">{choice.choiceKey}</span>
+                    <span>{choice.englishText}</span>
+                  </button>
+                );
+              })}
+            </div>
+
+            <div className="practice-actions">
+              <button
+                className="primary-button"
+                type="button"
+                onClick={submitCurrentAnswer}
+                disabled={!selectedChoiceKey || submitted}
+              >
+                Submit Answer
+              </button>
+              {submitted ? (
+                <button className="secondary-button" type="button" onClick={moveNext}>
+                  {currentIndex === sessionBundles.length - 1 ? "Finish Set" : "Next Question"}
+                </button>
+              ) : null}
+            </div>
+
+            <div className="result-banner" aria-live="polite">
+              <strong>
+                {submitted
+                  ? isChoiceCorrect(currentBundle, selectedChoiceKey ?? undefined)
+                    ? "Correct"
+                    : "Incorrect"
+                  : "Choose one answer"}
+              </strong>
+              <span>Mode {mode === "mistakes" ? "Mistakes First" : mode === "category" ? "By Category" : "Random"}</span>
+              <span>{currentBundle.choices.length} choice(s)</span>
+            </div>
+
+            {submitted ? (
+              <div className="explanation-panel">
+                <span className="meta-label">Why</span>
+                <p>{currentBundle.explanation.bodyEn}</p>
+              </div>
+            ) : null}
+          </>
+        ) : null}
+
+        {completed && summary ? (
+          <div className="session-summary">
+            <div className="panel-head">
+              <div>
+                <p className="eyebrow">Set Complete</p>
+                <h2>Use the result to choose the next pass.</h2>
+              </div>
+              <span className="chip">{summary.scorePercent}%</span>
+            </div>
+
+            <dl className="detail-list">
+              <div>
+                <dt>Correct answers</dt>
+                <dd>{summary.correctAnswers}</dd>
+              </div>
+              <div>
+                <dt>Incorrect answers</dt>
+                <dd>{summary.incorrectAnswers}</dd>
+              </div>
+              <div>
+                <dt>Answered</dt>
+                <dd>{summary.answeredQuestions}</dd>
+              </div>
+            </dl>
+
+            <div className="stack-list">
+              {summary.categoryBreakdown.map((item) => (
+                <div key={item.categoryId} className="list-card">
+                  <div>
+                    <span>{item.categoryLabel}</span>
+                    <small>
+                      {item.correct} / {item.total} correct
+                    </small>
+                  </div>
+                  <strong>{item.accuracyPercent}%</strong>
+                </div>
+              ))}
+            </div>
+
+            <div className="action-row">
+              <button className="primary-button" type="button" onClick={startSession}>
+                Run Another Set
+              </button>
+              <button
+                className="secondary-button"
+                type="button"
+                onClick={() => {
+                  setSessionBundles([]);
+                  setCompleted(false);
+                }}
+              >
+                Back to Setup
+              </button>
+            </div>
+          </div>
+        ) : null}
+      </article>
+    </section>
+  );
+}

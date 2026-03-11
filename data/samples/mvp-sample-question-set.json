@@ -1,0 +1,649 @@
+{
+  "meta": {
+    "datasetId": "mvp-sample-question-set-v2",
+    "datasetType": "sample_fixture",
+    "locale": "en",
+    "notes": "Synthetic sample fixture for schema validation and early feature development. Rights approval and reviewer identities are mocked for workflow testing.",
+    "generatedAt": "2026-03-11T15:00:00Z"
+  },
+  "sourceReferences": [
+    {
+      "id": "src_001",
+      "sourceName": "Synthetic official question source: right of way",
+      "sourceType": "official_site",
+      "sourceUrl": "https://example.com/japan-driving-license/sample-question-1",
+      "publisher": "Sample Publisher",
+      "regionScope": "national",
+      "originalLanguage": "ja",
+      "fetchedAt": "2026-03-11T12:00:00Z",
+      "snapshotPath": "snapshots/src_001.html",
+      "rightsStatus": "approved",
+      "rightsNotes": "Mock approval for schema validation only.",
+      "lastVerifiedAt": "2026-03-11T12:05:00Z",
+      "createdAt": "2026-03-11T12:00:00Z",
+      "updatedAt": "2026-03-11T12:05:00Z"
+    },
+    {
+      "id": "src_002",
+      "sourceName": "Synthetic official question source: parking",
+      "sourceType": "official_site",
+      "sourceUrl": "https://example.com/japan-driving-license/sample-question-2",
+      "publisher": "Sample Publisher",
+      "regionScope": "national",
+      "originalLanguage": "ja",
+      "fetchedAt": "2026-03-11T12:06:00Z",
+      "snapshotPath": "snapshots/src_002.html",
+      "rightsStatus": "approved",
+      "rightsNotes": "Mock approval for schema validation only.",
+      "lastVerifiedAt": "2026-03-11T12:07:00Z",
+      "createdAt": "2026-03-11T12:06:00Z",
+      "updatedAt": "2026-03-11T12:07:00Z"
+    },
+    {
+      "id": "src_003",
+      "sourceName": "Synthetic official question source: railroad crossing",
+      "sourceType": "official_site",
+      "sourceUrl": "https://example.com/japan-driving-license/sample-question-3",
+      "publisher": "Sample Publisher",
+      "regionScope": "national",
+      "originalLanguage": "ja",
+      "fetchedAt": "2026-03-11T12:08:00Z",
+      "snapshotPath": "snapshots/src_003.html",
+      "rightsStatus": "approved",
+      "rightsNotes": "Mock approval for schema validation only.",
+      "lastVerifiedAt": "2026-03-11T12:09:00Z",
+      "createdAt": "2026-03-11T12:08:00Z",
+      "updatedAt": "2026-03-11T12:09:00Z"
+    },
+    {
+      "id": "src_004",
+      "sourceName": "Synthetic official question source: road sign",
+      "sourceType": "official_site",
+      "sourceUrl": "https://example.com/japan-driving-license/sample-question-4",
+      "publisher": "Sample Publisher",
+      "regionScope": "national",
+      "originalLanguage": "ja",
+      "fetchedAt": "2026-03-11T12:10:00Z",
+      "snapshotPath": "snapshots/src_004.html",
+      "rightsStatus": "approved",
+      "rightsNotes": "Mock approval for schema validation only.",
+      "lastVerifiedAt": "2026-03-11T12:11:00Z",
+      "createdAt": "2026-03-11T12:10:00Z",
+      "updatedAt": "2026-03-11T12:11:00Z"
+    }
+  ],
+  "contentVersions": [
+    {
+      "id": "cv_2026_03_11",
+      "label": "2026.03.11-sample",
+      "status": "active",
+      "effectiveFrom": "2026-03-11",
+      "releaseNotes": "Synthetic sample data for MVP schema validation.",
+      "createdAt": "2026-03-11T12:10:00Z"
+    }
+  ],
+  "categories": [
+    {
+      "id": "cat_road_signs",
+      "slug": "road-signs",
+      "labelEn": "Road Signs",
+      "descriptionEn": "Recognizing and interpreting Japanese road signs.",
+      "displayOrder": 1,
+      "isActive": true
+    },
+    {
+      "id": "cat_right_of_way",
+      "slug": "right-of-way",
+      "labelEn": "Right of Way",
+      "descriptionEn": "Priority rules at intersections and merging points.",
+      "displayOrder": 2,
+      "isActive": true
+    },
+    {
+      "id": "cat_parking_stopping",
+      "slug": "parking-and-stopping",
+      "labelEn": "Parking and Stopping",
+      "descriptionEn": "Restrictions on where and when a vehicle may stop or park.",
+      "displayOrder": 3,
+      "isActive": true
+    },
+    {
+      "id": "cat_railroad_crossings",
+      "slug": "railroad-crossings",
+      "labelEn": "Railroad Crossings",
+      "descriptionEn": "Required behavior when approaching and crossing railway tracks.",
+      "displayOrder": 4,
+      "isActive": true
+    }
+  ],
+  "tags": [
+    {
+      "id": "tag_intersection",
+      "slug": "intersection",
+      "labelEn": "Intersection"
+    },
+    {
+      "id": "tag_priority",
+      "slug": "priority",
+      "labelEn": "Priority"
+    },
+    {
+      "id": "tag_parking",
+      "slug": "parking",
+      "labelEn": "Parking"
+    },
+    {
+      "id": "tag_crosswalk",
+      "slug": "crosswalk",
+      "labelEn": "Crosswalk"
+    },
+    {
+      "id": "tag_railroad",
+      "slug": "railroad",
+      "labelEn": "Railroad"
+    },
+    {
+      "id": "tag_stop",
+      "slug": "stop",
+      "labelEn": "Stop"
+    },
+    {
+      "id": "tag_road_sign",
+      "slug": "road-sign",
+      "labelEn": "Road Sign"
+    },
+    {
+      "id": "tag_no_entry",
+      "slug": "no-entry",
+      "labelEn": "No Entry"
+    }
+  ],
+  "questions": [
+    {
+      "id": "q_0001",
+      "sourceReferenceId": "src_001",
+      "contentVersionId": "cv_2026_03_11",
+      "sourceQuestionRef": "sample-q1",
+      "questionType": "true_false",
+      "mainCategoryId": "cat_right_of_way",
+      "difficulty": "easy",
+      "status": "published",
+      "originalStem": "交差点では、標識や信号がない場合、右から来る車を優先しなければならない。",
+      "originalLanguage": "ja",
+      "englishStem": "At an intersection without signs or signals, you must give priority to a vehicle coming from your right.",
+      "correctChoiceKey": "T",
+      "hasImage": false,
+      "explanationOrigin": "ai",
+      "activeExplanationId": "exp_0001_v1",
+      "translationReviewStatus": "approved",
+      "explanationReviewStatus": "approved",
+      "isExamEligible": true,
+      "publishedAt": "2026-03-11T12:25:00Z",
+      "createdAt": "2026-03-11T12:15:00Z",
+      "updatedAt": "2026-03-11T12:25:00Z"
+    },
+    {
+      "id": "q_0002",
+      "sourceReferenceId": "src_002",
+      "contentVersionId": "cv_2026_03_11",
+      "sourceQuestionRef": "sample-q2",
+      "questionType": "true_false",
+      "mainCategoryId": "cat_parking_stopping",
+      "difficulty": "medium",
+      "status": "published",
+      "originalStem": "横断歩道の手前5メートル以内では、一時停止してもよい。",
+      "originalLanguage": "ja",
+      "englishStem": "You may stop within 5 meters before a crosswalk.",
+      "correctChoiceKey": "F",
+      "hasImage": false,
+      "explanationOrigin": "ai",
+      "activeExplanationId": "exp_0002_v1",
+      "translationReviewStatus": "approved",
+      "explanationReviewStatus": "approved",
+      "isExamEligible": true,
+      "publishedAt": "2026-03-11T12:32:00Z",
+      "createdAt": "2026-03-11T12:26:00Z",
+      "updatedAt": "2026-03-11T12:32:00Z"
+    },
+    {
+      "id": "q_0003",
+      "sourceReferenceId": "src_003",
+      "contentVersionId": "cv_2026_03_11",
+      "sourceQuestionRef": "sample-q3",
+      "questionType": "true_false",
+      "mainCategoryId": "cat_railroad_crossings",
+      "difficulty": "easy",
+      "status": "published",
+      "originalStem": "警報機が鳴っていなくても、踏切の直前では一時停止しなければならない。",
+      "originalLanguage": "ja",
+      "englishStem": "Even if the alarm is not sounding, you must stop briefly before entering a railroad crossing.",
+      "correctChoiceKey": "T",
+      "hasImage": false,
+      "explanationOrigin": "manual",
+      "activeExplanationId": "exp_0003_v1",
+      "translationReviewStatus": "approved",
+      "explanationReviewStatus": "approved",
+      "isExamEligible": true,
+      "publishedAt": "2026-03-11T12:39:00Z",
+      "createdAt": "2026-03-11T12:33:00Z",
+      "updatedAt": "2026-03-11T12:39:00Z"
+    },
+    {
+      "id": "q_0004",
+      "sourceReferenceId": "src_004",
+      "contentVersionId": "cv_2026_03_11",
+      "sourceQuestionRef": "sample-q4",
+      "questionType": "single_choice",
+      "mainCategoryId": "cat_road_signs",
+      "difficulty": "medium",
+      "status": "published",
+      "originalStem": "次のうち、「進入禁止」を表す標識はどれですか。",
+      "originalLanguage": "ja",
+      "englishStem": "Which of the following signs means 'No entry'?",
+      "correctChoiceKey": "B",
+      "hasImage": false,
+      "explanationOrigin": "source",
+      "activeExplanationId": "exp_0004_v1",
+      "translationReviewStatus": "approved",
+      "explanationReviewStatus": "approved",
+      "isExamEligible": true,
+      "publishedAt": "2026-03-11T12:47:00Z",
+      "createdAt": "2026-03-11T12:40:00Z",
+      "updatedAt": "2026-03-11T12:47:00Z"
+    }
+  ],
+  "choices": [
+    {
+      "id": "ch_0001_t",
+      "questionId": "q_0001",
+      "choiceKey": "T",
+      "displayOrder": 1,
+      "originalText": "正しい",
+      "englishText": "True",
+      "isCorrect": true
+    },
+    {
+      "id": "ch_0001_f",
+      "questionId": "q_0001",
+      "choiceKey": "F",
+      "displayOrder": 2,
+      "originalText": "誤り",
+      "englishText": "False",
+      "isCorrect": false
+    },
+    {
+      "id": "ch_0002_t",
+      "questionId": "q_0002",
+      "choiceKey": "T",
+      "displayOrder": 1,
+      "originalText": "正しい",
+      "englishText": "True",
+      "isCorrect": false
+    },
+    {
+      "id": "ch_0002_f",
+      "questionId": "q_0002",
+      "choiceKey": "F",
+      "displayOrder": 2,
+      "originalText": "誤り",
+      "englishText": "False",
+      "isCorrect": true
+    },
+    {
+      "id": "ch_0003_t",
+      "questionId": "q_0003",
+      "choiceKey": "T",
+      "displayOrder": 1,
+      "originalText": "正しい",
+      "englishText": "True",
+      "isCorrect": true
+    },
+    {
+      "id": "ch_0003_f",
+      "questionId": "q_0003",
+      "choiceKey": "F",
+      "displayOrder": 2,
+      "originalText": "誤り",
+      "englishText": "False",
+      "isCorrect": false
+    },
+    {
+      "id": "ch_0004_a",
+      "questionId": "q_0004",
+      "choiceKey": "A",
+      "displayOrder": 1,
+      "originalText": "青い円に白い矢印",
+      "englishText": "A blue circle with a white arrow",
+      "isCorrect": false
+    },
+    {
+      "id": "ch_0004_b",
+      "questionId": "q_0004",
+      "choiceKey": "B",
+      "displayOrder": 2,
+      "originalText": "赤い円に白い横棒",
+      "englishText": "A red circle with a white horizontal bar",
+      "isCorrect": true
+    },
+    {
+      "id": "ch_0004_c",
+      "questionId": "q_0004",
+      "choiceKey": "C",
+      "displayOrder": 3,
+      "originalText": "黄色いひし形",
+      "englishText": "A yellow diamond",
+      "isCorrect": false
+    },
+    {
+      "id": "ch_0004_d",
+      "questionId": "q_0004",
+      "choiceKey": "D",
+      "displayOrder": 4,
+      "originalText": "赤い三角形",
+      "englishText": "A red triangle",
+      "isCorrect": false
+    }
+  ],
+  "explanations": [
+    {
+      "id": "exp_0001_v1",
+      "questionId": "q_0001",
+      "origin": "ai",
+      "bodyEn": "This statement is true. At an uncontrolled intersection, the basic rule is to yield to traffic approaching from your right unless a sign, signal, or road marking changes that priority.",
+      "sourceDerived": false,
+      "aiModel": "gpt-5",
+      "aiPromptVersion": "exp-v1",
+      "createdBy": "codex",
+      "createdAt": "2026-03-11T12:18:00Z",
+      "updatedAt": "2026-03-11T12:19:00Z"
+    },
+    {
+      "id": "exp_0002_v1",
+      "questionId": "q_0002",
+      "origin": "ai",
+      "bodyEn": "This is false. Stopping or parking close to a crosswalk reduces visibility and endangers pedestrians, so the law restricts stopping within 5 meters before a crosswalk unless a specific exception applies.",
+      "sourceDerived": false,
+      "aiModel": "gpt-5",
+      "aiPromptVersion": "exp-v1",
+      "createdBy": "codex",
+      "createdAt": "2026-03-11T12:29:00Z",
+      "updatedAt": "2026-03-11T12:30:00Z"
+    },
+    {
+      "id": "exp_0003_v1",
+      "questionId": "q_0003",
+      "origin": "manual",
+      "bodyEn": "This is true. At a railroad crossing in Japan, you are required to stop just before the tracks and confirm safety, even when the warning device is silent and the gate is open.",
+      "sourceDerived": false,
+      "createdBy": "content-editor",
+      "createdAt": "2026-03-11T12:36:00Z",
+      "updatedAt": "2026-03-11T12:37:00Z"
+    },
+    {
+      "id": "exp_0004_v1",
+      "questionId": "q_0004",
+      "origin": "source",
+      "bodyEn": "The correct answer is the red circular sign with a white horizontal bar. It means vehicles must not enter from that direction.",
+      "sourceDerived": true,
+      "createdBy": "source-import",
+      "createdAt": "2026-03-11T12:44:00Z",
+      "updatedAt": "2026-03-11T12:45:00Z"
+    }
+  ],
+  "translationReviews": [
+    {
+      "id": "tr_0001_v1",
+      "questionId": "q_0001",
+      "reviewer": "english-reviewer@example.com",
+      "status": "approved",
+      "accuracyCheck": true,
+      "naturalnessCheck": true,
+      "notes": "Meaning preserved and phrasing reads naturally for English learners.",
+      "reviewedAt": "2026-03-11T12:20:00Z"
+    },
+    {
+      "id": "tr_0002_v1",
+      "questionId": "q_0002",
+      "reviewer": "english-reviewer@example.com",
+      "status": "approved",
+      "accuracyCheck": true,
+      "naturalnessCheck": true,
+      "notes": "The distance restriction is represented clearly in English.",
+      "reviewedAt": "2026-03-11T12:31:00Z"
+    },
+    {
+      "id": "tr_0003_v1",
+      "questionId": "q_0003",
+      "reviewer": "english-reviewer@example.com",
+      "status": "approved",
+      "accuracyCheck": true,
+      "naturalnessCheck": true,
+      "notes": "The stop requirement is clearly communicated.",
+      "reviewedAt": "2026-03-11T12:38:00Z"
+    },
+    {
+      "id": "tr_0004_v1",
+      "questionId": "q_0004",
+      "reviewer": "english-reviewer@example.com",
+      "status": "approved",
+      "accuracyCheck": true,
+      "naturalnessCheck": true,
+      "notes": "The multiple-choice wording is concise and natural.",
+      "reviewedAt": "2026-03-11T12:46:00Z"
+    }
+  ],
+  "explanationReviews": [
+    {
+      "id": "er_0001_v1",
+      "explanationId": "exp_0001_v1",
+      "reviewer": "rule-reviewer@example.com",
+      "status": "approved",
+      "accuracyCheck": true,
+      "clarityCheck": true,
+      "notes": "Explanation correctly states the default right-priority rule.",
+      "reviewedAt": "2026-03-11T12:22:00Z"
+    },
+    {
+      "id": "er_0002_v1",
+      "explanationId": "exp_0002_v1",
+      "reviewer": "rule-reviewer@example.com",
+      "status": "approved",
+      "accuracyCheck": true,
+      "clarityCheck": true,
+      "notes": "Distance rule and safety reason are both clear.",
+      "reviewedAt": "2026-03-11T12:31:30Z"
+    },
+    {
+      "id": "er_0003_v1",
+      "explanationId": "exp_0003_v1",
+      "reviewer": "rule-reviewer@example.com",
+      "status": "approved",
+      "accuracyCheck": true,
+      "clarityCheck": true,
+      "notes": "Manual explanation is concise and legally correct.",
+      "reviewedAt": "2026-03-11T12:38:30Z"
+    },
+    {
+      "id": "er_0004_v1",
+      "explanationId": "exp_0004_v1",
+      "reviewer": "rule-reviewer@example.com",
+      "status": "approved",
+      "accuracyCheck": true,
+      "clarityCheck": true,
+      "notes": "Imported explanation is clear and sufficient for the sample.",
+      "reviewedAt": "2026-03-11T12:46:30Z"
+    }
+  ],
+  "questionTags": [
+    {
+      "questionId": "q_0001",
+      "tagId": "tag_intersection"
+    },
+    {
+      "questionId": "q_0001",
+      "tagId": "tag_priority"
+    },
+    {
+      "questionId": "q_0002",
+      "tagId": "tag_parking"
+    },
+    {
+      "questionId": "q_0002",
+      "tagId": "tag_crosswalk"
+    },
+    {
+      "questionId": "q_0003",
+      "tagId": "tag_railroad"
+    },
+    {
+      "questionId": "q_0003",
+      "tagId": "tag_stop"
+    },
+    {
+      "questionId": "q_0004",
+      "tagId": "tag_road_sign"
+    },
+    {
+      "questionId": "q_0004",
+      "tagId": "tag_no_entry"
+    }
+  ],
+  "userProgress": [
+    {
+      "learnerId": "local_ipad_sample_001",
+      "questionId": "q_0001",
+      "attemptsTotal": 3,
+      "correctTotal": 2,
+      "incorrectTotal": 1,
+      "lastAnsweredAt": "2026-03-11T13:10:00Z",
+      "firstAnsweredAt": "2026-03-11T13:00:00Z",
+      "masteryLevel": "learning",
+      "lastResult": "correct"
+    },
+    {
+      "learnerId": "local_ipad_sample_001",
+      "questionId": "q_0002",
+      "attemptsTotal": 4,
+      "correctTotal": 1,
+      "incorrectTotal": 3,
+      "lastAnsweredAt": "2026-03-11T13:11:00Z",
+      "firstAnsweredAt": "2026-03-11T13:01:00Z",
+      "masteryLevel": "needs_review",
+      "lastResult": "incorrect"
+    },
+    {
+      "learnerId": "local_ipad_sample_001",
+      "questionId": "q_0003",
+      "attemptsTotal": 2,
+      "correctTotal": 2,
+      "incorrectTotal": 0,
+      "lastAnsweredAt": "2026-03-11T13:12:00Z",
+      "firstAnsweredAt": "2026-03-11T13:02:00Z",
+      "masteryLevel": "mastered",
+      "lastResult": "correct"
+    },
+    {
+      "learnerId": "local_ipad_sample_001",
+      "questionId": "q_0004",
+      "attemptsTotal": 3,
+      "correctTotal": 2,
+      "incorrectTotal": 1,
+      "lastAnsweredAt": "2026-03-11T13:13:00Z",
+      "firstAnsweredAt": "2026-03-11T13:03:00Z",
+      "masteryLevel": "learning",
+      "lastResult": "correct"
+    }
+  ],
+  "examSessions": [
+    {
+      "id": "exam_20260311_01",
+      "learnerId": "local_ipad_sample_001",
+      "mode": "mock_exam",
+      "contentVersionId": "cv_2026_03_11",
+      "startedAt": "2026-03-11T13:00:00Z",
+      "endedAt": "2026-03-11T13:18:00Z",
+      "timeLimitSeconds": 1800,
+      "questionCount": 4,
+      "correctCount": 3,
+      "scorePercent": 75,
+      "passThresholdPercent": 90,
+      "result": "fail"
+    }
+  ],
+  "examSessionAnswers": [
+    {
+      "id": "exa_0001",
+      "examSessionId": "exam_20260311_01",
+      "questionId": "q_0001",
+      "selectedChoiceKey": "T",
+      "isCorrect": true,
+      "answeredAt": "2026-03-11T13:05:00Z",
+      "responseTimeMs": 12000
+    },
+    {
+      "id": "exa_0002",
+      "examSessionId": "exam_20260311_01",
+      "questionId": "q_0002",
+      "selectedChoiceKey": "T",
+      "isCorrect": false,
+      "answeredAt": "2026-03-11T13:08:00Z",
+      "responseTimeMs": 17000
+    },
+    {
+      "id": "exa_0003",
+      "examSessionId": "exam_20260311_01",
+      "questionId": "q_0003",
+      "selectedChoiceKey": "T",
+      "isCorrect": true,
+      "answeredAt": "2026-03-11T13:11:00Z",
+      "responseTimeMs": 15000
+    },
+    {
+      "id": "exa_0004",
+      "examSessionId": "exam_20260311_01",
+      "questionId": "q_0004",
+      "selectedChoiceKey": "B",
+      "isCorrect": true,
+      "answeredAt": "2026-03-11T13:15:00Z",
+      "responseTimeMs": 21000
+    }
+  ],
+  "glossaryTerms": [
+    {
+      "id": "gls_right_of_way",
+      "termEn": "Right of way",
+      "shortDefinitionEn": "The legal priority that determines who must go first.",
+      "longExplanationEn": "At many uncontrolled intersections in Japan, you must yield to a vehicle approaching from your right unless a sign, signal, or road marking changes that rule.",
+      "relatedCategoryId": "cat_right_of_way",
+      "isTrafficSign": false,
+      "displayOrder": 1
+    },
+    {
+      "id": "gls_crosswalk_distance",
+      "termEn": "Crosswalk stopping distance",
+      "shortDefinitionEn": "The restricted distance before a crosswalk where stopping is limited.",
+      "longExplanationEn": "Stopping too close to a crosswalk can block sight lines for pedestrians and drivers, so the law restricts stopping within a short distance before the crossing.",
+      "relatedCategoryId": "cat_parking_stopping",
+      "isTrafficSign": false,
+      "displayOrder": 2
+    },
+    {
+      "id": "gls_railroad_crossing",
+      "termEn": "Railroad crossing stop",
+      "shortDefinitionEn": "The required stop before entering a railroad crossing.",
+      "longExplanationEn": "Before crossing the tracks, stop briefly, confirm safety, and then proceed only when the crossing is clear.",
+      "relatedCategoryId": "cat_railroad_crossings",
+      "isTrafficSign": false,
+      "displayOrder": 3
+    },
+    {
+      "id": "gls_no_entry_sign",
+      "termEn": "No entry sign",
+      "shortDefinitionEn": "A red circular sign with a white horizontal bar that prohibits entry.",
+      "longExplanationEn": "This sign means vehicles must not enter from that direction. It is one of the most important prohibition signs to recognize quickly.",
+      "relatedCategoryId": "cat_road_signs",
+      "isTrafficSign": true,
+      "displayOrder": 4
+    }
+  ]
+}
