@@ -1,4 +1,4 @@
-import type { Question, QuestionType, ReviewStatus, SourceReference } from "@/domain/content-types";
+import type { Question, QuestionType, ReviewStatus, RightsStatus, SourceReference } from "@/domain/content-types";
 
 export function isQuestionPublished(question: Question) {
   return question.status === "published";
@@ -25,5 +25,18 @@ export function formatReviewStatusLabel(reviewStatus: ReviewStatus) {
       return "Changes requested";
     default:
       return "Pending";
+  }
+}
+
+export function formatRightsStatusLabel(rightsStatus: RightsStatus) {
+  switch (rightsStatus) {
+    case "approved":
+      return "Approved";
+    case "review_required":
+      return "Review required";
+    case "rejected":
+      return "Rejected";
+    default:
+      return "Unchecked";
   }
 }

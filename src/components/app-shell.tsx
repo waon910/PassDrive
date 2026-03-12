@@ -6,7 +6,8 @@ const NAV_ITEMS = [
   { href: "/mock-exam", label: "Mock Exam" },
   { href: "/mistakes", label: "Mistakes" },
   { href: "/progress", label: "Progress" },
-  { href: "/signs-terms", label: "Signs & Terms" }
+  { href: "/signs-terms", label: "Signs & Terms" },
+  { href: "/admin/review", label: "Admin Review" }
 ];
 
 interface AppShellProps {
@@ -22,10 +23,9 @@ export function AppShell({ currentPath, eyebrow, title, description, meta, child
   return (
     <main className="app-shell">
       <aside className="app-nav">
-        <div className="app-brand">
-          <p className="app-brand-mark">PassDrive</p>
-          <p className="app-brand-copy">Japanese license study, designed for English-first iPad use.</p>
-        </div>
+        <Link className="app-brand-mark" href="/">
+          PassDrive
+        </Link>
 
         <nav aria-label="Primary">
           <ul className="nav-list">
@@ -42,19 +42,14 @@ export function AppShell({ currentPath, eyebrow, title, description, meta, child
             })}
           </ul>
         </nav>
-
-        <div className="nav-note">
-          <span className="meta-label">Current build</span>
-          <p>Validated against typed sample content and iPad-first route structure.</p>
-        </div>
       </aside>
 
       <div className="app-main">
         <header className="page-hero">
-          <div>
+          <div className="page-header-copy">
             <p className="eyebrow">{eyebrow}</p>
             <h1>{title}</h1>
-            <p className="page-description">{description}</p>
+            {description ? <p className="page-description">{description}</p> : null}
           </div>
           {meta ? <div className="page-meta">{meta}</div> : null}
         </header>

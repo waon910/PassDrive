@@ -89,6 +89,24 @@ function buildMap<T extends { id: string }>(items: T[]): Map<string, T> {
 }
 
 export function getPublishedQuestionBundles(dataset: SampleQuestionDataset): QuestionBundle[] {
+  return getQuestionBundles(dataset, (question) => question.status === "published");
+}
+
+export function getAllQuestionBundles(dataset: SampleQuestionDataset): QuestionBundle[] {
+  return getQuestionBundles(dataset);
+}
+
+export function getQuestionBundleById(
+  dataset: SampleQuestionDataset,
+  questionId: Question["id"]
+): QuestionBundle | undefined {
+  return getAllQuestionBundles(dataset).find((bundle) => bundle.question.id === questionId);
+}
+
+function getQuestionBundles(
+  dataset: SampleQuestionDataset,
+  predicate?: (question: Question) => boolean
+): QuestionBundle[] {
   const sourceMap = buildMap<SourceReference>(dataset.sourceReferences);
   const categoryMap = buildMap<Category>(dataset.categories);
   const explanationMap = buildMap<Explanation>(dataset.explanations);
@@ -120,7 +138,7 @@ export function getPublishedQuestionBundles(dataset: SampleQuestionDataset): Que
   }
 
   return dataset.questions
-    .filter((question) => question.status === "published")
+    .filter((question) => (predicate ? predicate(question) : true))
     .map((question) => {
       const sourceReference = sourceMap.get(question.sourceReferenceId);
       const category = categoryMap.get(question.mainCategoryId);

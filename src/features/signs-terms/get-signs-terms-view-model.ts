@@ -5,7 +5,6 @@ export async function getSignsTermsViewModel() {
   const glossaryDetails = getGlossaryTermDetails(dataset);
 
   return {
-    glossaryDetails,
-    featuredTerm: glossaryDetails[0]
+    glossaryDetails
   };
 }

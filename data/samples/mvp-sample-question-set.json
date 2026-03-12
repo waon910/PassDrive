@@ -1,10 +1,10 @@
 {
   "meta": {
-    "datasetId": "mvp-sample-question-set-v2",
+    "datasetId": "mvp-sample-question-set-v3",
     "datasetType": "sample_fixture",
     "locale": "en",
-    "notes": "Synthetic sample fixture for schema validation and early feature development. Rights approval and reviewer identities are mocked for workflow testing.",
-    "generatedAt": "2026-03-11T15:00:00Z"
+    "notes": "Sample fixture with synthetic MVP seed questions plus 10 review-pending PassDrive-authored questions based on public JAF driving guidance pages. Reviewer identities remain mocked for workflow testing.",
+    "generatedAt": "2026-03-12T03:00:00Z"
   },
   "sourceReferences": [
     {
@@ -70,6 +70,51 @@
       "lastVerifiedAt": "2026-03-11T12:11:00Z",
       "createdAt": "2026-03-11T12:10:00Z",
       "updatedAt": "2026-03-11T12:11:00Z"
+    },
+    {
+      "id": "src_005",
+      "sourceName": "JAF Safe Driving Quiz: For Motor Vehicles",
+      "sourceType": "other",
+      "sourceUrl": "https://english.jaf.or.jp/safe-driving/quiz/motorvehicles",
+      "publisher": "Japan Automobile Federation (JAF)",
+      "regionScope": "national",
+      "originalLanguage": "en",
+      "fetchedAt": "2026-03-12T01:00:00Z",
+      "rightsStatus": "review_required",
+      "rightsNotes": "PassDrive-authored question and explanation wording based on public JAF safety guidance. Manual rights review is still required before publication.",
+      "lastVerifiedAt": "2026-03-12T01:05:00Z",
+      "createdAt": "2026-03-12T01:00:00Z",
+      "updatedAt": "2026-03-12T01:05:00Z"
+    },
+    {
+      "id": "src_006",
+      "sourceName": "JAF Safe Driving Quiz: For Parking Lot",
+      "sourceType": "other",
+      "sourceUrl": "https://english.jaf.or.jp/safe-driving/quiz/parkinglot",
+      "publisher": "Japan Automobile Federation (JAF)",
+      "regionScope": "national",
+      "originalLanguage": "en",
+      "fetchedAt": "2026-03-12T01:06:00Z",
+      "rightsStatus": "review_required",
+      "rightsNotes": "PassDrive-authored question and explanation wording based on public JAF safety guidance. Manual rights review is still required before publication.",
+      "lastVerifiedAt": "2026-03-12T01:10:00Z",
+      "createdAt": "2026-03-12T01:06:00Z",
+      "updatedAt": "2026-03-12T01:10:00Z"
+    },
+    {
+      "id": "src_007",
+      "sourceName": "JAF Traffic Rules in Japan",
+      "sourceType": "other",
+      "sourceUrl": "https://english.jaf.or.jp/safe-driving/traffic-rules-in-japan",
+      "publisher": "Japan Automobile Federation (JAF)",
+      "regionScope": "national",
+      "originalLanguage": "en",
+      "fetchedAt": "2026-03-12T01:11:00Z",
+      "rightsStatus": "review_required",
+      "rightsNotes": "Needs manual follow-up before publication.",
+      "lastVerifiedAt": "2026-03-12T01:05:02.680Z",
+      "createdAt": "2026-03-12T01:11:00Z",
+      "updatedAt": "2026-03-12T01:05:02.680Z"
     }
   ],
   "contentVersions": [
@@ -78,7 +123,7 @@
       "label": "2026.03.11-sample",
       "status": "active",
       "effectiveFrom": "2026-03-11",
-      "releaseNotes": "Synthetic sample data for MVP schema validation.",
+      "releaseNotes": "Synthetic sample data plus JAF-based editorial practice questions for MVP schema validation.",
       "createdAt": "2026-03-11T12:10:00Z"
     }
   ],
@@ -113,6 +158,38 @@
       "labelEn": "Railroad Crossings",
       "descriptionEn": "Required behavior when approaching and crossing railway tracks.",
       "displayOrder": 4,
+      "isActive": true
+    },
+    {
+      "id": "cat_lane_rules",
+      "slug": "lane-rules",
+      "labelEn": "Lane Rules",
+      "descriptionEn": "Keeping left and using lanes correctly on ordinary roads and expressways.",
+      "displayOrder": 5,
+      "isActive": true
+    },
+    {
+      "id": "cat_speed_stopping",
+      "slug": "speed-and-stopping",
+      "labelEn": "Speed and Stopping",
+      "descriptionEn": "Speed limits, stopping points, and related control rules.",
+      "displayOrder": 6,
+      "isActive": true
+    },
+    {
+      "id": "cat_pedestrians_bicycles",
+      "slug": "pedestrians-and-bicycles",
+      "labelEn": "Pedestrians and Bicycles",
+      "descriptionEn": "Rules that protect pedestrians and cyclists in daily traffic.",
+      "displayOrder": 7,
+      "isActive": true
+    },
+    {
+      "id": "cat_safety_checks",
+      "slug": "safety-checks",
+      "labelEn": "Safety Checks",
+      "descriptionEn": "Seat belts and other required safety practices before and during driving.",
+      "displayOrder": 8,
       "isActive": true
     }
   ],
@@ -156,6 +233,66 @@
       "id": "tag_no_entry",
       "slug": "no-entry",
       "labelEn": "No Entry"
+    },
+    {
+      "id": "tag_turning_right",
+      "slug": "turning-right",
+      "labelEn": "Turning Right"
+    },
+    {
+      "id": "tag_stop_sign",
+      "slug": "stop-sign",
+      "labelEn": "Stop Sign"
+    },
+    {
+      "id": "tag_level_crossing",
+      "slug": "level-crossing",
+      "labelEn": "Level Crossing"
+    },
+    {
+      "id": "tag_seatbelt",
+      "slug": "seatbelt",
+      "labelEn": "Seat Belt"
+    },
+    {
+      "id": "tag_safety_check",
+      "slug": "safety-check",
+      "labelEn": "Safety Check"
+    },
+    {
+      "id": "tag_on_street_parking",
+      "slug": "on-street-parking",
+      "labelEn": "On-Street Parking"
+    },
+    {
+      "id": "tag_front_end_parking",
+      "slug": "front-end-parking",
+      "labelEn": "Front-End Parking"
+    },
+    {
+      "id": "tag_disabled_parking",
+      "slug": "disabled-parking",
+      "labelEn": "Disabled Parking"
+    },
+    {
+      "id": "tag_speed_limit",
+      "slug": "speed-limit",
+      "labelEn": "Speed Limit"
+    },
+    {
+      "id": "tag_expressway",
+      "slug": "expressway",
+      "labelEn": "Expressway"
+    },
+    {
+      "id": "tag_passing_lane",
+      "slug": "passing-lane",
+      "labelEn": "Passing Lane"
+    },
+    {
+      "id": "tag_pedestrian",
+      "slug": "pedestrian",
+      "labelEn": "Pedestrian"
     }
   ],
   "questions": [
@@ -250,6 +387,226 @@
       "publishedAt": "2026-03-11T12:47:00Z",
       "createdAt": "2026-03-11T12:40:00Z",
       "updatedAt": "2026-03-11T12:47:00Z"
+    },
+    {
+      "id": "q_0005",
+      "sourceReferenceId": "src_005",
+      "contentVersionId": "cv_2026_03_11",
+      "sourceQuestionRef": "motorvehicles-01",
+      "questionType": "true_false",
+      "mainCategoryId": "cat_right_of_way",
+      "difficulty": "medium",
+      "status": "translation_review",
+      "originalStem": "If you entered the intersection first, you may turn right ahead of an oncoming vehicle that is going straight.",
+      "originalLanguage": "en",
+      "englishStem": "If you entered the intersection first, you may turn right ahead of an oncoming vehicle that is going straight.",
+      "correctChoiceKey": "F",
+      "hasImage": false,
+      "explanationOrigin": "manual",
+      "activeExplanationId": "exp_0005_v1",
+      "translationReviewStatus": "pending",
+      "explanationReviewStatus": "pending",
+      "isExamEligible": true,
+      "createdAt": "2026-03-12T01:16:00Z",
+      "updatedAt": "2026-03-12T01:20:00Z"
+    },
+    {
+      "id": "q_0006",
+      "sourceReferenceId": "src_005",
+      "contentVersionId": "cv_2026_03_11",
+      "sourceQuestionRef": "motorvehicles-03",
+      "questionType": "true_false",
+      "mainCategoryId": "cat_parking_stopping",
+      "difficulty": "easy",
+      "status": "translation_review",
+      "originalStem": "At a stop sign with no stop line, you should stop just before the intersection.",
+      "originalLanguage": "en",
+      "englishStem": "At a stop sign with no stop line, you should stop just before the intersection.",
+      "correctChoiceKey": "T",
+      "hasImage": false,
+      "explanationOrigin": "manual",
+      "activeExplanationId": "exp_0006_v1",
+      "translationReviewStatus": "pending",
+      "explanationReviewStatus": "pending",
+      "isExamEligible": true,
+      "createdAt": "2026-03-12T01:21:00Z",
+      "updatedAt": "2026-03-12T01:24:00Z"
+    },
+    {
+      "id": "q_0007",
+      "sourceReferenceId": "src_005",
+      "contentVersionId": "cv_2026_03_11",
+      "sourceQuestionRef": "motorvehicles-04",
+      "questionType": "true_false",
+      "mainCategoryId": "cat_railroad_crossings",
+      "difficulty": "easy",
+      "status": "translation_review",
+      "originalStem": "Before a railroad level crossing without traffic lights, you should stop and check both directions for safety.",
+      "originalLanguage": "en",
+      "englishStem": "Before a railroad level crossing without traffic lights, you should stop and check both directions for safety.",
+      "correctChoiceKey": "T",
+      "hasImage": false,
+      "explanationOrigin": "manual",
+      "activeExplanationId": "exp_0007_v1",
+      "translationReviewStatus": "pending",
+      "explanationReviewStatus": "pending",
+      "isExamEligible": true,
+      "createdAt": "2026-03-12T01:25:00Z",
+      "updatedAt": "2026-03-12T01:28:00Z"
+    },
+    {
+      "id": "q_0008",
+      "sourceReferenceId": "src_005",
+      "contentVersionId": "cv_2026_03_11",
+      "sourceQuestionRef": "motorvehicles-05",
+      "questionType": "true_false",
+      "mainCategoryId": "cat_safety_checks",
+      "difficulty": "easy",
+      "status": "translation_review",
+      "originalStem": "Only people in the front seats are required to wear seat belts.",
+      "originalLanguage": "en",
+      "englishStem": "Only people in the front seats are required to wear seat belts.",
+      "correctChoiceKey": "F",
+      "hasImage": false,
+      "explanationOrigin": "manual",
+      "activeExplanationId": "exp_0008_v1",
+      "translationReviewStatus": "pending",
+      "explanationReviewStatus": "pending",
+      "isExamEligible": true,
+      "createdAt": "2026-03-12T01:29:00Z",
+      "updatedAt": "2026-03-12T01:32:00Z"
+    },
+    {
+      "id": "q_0009",
+      "sourceReferenceId": "src_006",
+      "contentVersionId": "cv_2026_03_11",
+      "sourceQuestionRef": "parkinglot-01",
+      "questionType": "true_false",
+      "mainCategoryId": "cat_parking_stopping",
+      "difficulty": "medium",
+      "status": "translation_review",
+      "originalStem": "It is acceptable to leave your car on a quiet side street for a short shopping stop if the engine is still running.",
+      "originalLanguage": "en",
+      "englishStem": "It is acceptable to leave your car on a quiet side street for a short shopping stop if the engine is still running.",
+      "correctChoiceKey": "F",
+      "hasImage": false,
+      "explanationOrigin": "manual",
+      "activeExplanationId": "exp_0009_v1",
+      "translationReviewStatus": "pending",
+      "explanationReviewStatus": "pending",
+      "isExamEligible": true,
+      "createdAt": "2026-03-12T01:33:00Z",
+      "updatedAt": "2026-03-12T01:36:00Z"
+    },
+    {
+      "id": "q_0010",
+      "sourceReferenceId": "src_006",
+      "contentVersionId": "cv_2026_03_11",
+      "sourceQuestionRef": "parkinglot-02",
+      "questionType": "true_false",
+      "mainCategoryId": "cat_parking_stopping",
+      "difficulty": "easy",
+      "status": "translation_review",
+      "originalStem": "When a parking lot requires front-end parking, you should park nose-in as instructed.",
+      "originalLanguage": "en",
+      "englishStem": "When a parking lot requires front-end parking, you should park nose-in as instructed.",
+      "correctChoiceKey": "T",
+      "hasImage": false,
+      "explanationOrigin": "manual",
+      "activeExplanationId": "exp_0010_v1",
+      "translationReviewStatus": "pending",
+      "explanationReviewStatus": "pending",
+      "isExamEligible": true,
+      "createdAt": "2026-03-12T01:37:00Z",
+      "updatedAt": "2026-03-12T01:40:00Z"
+    },
+    {
+      "id": "q_0011",
+      "sourceReferenceId": "src_006",
+      "contentVersionId": "cv_2026_03_11",
+      "sourceQuestionRef": "parkinglot-03",
+      "questionType": "true_false",
+      "mainCategoryId": "cat_parking_stopping",
+      "difficulty": "easy",
+      "status": "translation_review",
+      "originalStem": "A disabled parking space may be used by any driver for a short time when no disabled vehicle is waiting.",
+      "originalLanguage": "en",
+      "englishStem": "A disabled parking space may be used by any driver for a short time when no disabled vehicle is waiting.",
+      "correctChoiceKey": "F",
+      "hasImage": false,
+      "explanationOrigin": "manual",
+      "activeExplanationId": "exp_0011_v1",
+      "translationReviewStatus": "pending",
+      "explanationReviewStatus": "pending",
+      "isExamEligible": true,
+      "createdAt": "2026-03-12T01:41:00Z",
+      "updatedAt": "2026-03-12T01:44:00Z"
+    },
+    {
+      "id": "q_0012",
+      "sourceReferenceId": "src_007",
+      "contentVersionId": "cv_2026_03_11",
+      "sourceQuestionRef": "traffic-rules-speed-limit",
+      "questionType": "true_false",
+      "mainCategoryId": "cat_speed_stopping",
+      "difficulty": "easy",
+      "status": "translation_review",
+      "originalStem": "When no speed limit sign or marking is posted, a regular automobile may travel up to 60 km/h on an ordinary road.",
+      "originalLanguage": "en",
+      "englishStem": "When no speed limit sign or marking is posted, a regular automobile may travel up to 60 km/h on an ordinary road.",
+      "correctChoiceKey": "T",
+      "hasImage": false,
+      "explanationOrigin": "manual",
+      "activeExplanationId": "exp_0012_v1",
+      "translationReviewStatus": "pending",
+      "explanationReviewStatus": "pending",
+      "isExamEligible": true,
+      "createdAt": "2026-03-12T01:45:00Z",
+      "updatedAt": "2026-03-12T01:03:43.919Z"
+    },
+    {
+      "id": "q_0013",
+      "sourceReferenceId": "src_007",
+      "contentVersionId": "cv_2026_03_11",
+      "sourceQuestionRef": "traffic-rules-expressway-passing-lane",
+      "questionType": "true_false",
+      "mainCategoryId": "cat_lane_rules",
+      "difficulty": "medium",
+      "status": "translation_review",
+      "originalStem": "On an expressway, you should use the passing lane only for overtaking and return to the driving lane afterward.",
+      "originalLanguage": "en",
+      "englishStem": "On an expressway, you should use the passing lane only for overtaking and return to the driving lane afterward.",
+      "correctChoiceKey": "T",
+      "hasImage": false,
+      "explanationOrigin": "manual",
+      "activeExplanationId": "exp_0013_v1",
+      "translationReviewStatus": "pending",
+      "explanationReviewStatus": "pending",
+      "isExamEligible": true,
+      "createdAt": "2026-03-12T01:49:00Z",
+      "updatedAt": "2026-03-12T01:03:43.919Z"
+    },
+    {
+      "id": "q_0014",
+      "sourceReferenceId": "src_007",
+      "contentVersionId": "cv_2026_03_11",
+      "sourceQuestionRef": "traffic-rules-yield-pedestrians",
+      "questionType": "true_false",
+      "mainCategoryId": "cat_pedestrians_bicycles",
+      "difficulty": "easy",
+      "status": "draft",
+      "originalStem": "Drivers must yield to pedestrians.",
+      "originalLanguage": "en",
+      "englishStem": "Drivers must yield to pedestrians.",
+      "correctChoiceKey": "T",
+      "hasImage": false,
+      "explanationOrigin": "manual",
+      "activeExplanationId": "exp_0014_v1",
+      "translationReviewStatus": "changes_requested",
+      "explanationReviewStatus": "changes_requested",
+      "isExamEligible": true,
+      "createdAt": "2026-03-12T01:53:00Z",
+      "updatedAt": "2026-03-12T01:04:57.965Z"
     }
   ],
   "choices": [
@@ -342,6 +699,166 @@
       "originalText": "赤い三角形",
       "englishText": "A red triangle",
       "isCorrect": false
+    },
+    {
+      "id": "ch_0005_t",
+      "questionId": "q_0005",
+      "choiceKey": "T",
+      "displayOrder": 1,
+      "englishText": "True",
+      "isCorrect": false
+    },
+    {
+      "id": "ch_0005_f",
+      "questionId": "q_0005",
+      "choiceKey": "F",
+      "displayOrder": 2,
+      "englishText": "False",
+      "isCorrect": true
+    },
+    {
+      "id": "ch_0006_t",
+      "questionId": "q_0006",
+      "choiceKey": "T",
+      "displayOrder": 1,
+      "englishText": "True",
+      "isCorrect": true
+    },
+    {
+      "id": "ch_0006_f",
+      "questionId": "q_0006",
+      "choiceKey": "F",
+      "displayOrder": 2,
+      "englishText": "False",
+      "isCorrect": false
+    },
+    {
+      "id": "ch_0007_t",
+      "questionId": "q_0007",
+      "choiceKey": "T",
+      "displayOrder": 1,
+      "englishText": "True",
+      "isCorrect": true
+    },
+    {
+      "id": "ch_0007_f",
+      "questionId": "q_0007",
+      "choiceKey": "F",
+      "displayOrder": 2,
+      "englishText": "False",
+      "isCorrect": false
+    },
+    {
+      "id": "ch_0008_t",
+      "questionId": "q_0008",
+      "choiceKey": "T",
+      "displayOrder": 1,
+      "englishText": "True",
+      "isCorrect": false
+    },
+    {
+      "id": "ch_0008_f",
+      "questionId": "q_0008",
+      "choiceKey": "F",
+      "displayOrder": 2,
+      "englishText": "False",
+      "isCorrect": true
+    },
+    {
+      "id": "ch_0009_t",
+      "questionId": "q_0009",
+      "choiceKey": "T",
+      "displayOrder": 1,
+      "englishText": "True",
+      "isCorrect": false
+    },
+    {
+      "id": "ch_0009_f",
+      "questionId": "q_0009",
+      "choiceKey": "F",
+      "displayOrder": 2,
+      "englishText": "False",
+      "isCorrect": true
+    },
+    {
+      "id": "ch_0010_t",
+      "questionId": "q_0010",
+      "choiceKey": "T",
+      "displayOrder": 1,
+      "englishText": "True",
+      "isCorrect": true
+    },
+    {
+      "id": "ch_0010_f",
+      "questionId": "q_0010",
+      "choiceKey": "F",
+      "displayOrder": 2,
+      "englishText": "False",
+      "isCorrect": false
+    },
+    {
+      "id": "ch_0011_t",
+      "questionId": "q_0011",
+      "choiceKey": "T",
+      "displayOrder": 1,
+      "englishText": "True",
+      "isCorrect": false
+    },
+    {
+      "id": "ch_0011_f",
+      "questionId": "q_0011",
+      "choiceKey": "F",
+      "displayOrder": 2,
+      "englishText": "False",
+      "isCorrect": true
+    },
+    {
+      "id": "ch_0012_t",
+      "questionId": "q_0012",
+      "choiceKey": "T",
+      "displayOrder": 1,
+      "englishText": "True",
+      "isCorrect": true
+    },
+    {
+      "id": "ch_0012_f",
+      "questionId": "q_0012",
+      "choiceKey": "F",
+      "displayOrder": 2,
+      "englishText": "False",
+      "isCorrect": false
+    },
+    {
+      "id": "ch_0013_t",
+      "questionId": "q_0013",
+      "choiceKey": "T",
+      "displayOrder": 1,
+      "englishText": "True",
+      "isCorrect": true
+    },
+    {
+      "id": "ch_0013_f",
+      "questionId": "q_0013",
+      "choiceKey": "F",
+      "displayOrder": 2,
+      "englishText": "False",
+      "isCorrect": false
+    },
+    {
+      "id": "ch_0014_t",
+      "questionId": "q_0014",
+      "choiceKey": "T",
+      "displayOrder": 1,
+      "englishText": "True",
+      "isCorrect": true
+    },
+    {
+      "id": "ch_0014_f",
+      "questionId": "q_0014",
+      "choiceKey": "F",
+      "displayOrder": 2,
+      "englishText": "False",
+      "isCorrect": false
     }
   ],
   "explanations": [
@@ -388,6 +905,106 @@
       "createdBy": "source-import",
       "createdAt": "2026-03-11T12:44:00Z",
       "updatedAt": "2026-03-11T12:45:00Z"
+    },
+    {
+      "id": "exp_0005_v1",
+      "questionId": "q_0005",
+      "origin": "manual",
+      "bodyEn": "This is false. Entering the intersection first does not let you cut off an oncoming vehicle that is continuing straight. When you turn right, you must not obstruct that vehicle.",
+      "sourceDerived": true,
+      "createdBy": "passdrive-editorial",
+      "createdAt": "2026-03-12T01:17:00Z",
+      "updatedAt": "2026-03-12T01:18:00Z"
+    },
+    {
+      "id": "exp_0006_v1",
+      "questionId": "q_0006",
+      "origin": "manual",
+      "bodyEn": "This is true. A stop sign requires a full stop at the stop line, or just before the intersection if no stop line is present.",
+      "sourceDerived": true,
+      "createdBy": "passdrive-editorial",
+      "createdAt": "2026-03-12T01:22:00Z",
+      "updatedAt": "2026-03-12T01:23:00Z"
+    },
+    {
+      "id": "exp_0007_v1",
+      "questionId": "q_0007",
+      "origin": "manual",
+      "bodyEn": "This is true. Before a level crossing, stop before the crossing or stop line and confirm safety to both sides. If traffic lights control the crossing, follow those lights.",
+      "sourceDerived": true,
+      "createdBy": "passdrive-editorial",
+      "createdAt": "2026-03-12T01:26:00Z",
+      "updatedAt": "2026-03-12T01:27:00Z"
+    },
+    {
+      "id": "exp_0008_v1",
+      "questionId": "q_0008",
+      "origin": "manual",
+      "bodyEn": "This is false. The driver must make sure passengers in both the front and rear seats wear seat belts, not only the people in front.",
+      "sourceDerived": true,
+      "createdBy": "passdrive-editorial",
+      "createdAt": "2026-03-12T01:30:00Z",
+      "updatedAt": "2026-03-12T01:31:00Z"
+    },
+    {
+      "id": "exp_0009_v1",
+      "questionId": "q_0009",
+      "origin": "manual",
+      "bodyEn": "This is false. Street parking can still be a violation even for a short time. If you leave the car and cannot drive it away immediately, it may count as abandoned parking.",
+      "sourceDerived": true,
+      "createdBy": "passdrive-editorial",
+      "createdAt": "2026-03-12T01:34:00Z",
+      "updatedAt": "2026-03-12T01:35:00Z"
+    },
+    {
+      "id": "exp_0010_v1",
+      "questionId": "q_0010",
+      "origin": "manual",
+      "bodyEn": "This is true. If front-end parking is designated, you must follow that instruction. In residential areas it helps reduce exhaust and noise toward nearby homes.",
+      "sourceDerived": true,
+      "createdBy": "passdrive-editorial",
+      "createdAt": "2026-03-12T01:38:00Z",
+      "updatedAt": "2026-03-12T01:39:00Z"
+    },
+    {
+      "id": "exp_0011_v1",
+      "questionId": "q_0011",
+      "origin": "manual",
+      "bodyEn": "This is false. Accessible parking spaces are reserved for drivers with physical disabilities and must not be used by regular vehicles, even briefly.",
+      "sourceDerived": true,
+      "createdBy": "passdrive-editorial",
+      "createdAt": "2026-03-12T01:42:00Z",
+      "updatedAt": "2026-03-12T01:43:00Z"
+    },
+    {
+      "id": "exp_0012_v1",
+      "questionId": "q_0012",
+      "origin": "manual",
+      "bodyEn": "This is true. Without a posted limit, regular automobiles must follow the default limit of 60 km/h on ordinary roads.",
+      "sourceDerived": true,
+      "createdBy": "passdrive-editorial",
+      "createdAt": "2026-03-12T01:46:00Z",
+      "updatedAt": "2026-03-12T01:47:00Z"
+    },
+    {
+      "id": "exp_0013_v1",
+      "questionId": "q_0013",
+      "origin": "manual",
+      "bodyEn": "This is true. The expressway passing lane is for overtaking. After passing, you should move back into the driving lane instead of staying in the passing lane.",
+      "sourceDerived": true,
+      "createdBy": "passdrive-editorial",
+      "createdAt": "2026-03-12T01:50:00Z",
+      "updatedAt": "2026-03-12T01:51:00Z"
+    },
+    {
+      "id": "exp_0014_v1",
+      "questionId": "q_0014",
+      "origin": "manual",
+      "bodyEn": "This is true. Drivers are expected to yield to pedestrians, so pedestrian safety takes priority in everyday traffic situations.",
+      "sourceDerived": true,
+      "createdBy": "passdrive-editorial",
+      "createdAt": "2026-03-12T01:54:00Z",
+      "updatedAt": "2026-03-12T01:55:00Z"
     }
   ],
   "translationReviews": [
@@ -430,6 +1047,97 @@
       "naturalnessCheck": true,
       "notes": "The multiple-choice wording is concise and natural.",
       "reviewedAt": "2026-03-11T12:46:00Z"
+    },
+    {
+      "id": "tr_0005_v1",
+      "questionId": "q_0005",
+      "reviewer": "english-reviewer@example.com",
+      "status": "pending",
+      "accuracyCheck": false,
+      "naturalnessCheck": false,
+      "notes": "Awaiting manual translation review."
+    },
+    {
+      "id": "tr_0006_v1",
+      "questionId": "q_0006",
+      "reviewer": "english-reviewer@example.com",
+      "status": "pending",
+      "accuracyCheck": false,
+      "naturalnessCheck": false,
+      "notes": "Awaiting manual translation review."
+    },
+    {
+      "id": "tr_0007_v1",
+      "questionId": "q_0007",
+      "reviewer": "english-reviewer@example.com",
+      "status": "pending",
+      "accuracyCheck": false,
+      "naturalnessCheck": false,
+      "notes": "Awaiting manual translation review."
+    },
+    {
+      "id": "tr_0008_v1",
+      "questionId": "q_0008",
+      "reviewer": "english-reviewer@example.com",
+      "status": "pending",
+      "accuracyCheck": false,
+      "naturalnessCheck": false,
+      "notes": "Awaiting manual translation review."
+    },
+    {
+      "id": "tr_0009_v1",
+      "questionId": "q_0009",
+      "reviewer": "english-reviewer@example.com",
+      "status": "pending",
+      "accuracyCheck": false,
+      "naturalnessCheck": false,
+      "notes": "Awaiting manual translation review."
+    },
+    {
+      "id": "tr_0010_v1",
+      "questionId": "q_0010",
+      "reviewer": "english-reviewer@example.com",
+      "status": "pending",
+      "accuracyCheck": false,
+      "naturalnessCheck": false,
+      "notes": "Awaiting manual translation review."
+    },
+    {
+      "id": "tr_0011_v1",
+      "questionId": "q_0011",
+      "reviewer": "english-reviewer@example.com",
+      "status": "pending",
+      "accuracyCheck": false,
+      "naturalnessCheck": false,
+      "notes": "Awaiting manual translation review."
+    },
+    {
+      "id": "tr_0012_v1",
+      "questionId": "q_0012",
+      "reviewer": "english-reviewer@example.com",
+      "status": "pending",
+      "accuracyCheck": false,
+      "naturalnessCheck": false,
+      "notes": "Awaiting manual translation review."
+    },
+    {
+      "id": "tr_0013_v1",
+      "questionId": "q_0013",
+      "reviewer": "english-reviewer@example.com",
+      "status": "pending",
+      "accuracyCheck": false,
+      "naturalnessCheck": false,
+      "notes": "Awaiting manual translation review."
+    },
+    {
+      "id": "tr_0014_v1",
+      "questionId": "q_0014",
+      "reviewer": "english-reviewer@example.com",
+      "status": "changes_requested",
+      "accuracyCheck": false,
+      "naturalnessCheck": false,
+      "notes": "Changes requested in admin UI.",
+      "reviewedAt": "2026-03-12T01:04:57.965Z"
     }
   ],
   "explanationReviews": [
@@ -472,6 +1180,97 @@
       "clarityCheck": true,
       "notes": "Imported explanation is clear and sufficient for the sample.",
       "reviewedAt": "2026-03-11T12:46:30Z"
+    },
+    {
+      "id": "er_0005_v1",
+      "explanationId": "exp_0005_v1",
+      "reviewer": "rule-reviewer@example.com",
+      "status": "pending",
+      "accuracyCheck": false,
+      "clarityCheck": false,
+      "notes": "Awaiting manual explanation review."
+    },
+    {
+      "id": "er_0006_v1",
+      "explanationId": "exp_0006_v1",
+      "reviewer": "rule-reviewer@example.com",
+      "status": "pending",
+      "accuracyCheck": false,
+      "clarityCheck": false,
+      "notes": "Awaiting manual explanation review."
+    },
+    {
+      "id": "er_0007_v1",
+      "explanationId": "exp_0007_v1",
+      "reviewer": "rule-reviewer@example.com",
+      "status": "pending",
+      "accuracyCheck": false,
+      "clarityCheck": false,
+      "notes": "Awaiting manual explanation review."
+    },
+    {
+      "id": "er_0008_v1",
+      "explanationId": "exp_0008_v1",
+      "reviewer": "rule-reviewer@example.com",
+      "status": "pending",
+      "accuracyCheck": false,
+      "clarityCheck": false,
+      "notes": "Awaiting manual explanation review."
+    },
+    {
+      "id": "er_0009_v1",
+      "explanationId": "exp_0009_v1",
+      "reviewer": "rule-reviewer@example.com",
+      "status": "pending",
+      "accuracyCheck": false,
+      "clarityCheck": false,
+      "notes": "Awaiting manual explanation review."
+    },
+    {
+      "id": "er_0010_v1",
+      "explanationId": "exp_0010_v1",
+      "reviewer": "rule-reviewer@example.com",
+      "status": "pending",
+      "accuracyCheck": false,
+      "clarityCheck": false,
+      "notes": "Awaiting manual explanation review."
+    },
+    {
+      "id": "er_0011_v1",
+      "explanationId": "exp_0011_v1",
+      "reviewer": "rule-reviewer@example.com",
+      "status": "pending",
+      "accuracyCheck": false,
+      "clarityCheck": false,
+      "notes": "Awaiting manual explanation review."
+    },
+    {
+      "id": "er_0012_v1",
+      "explanationId": "exp_0012_v1",
+      "reviewer": "rule-reviewer@example.com",
+      "status": "pending",
+      "accuracyCheck": false,
+      "clarityCheck": false,
+      "notes": "Awaiting manual explanation review."
+    },
+    {
+      "id": "er_0013_v1",
+      "explanationId": "exp_0013_v1",
+      "reviewer": "rule-reviewer@example.com",
+      "status": "pending",
+      "accuracyCheck": false,
+      "clarityCheck": false,
+      "notes": "Awaiting manual explanation review."
+    },
+    {
+      "id": "er_0014_v1",
+      "explanationId": "exp_0014_v1",
+      "reviewer": "rule-reviewer@example.com",
+      "status": "changes_requested",
+      "accuracyCheck": false,
+      "clarityCheck": false,
+      "notes": "Changes requested in admin UI.",
+      "reviewedAt": "2026-03-12T01:03:57.299Z"
     }
   ],
   "questionTags": [
@@ -506,6 +1305,86 @@
     {
       "questionId": "q_0004",
       "tagId": "tag_no_entry"
+    },
+    {
+      "questionId": "q_0005",
+      "tagId": "tag_turning_right"
+    },
+    {
+      "questionId": "q_0005",
+      "tagId": "tag_priority"
+    },
+    {
+      "questionId": "q_0006",
+      "tagId": "tag_stop_sign"
+    },
+    {
+      "questionId": "q_0006",
+      "tagId": "tag_stop"
+    },
+    {
+      "questionId": "q_0007",
+      "tagId": "tag_level_crossing"
+    },
+    {
+      "questionId": "q_0007",
+      "tagId": "tag_railroad"
+    },
+    {
+      "questionId": "q_0008",
+      "tagId": "tag_seatbelt"
+    },
+    {
+      "questionId": "q_0008",
+      "tagId": "tag_safety_check"
+    },
+    {
+      "questionId": "q_0009",
+      "tagId": "tag_parking"
+    },
+    {
+      "questionId": "q_0009",
+      "tagId": "tag_on_street_parking"
+    },
+    {
+      "questionId": "q_0010",
+      "tagId": "tag_parking"
+    },
+    {
+      "questionId": "q_0010",
+      "tagId": "tag_front_end_parking"
+    },
+    {
+      "questionId": "q_0011",
+      "tagId": "tag_parking"
+    },
+    {
+      "questionId": "q_0011",
+      "tagId": "tag_disabled_parking"
+    },
+    {
+      "questionId": "q_0012",
+      "tagId": "tag_speed_limit"
+    },
+    {
+      "questionId": "q_0012",
+      "tagId": "tag_stop"
+    },
+    {
+      "questionId": "q_0013",
+      "tagId": "tag_expressway"
+    },
+    {
+      "questionId": "q_0013",
+      "tagId": "tag_passing_lane"
+    },
+    {
+      "questionId": "q_0014",
+      "tagId": "tag_pedestrian"
+    },
+    {
+      "questionId": "q_0014",
+      "tagId": "tag_priority"
     }
   ],
   "userProgress": [

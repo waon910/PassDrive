@@ -1,4 +1,4 @@
-import { getCategoryProgressSummaries, getLatestMockExam, loadSampleDataset } from "@/lib/sample-dataset";
+import { getCategoryProgressSummaries, getLatestMockExam, getPublishedQuestionBundles, loadSampleDataset } from "@/lib/sample-dataset";
 
 export async function getProgressViewModel() {
   const dataset = await loadSampleDataset();
@@ -10,7 +10,10 @@ export async function getProgressViewModel() {
   return {
     categoryProgress,
     latestMockExam,
+    publishedQuestionBundles: getPublishedQuestionBundles(dataset),
+    baseUserProgress: dataset.userProgress,
     totalAttempts,
+    totalCorrect,
     overallAccuracyPercent: totalAttempts === 0 ? 0 : Math.round((totalCorrect / totalAttempts) * 100)
   };
 }

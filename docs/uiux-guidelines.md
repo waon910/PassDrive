@@ -31,6 +31,26 @@ The UI should not feel:
 - Primary input: touch
 - Primary context: self-study, repeated short sessions, moderate ambient distraction
 
+## 3.1 iPad Layout Best Practices Baseline
+
+This project uses Apple iPadOS guidance as the baseline for layout decisions.
+
+Applied takeaways:
+
+- Use the large display to keep the primary study content visible without horizontal scrolling.
+- Keep controls close to the content they modify instead of separating decisions and actions across distant panels.
+- Avoid excessive modal or full-screen interruptions during normal study loops.
+- Support comfortable touch interaction with controls sized for finger input.
+- Preserve clarity, hierarchy, and adaptability across orientation changes and multitasking widths.
+
+Implementation consequences for PassDrive:
+
+- The app shell should use a persistent navigation rail in landscape and a stacked navigation block in narrow widths.
+- Page headers should be compact, because vertical space is more valuable for question reading than for decorative hero content.
+- Practice and mock exam screens should reserve most of the viewport for the active question and its immediate controls.
+- Secondary information should be collapsed into short status lines or lightweight metadata instead of card walls.
+- Learner-facing copy should be compressed aggressively so the study surface stays dominant.
+
 ## 4. UX Principles
 
 ### 4.1 One primary action per screen
@@ -71,7 +91,7 @@ Default pattern:
 
 - left navigation rail or persistent side navigation
 - large main content area
-- optional secondary panel for explanation, metadata, or details
+- optional secondary panel only when it directly supports the current action
 
 Use landscape to reduce context switching, not to add extra noise.
 
@@ -88,6 +108,7 @@ Default pattern:
 - Use generous spacing around question content
 - Prefer fewer, larger sections over many dense blocks
 - Cards must not become narrow phone-style widgets on tablet widths
+- Minimize dead header space above the active study content
 
 ## 6. Typography
 
@@ -120,6 +141,7 @@ Visual tone:
 - Global destinations should be stable and easy to re-enter
 - During active answering flows, reduce non-essential navigation prominence
 - The user should always know whether they are in practice mode, mock exam mode, or review mode
+- Keep navigation labels short enough to scan from a rail at arm’s-length viewing distance
 
 ## 9. Screen-Specific Guidance
 
@@ -149,12 +171,14 @@ Must include:
 - Answer choices must be large and tap-safe
 - Explanation must feel integrated, not buried
 - After submission, the next action must be immediate and obvious
+- Avoid introducing side panels, metric blocks, or promotional copy while answering
 
 ### 9.4 Mock Exam
 
 - Must feel more serious than normal practice
 - Timer, question index, and progress should remain visible
 - Do not display explanations before finishing
+- Place time and progress near the question, not in distant supporting cards
 
 ### 9.5 Results Summary
 
@@ -169,12 +193,12 @@ Must include:
 
 ### 9.7 Signs and Terms
 
-- In landscape, prefer split view with list and detail
-- Searching must be lightweight and immediate
+- In MVP, prefer one dominant reference card and one lightweight supporting list
+- Searching must be lightweight and immediate when introduced
 
 ## 10. Interaction Design Rules
 
-- Tap targets should feel comfortable on tablet
+- Tap targets should feel comfortable on tablet and generally respect Apple’s 44pt minimum guidance
 - Selection state must be visually obvious before submission
 - Submission must feel deliberate
 - Use confirmation only when the cost of accidental action is meaningful
@@ -227,3 +251,12 @@ A screen is not done unless:
 - the learner can tell what mode they are in
 - the spacing supports reading, not just information packing
 - the copy is short and native-sounding
+
+## 16. Source Notes
+
+This document was aligned against Apple Developer design guidance reviewed on March 11, 2026:
+
+- Human Interface Guidelines overview
+- Designing for iPadOS
+- UI Design Dos and Don’ts
+- Accessibility guidance

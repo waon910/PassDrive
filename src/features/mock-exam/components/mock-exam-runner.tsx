@@ -4,11 +4,28 @@ import { useEffect, useState } from "react";
 
 import { buildSessionSummary } from "@/domain/session-rules";
 import type { QuestionBundle } from "@/domain/content-types";
+import { recordMockExamResult } from "@/lib/learner-history-store";
 
 interface MockExamRunnerProps {
   questionBundles: QuestionBundle[];
   passThresholdPercent: number;
   timeLimitMinutes: number;
+}
+
+function buildVisibleQuestionIndices(currentIndex: number, totalQuestions: number) {
+  if (totalQuestions === 0) {
+    return [];
+  }
+
+  const visibleIndices = new Set<number>([0, totalQuestions - 1]);
+
+  for (let index = currentIndex - 1; index <= currentIndex + 1; index += 1) {
+    if (index >= 0 && index < totalQuestions) {
+      visibleIndices.add(index);
+    }
+  }
+
+  return [...visibleIndices].sort((left, right) => left - right);
 }
 
 function formatRemainingTime(totalSeconds: number) {
@@ -46,14 +63,14 @@ export function MockExamRunner({
 
   useEffect(() => {
     if (started && !completed && remainingSeconds === 0) {
-      setCompleted(true);
-      setStarted(false);
+      finishExam();
     }
   }, [started, completed, remainingSeconds]);
 
   const currentBundle = questionBundles[currentIndex];
   const summary = completed ? buildSessionSummary(questionBundles, answers, passThresholdPercent) : null;
   const answeredCount = Object.keys(answers).length;
+  const visibleQuestionIndices = buildVisibleQuestionIndices(currentIndex, questionBundles.length);
 
   function startExam() {
     setStarted(true);
@@ -64,8 +81,11 @@ export function MockExamRunner({
   }
 
   function finishExam() {
+    const nextSummary = buildSessionSummary(questionBundles, answers, passThresholdPercent);
+
     setCompleted(true);
     setStarted(false);
+    void recordMockExamResult(questionBundles, answers, nextSummary, passThresholdPercent);
   }
 
   function resetExam() {
@@ -83,7 +103,7 @@ export function MockExamRunner({
           <div className="panel-head">
             <div>
               <p className="eyebrow">Exam Setup</p>
-              <h2>Start a timed written test simulation.</h2>
+              <h2>Start a timed set.</h2>
             </div>
             <span className="chip">{questionBundles.length} questions</span>
           </div>
@@ -104,7 +124,7 @@ export function MockExamRunner({
           </dl>
 
           <p className="small-copy">
-            Explanations stay hidden until the exam is complete. Answers may be changed before you finish.
+            Explanations stay hidden until the end.
           </p>
 
           <div className="action-row">
@@ -125,33 +145,37 @@ export function MockExamRunner({
             <div className="timer-badge">{formatRemainingTime(remainingSeconds)}</div>
           </div>
 
-          <div className="exam-meta-row">
-            <span className="chip">
-              Question {currentIndex + 1} / {questionBundles.length}
-            </span>
-            <span className="chip">{answeredCount} answered</span>
-          </div>
+          <p className="small-copy exam-status-line">
+            Question {currentIndex + 1} / {questionBundles.length}
+            {" · "}
+            {answeredCount} answered
+          </p>
 
           <div className="question-index-row" aria-label="Question navigation">
-            {questionBundles.map((bundle, index) => {
+            {visibleQuestionIndices.map((index, visibleIndex) => {
+              const bundle = questionBundles[index];
               const answered = Boolean(answers[bundle.question.id]);
               const active = index === currentIndex;
+              const previousVisibleIndex = visibleQuestionIndices[visibleIndex - 1];
+              const showGap = previousVisibleIndex !== undefined && index - previousVisibleIndex > 1;
 
               return (
-                <button
-                  key={bundle.question.id}
-                  className={[
-                    "question-index-pill",
-                    answered ? "answered" : "",
-                    active ? "active" : ""
-                  ]
-                    .filter(Boolean)
-                    .join(" ")}
-                  type="button"
-                  onClick={() => setCurrentIndex(index)}
-                >
-                  {index + 1}
-                </button>
+                <div key={bundle.question.id} className="question-index-group">
+                  {showGap ? <span className="question-index-gap">...</span> : null}
+                  <button
+                    className={[
+                      "question-index-pill",
+                      answered ? "answered" : "",
+                      active ? "active" : ""
+                    ]
+                      .filter(Boolean)
+                      .join(" ")}
+                    type="button"
+                    onClick={() => setCurrentIndex(index)}
+                  >
+                    {index + 1}
+                  </button>
+                </div>
               );
             })}
           </div>
@@ -182,7 +206,7 @@ export function MockExamRunner({
             })}
           </div>
 
-          <div className="exam-actions">
+          <div className="exam-actions study-action-bar">
             <button
               className="secondary-button"
               type="button"
