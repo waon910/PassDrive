@@ -63,6 +63,7 @@ dl {
   min-height: 100vh;
   display: grid;
   grid-template-columns: 208px minmax(0, 1fr);
+  align-items: start;
   gap: 16px;
   padding: 16px;
   max-width: 1366px;
@@ -159,6 +160,7 @@ dl {
 .app-main {
   min-width: 0;
   display: grid;
+  align-content: start;
   gap: 14px;
 }
 
@@ -168,7 +170,7 @@ dl {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   gap: 16px;
-  align-items: center;
+  align-items: start;
 }
 
 .page-header-copy,
@@ -179,6 +181,8 @@ dl {
 .page-meta {
   display: flex;
   justify-content: flex-end;
+  align-items: flex-start;
+  align-self: start;
 }
 
 .eyebrow,
