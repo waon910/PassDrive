@@ -9,7 +9,9 @@
     "start": "next start",
     "typecheck": "tsc --noEmit",
     "validate:sample": "node scripts/validate-sample-data.mjs",
-    "content:seed": "tsx scripts/content-store-seed.ts"
+    "content:seed": "tsx scripts/content-store-seed.ts",
+    "content:seed:sqlite": "node --env-file=.env.sqlite.local ./node_modules/tsx/dist/cli.mjs scripts/content-store-seed.ts",
+    "content:seed:neon": "node --env-file=.env.neon.local ./node_modules/tsx/dist/cli.mjs scripts/content-store-seed.ts"
   },
   "keywords": [
     "nextjs",

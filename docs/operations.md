@@ -1,83 +1,99 @@
-# PassDrive Operations Guide
+# PassDrive 運用ガイド
 
-## 1. Decision Summary
+## 1. 方針の要約
 
-PassDrive should not move every piece of data into the same database.
+PassDrive では、すべてのデータを同じデータベースへ移す方針は取りません。
 
-- Learner history stays in browser `IndexedDB`
-- Admin content and review data move to a relational content store
-- Local development target: `SQLite`
-- Deployed environments such as Vercel target: `Postgres`
+- 学習者の履歴はブラウザ内の `IndexedDB` に保持する
+- 管理対象のコンテンツとレビュー状態はリレーショナルなコンテンツストアへ移す
+- ローカル開発では `SQLite` を使う
+- Vercel などのデプロイ環境では `Postgres` を使う
 
-Reasoning:
+この方針にする理由:
 
-- learner history is device-local by product design today
-- review and publish state must persist across deployments
-- admin review needs a writable store on Vercel, which file-backed JSON cannot provide
+- 学習履歴は現時点では端末ローカル保存がプロダクト要件に合っている
+- レビュー状態と公開状態はデプロイをまたいで永続化される必要がある
+- Vercel 上ではファイルベース JSON への書き込みで管理運用を成立させられない
 
-## 2. Current Safe Operating Mode
+## 2. 現在の安全な運用モード
 
-The repository is still running with a file-backed content store.
+現在のリポジトリは、まだ file-backed なコンテンツストアでも運用できます。
 
-That means:
+これは以下を意味します。
 
-- learner-facing pages work locally and on Vercel
-- local admin review can still save into `data/samples/mvp-sample-question-set.json`
-- deployed admin review stays read-only while `CONTENT_STORE_MODE=file`
+- 学習者向け画面はローカルでも Vercel でも動作する
+- ローカルの管理画面レビューは `data/samples/mvp-sample-question-set.json` に保存できる
+- `CONTENT_STORE_MODE=file` の間は、Vercel 上の管理画面は読み取り専用として扱う
 
-Use the current mode when you need to keep moving without breaking production.
+本番を壊さずに作業を進めたい場合は、この運用を使います。
 
-## 2.1 Optional relational-store mode
+## 2.1 リレーショナルストアモード
 
-The app now has a content-store boundary that can run in three modes:
+現在のアプリには、3つのモードで動作する `content-store` 境界があります。
 
 - `file`
 - `sqlite`
 - `postgres`
 
-Environment variables:
+使用する環境変数:
 
 - `CONTENT_STORE_MODE`
 - `CONTENT_DATABASE_URL`
 - `CONTENT_DB_AUTO_SEED`
 
-Examples:
+例:
 
 ```bash
-# keep current local JSON workflow
+# 従来どおり JSON ベースでローカル運用する
 CONTENT_STORE_MODE=file
 
-# local SQLite workflow
+# ローカルで SQLite を使う
 CONTENT_STORE_MODE=sqlite
 CONTENT_DATABASE_URL=data/content/passdrive.sqlite
 CONTENT_DB_AUTO_SEED=true
 
-# deployed Postgres workflow
+# デプロイ環境で Postgres を使う
 CONTENT_STORE_MODE=postgres
 CONTENT_DATABASE_URL=postgres://...
 CONTENT_DB_AUTO_SEED=false
 ```
 
-## 3. Current Question Addition Workflow
+運用しやすくするため、env ファイルは用途ごとに分けるのを推奨します。
 
-### 3.1 Add or import questions
+- `.env.local`
+  ローカルで `npm run dev` するときの通常設定
+- `.env.sqlite.local`
+  `SQLite` に seed するとき専用の設定
+- `.env.neon.local`
+  `Neon / Postgres` に seed するとき専用の設定
 
-Use one of the existing import scripts or update the sample dataset manually:
+推奨コマンド:
+
+```bash
+npm run content:seed:sqlite
+npm run content:seed:neon
+```
+
+## 3. 現在の問題追加フロー
+
+### 3.1 問題を追加または取り込む
+
+既存の import script を使うか、サンプルデータセットを直接更新します。
 
 - `scripts/import-jaf-quiz.mjs`
 - `scripts/import-car-license-questions.mjs`
 - `data/samples/mvp-sample-question-set.json`
 
-When adding new questions:
+問題を追加するときのルール:
 
-- create or attach a `SourceReference`
-- keep `rightsStatus` as `review_required` unless approval is actually complete
-- keep new questions in `translation_review` or another non-published state
-- ensure `TranslationReview` and `ExplanationReview` records exist
+- 必ず対応する `SourceReference` を作るか紐付ける
+- 権利確認が終わっていない限り `rightsStatus` は `review_required` のままにする
+- 新規問題は `translation_review` などの未公開状態で入れる
+- `TranslationReview` と `ExplanationReview` のレコードを必ず用意する
 
-### 3.2 Validate locally
+### 3.2 ローカルで検証する
 
-Run:
+以下を実行します。
 
 ```bash
 npm run validate:sample
@@ -85,131 +101,160 @@ npm run typecheck
 npm run build
 ```
 
-Do not ship content changes that fail any of these checks.
+どれかが失敗する状態では、コンテンツ変更を出荷しません。
 
-### 3.3 Review and publish locally
+### 3.3 ローカルでレビューして公開する
 
-Use the local admin review UI:
+ローカルの管理画面レビュー UI を使って、以下の順に確認します。
 
-- approve rights
-- approve translation
-- approve explanation
-- publish locally
+- 権利確認を承認する
+- 翻訳レビューを承認する
+- 解説レビューを承認する
+- 公開する
 
-This updates the sample dataset file in the repository.
+このフローでは、リポジトリ内のサンプルデータファイルが更新されます。
 
-### 3.4 Commit content changes
+### 3.4 コンテンツ変更をコミットする
 
-Once local review is complete:
+ローカルレビューが終わったら、以下を行います。
 
-- commit the updated dataset JSON
-- open a PR or merge to the deployment branch
+- 更新された dataset JSON をコミットする
+- PR を作るか、デプロイ対象ブランチへマージする
 
-At the current stage, committing the dataset file is the deployment-safe way to ship reviewed content.
+現時点では、この JSON ファイルをコミットしてデプロイする方法が安全な公開手順です。
 
-## 4. Current Deployment Workflow
+## 4. 現在のデプロイフロー
 
-### 4.1 Required environment variables
+### 4.1 必須の環境変数
 
-Set at minimum:
+最低限必要なもの:
 
 - `PASSDRIVE_APP_PASSWORD`
 
-If using a database-backed content store, also set:
+DB ベースのコンテンツストアを使う場合は、さらに以下も必要です。
 
 - `CONTENT_STORE_MODE`
 - `CONTENT_DATABASE_URL`
 
-### 4.2 Deploying to Vercel now
+### 4.2 現時点での Vercel デプロイ
 
-Current production-safe flow:
+今の本番安全フローは以下です。
 
-1. finish content review locally
-2. commit the updated dataset file
-3. push to Git
-4. let Vercel build and deploy the commit
+1. ローカルでコンテンツレビューを完了する
+2. 更新済み dataset ファイルをコミットする
+3. Git に push する
+4. Vercel にそのコミットをビルド・デプロイさせる
 
-Important:
+重要:
 
-- do not rely on deployed admin review to persist changes yet
-- deployed admin review is for visibility only while file-backed storage remains active
+- まだ file-backed ストレージを使っている間は、Vercel 上の管理画面更新を本番保存として信用しない
+- file-backed の間の管理画面は、確認用途が中心である
 
-### 4.2.1 Moving to Postgres-backed deploys
+### 4.2.1 Postgres ベースのデプロイへ移る場合
 
-Once Postgres is prepared:
+Postgres の準備ができたら、以下の順で進めます。
 
-1. set `CONTENT_STORE_MODE=postgres`
-2. set `CONTENT_DATABASE_URL`
-3. run the seed/import step against that database
-4. deploy the app
+1. `CONTENT_STORE_MODE=postgres` を設定する
+2. `CONTENT_DATABASE_URL` を設定する
+3. 対象データベースに対して seed / import を実行する
+4. アプリをデプロイする
 
-Recommended seed command:
+推奨 seed コマンド:
 
 ```bash
 CONTENT_STORE_MODE=postgres CONTENT_DATABASE_URL=postgres://... npm run content:seed
 ```
 
-### 4.3 Preview environments
+### 4.3 Preview 環境
 
-Preview deployments are useful for checking layout and route behavior, but they should not be treated as writable admin environments while content storage is file-backed.
+Preview デプロイは、レイアウトやルート挙動の確認には有効です。  
+ただし file-backed ストレージの間は、書き込み可能な管理環境として扱いません。
 
-## 5. Target Database Workflow
+## 5. 目標とするデータベース運用
 
-The next implementation phase should introduce one content-store interface with two relational adapters:
+次の実装段階では、ひとつの `content-store` 境界の裏側に、2つのリレーショナルアダプタを持たせます。
 
-- `SQLite` adapter for local development
-- `Postgres` adapter for deployed environments
+- ローカル開発用の `SQLite` アダプタ
+- デプロイ環境用の `Postgres` アダプタ
 
-The same feature code should read and write through that shared boundary.
+feature コードは、どちらの保存先でも同じ境界を通して読み書きする前提にします。
 
-The JSON dataset should become:
+JSON dataset の役割は今後こうします。
 
-- a seed source
-- a fixture source for tests
-- a migration/import source
+- seed 用データ
+- テスト用 fixture
+- migration / import 用の入力データ
 
-It should stop being the production source of truth.
+つまり、最終的には production の source of truth ではなくします。
 
-The repository now includes the initial relational-store runtime and seed command, but the database-backed path still needs end-to-end operational rollout and production validation.
+このリポジトリには、すでに最初の relational-store runtime と seed コマンドが入っています。  
+ただし、DB ベース運用を本番で完全に回すには、まだ運用確認と検証が必要です。
 
-## 6. Target Question Addition Workflow
+## 6. 目標とする問題追加フロー
 
-After the database-backed store is implemented:
+DB ベースのコンテンツストア実装後は、以下の流れにします。
 
-1. ingest questions into the relational content store
-2. review rights, translation, and explanation in local SQLite or a shared preview database
-3. publish through the admin UI
-4. let deployed learners read from Postgres-backed published content
+1. 問題をリレーショナルなコンテンツストアへ取り込む
+2. ローカル SQLite または共有 preview DB で、権利・翻訳・解説をレビューする
+3. 管理画面から公開する
+4. 学習者向け画面は、Postgres に保存された公開済みデータを読む
 
-At that stage, JSON import remains useful, but publication state should be database-owned.
+この段階でも JSON import 自体は有用ですが、公開状態の正本は DB に持たせます。
 
-### 6.1 Local SQLite workflow
+### 6.1 ローカル SQLite 運用
 
-Recommended local flow:
+推奨するローカルフロー:
 
-1. set `CONTENT_STORE_MODE=sqlite`
-2. keep `CONTENT_DATABASE_URL=data/content/passdrive.sqlite`
-3. run `npm run content:seed` once, or rely on auto-seed for an empty local database
-4. use the app and admin review locally
+1. `CONTENT_STORE_MODE=sqlite` を設定する
+2. `CONTENT_DATABASE_URL=data/content/passdrive.sqlite` を使う
+3. 初回に `npm run content:seed` を実行するか、空 DB に対して auto-seed を使う
+4. ローカルでアプリと管理画面を使う
 
-This keeps local behavior close to the future deployed architecture.
+この形にすると、ローカル挙動を将来の本番構成に近づけられます。
 
-## 7. Cutover Plan
+例:
 
-Use this order:
+`.env.local`
 
-1. implement a database-backed content store behind the current `content-store` boundary
-2. keep JSON as the seed/import format
-3. seed local SQLite from the current sample dataset
-4. seed a Vercel-connected Postgres database for preview
-5. switch review actions to the database-backed adapter
-6. verify publish and revalidation behavior
-7. retire file-backed review for normal operation
+```bash
+PASSDRIVE_APP_PASSWORD=your-local-password
+CONTENT_STORE_MODE=sqlite
+CONTENT_DATABASE_URL=data/content/passdrive.sqlite
+CONTENT_DB_AUTO_SEED=true
+```
 
-## 8. Non-Goals For Now
+`.env.sqlite.local`
 
-Do not do these yet:
+```bash
+CONTENT_STORE_MODE=sqlite
+CONTENT_DATABASE_URL=data/content/passdrive.sqlite
+CONTENT_DB_AUTO_SEED=true
+```
 
-- move learner history out of browser storage
-- add full account-based multi-user auth
-- build a complex CMS before the persistence boundary is stable
+`.env.neon.local`
+
+```bash
+CONTENT_STORE_MODE=postgres
+CONTENT_DATABASE_URL=postgres://...
+CONTENT_DB_AUTO_SEED=false
+```
+
+## 7. 切り替え計画
+
+以下の順で進めます。
+
+1. 現在の `content-store` 境界の裏側に DB ベースの保存実装を入れる
+2. JSON は seed / import 用フォーマットとして残す
+3. 現在の sample dataset からローカル SQLite を seed する
+4. Vercel で使う Postgres を preview 用に seed する
+5. review action を DB ベースの保存へ切り替える
+6. publish と revalidate の挙動を確認する
+7. 通常運用から file-backed review を外す
+
+## 8. 今はやらないこと
+
+現時点では、以下はスコープ外です。
+
+- 学習履歴をブラウザ外へ移すこと
+- 完全なアカウントベース認証を入れること
+- 永続化境界が安定する前に複雑な CMS を作ること

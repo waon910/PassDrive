@@ -22,6 +22,8 @@ npm run build
 npm run typecheck
 npm run validate:sample
 npm run content:seed
+npm run content:seed:sqlite
+npm run content:seed:neon
 ```
 
 ## Shared access password
@@ -51,6 +53,12 @@ Current relational-store controls:
 - `CONTENT_STORE_MODE=file|sqlite|postgres`
 - `CONTENT_DATABASE_URL=...`
 - `CONTENT_DB_AUTO_SEED=true|false`
+
+Recommended local env split:
+
+- `.env.local` for normal local app runtime
+- `.env.sqlite.local` for SQLite seed commands
+- `.env.neon.local` for Neon/Postgres seed commands
 
 ## Key files
 

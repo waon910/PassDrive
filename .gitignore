@@ -4,5 +4,7 @@ out
 coverage
 .DS_Store
 *.log
+.env.local
+.env.*.local
 data/content/*.sqlite
 data/content/*.sqlite-*
