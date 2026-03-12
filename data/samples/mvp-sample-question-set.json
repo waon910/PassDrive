@@ -1,10 +1,10 @@
 {
   "meta": {
-    "datasetId": "mvp-sample-question-set-v3",
+    "datasetId": "mvp-sample-question-set-v4",
     "datasetType": "sample_fixture",
     "locale": "en",
-    "notes": "Sample fixture with synthetic MVP seed questions plus 10 review-pending PassDrive-authored questions based on public JAF driving guidance pages. Reviewer identities remain mocked for workflow testing.",
-    "generatedAt": "2026-03-12T03:00:00Z"
+    "notes": "Sample fixture with synthetic MVP seed questions, one published image-based sign question, and 10 review-pending PassDrive-authored questions based on public JAF driving guidance pages. Reviewer identities remain mocked for workflow testing.",
+    "generatedAt": "2026-03-12T06:00:00Z"
   },
   "sourceReferences": [
     {
@@ -389,6 +389,32 @@
       "updatedAt": "2026-03-11T12:47:00Z"
     },
     {
+      "id": "q_0015",
+      "sourceReferenceId": "src_004",
+      "contentVersionId": "cv_2026_03_11",
+      "sourceQuestionRef": "sample-q15",
+      "questionType": "single_choice",
+      "mainCategoryId": "cat_road_signs",
+      "difficulty": "easy",
+      "status": "published",
+      "originalStem": "図の標識が示す意味として正しいものはどれですか。",
+      "originalLanguage": "ja",
+      "englishStem": "Look at the sign. What does it mean?",
+      "correctChoiceKey": "A",
+      "hasImage": true,
+      "imageAssetPath": "/question-images/no-entry-sign.svg",
+      "imageAltTextEn": "A red circular no entry sign with a wide white horizontal bar across the middle.",
+      "imageCaptionEn": "Use the figure to identify the road sign.",
+      "explanationOrigin": "manual",
+      "activeExplanationId": "exp_0015_v1",
+      "translationReviewStatus": "approved",
+      "explanationReviewStatus": "approved",
+      "isExamEligible": true,
+      "publishedAt": "2026-03-12T05:40:00Z",
+      "createdAt": "2026-03-12T05:32:00Z",
+      "updatedAt": "2026-03-12T05:40:00Z"
+    },
+    {
       "id": "q_0005",
       "sourceReferenceId": "src_005",
       "contentVersionId": "cv_2026_03_11",
@@ -701,6 +727,42 @@
       "isCorrect": false
     },
     {
+      "id": "ch_0015_a",
+      "questionId": "q_0015",
+      "choiceKey": "A",
+      "displayOrder": 1,
+      "originalText": "進入禁止",
+      "englishText": "No entry",
+      "isCorrect": true
+    },
+    {
+      "id": "ch_0015_b",
+      "questionId": "q_0015",
+      "choiceKey": "B",
+      "displayOrder": 2,
+      "originalText": "一時停止",
+      "englishText": "Stop",
+      "isCorrect": false
+    },
+    {
+      "id": "ch_0015_c",
+      "questionId": "q_0015",
+      "choiceKey": "C",
+      "displayOrder": 3,
+      "originalText": "駐車禁止",
+      "englishText": "No parking",
+      "isCorrect": false
+    },
+    {
+      "id": "ch_0015_d",
+      "questionId": "q_0015",
+      "choiceKey": "D",
+      "displayOrder": 4,
+      "originalText": "自動車専用",
+      "englishText": "Motor vehicles only",
+      "isCorrect": false
+    },
+    {
       "id": "ch_0005_t",
       "questionId": "q_0005",
       "choiceKey": "T",
@@ -907,6 +969,16 @@
       "updatedAt": "2026-03-11T12:45:00Z"
     },
     {
+      "id": "exp_0015_v1",
+      "questionId": "q_0015",
+      "origin": "manual",
+      "bodyEn": "The sign shown is the no entry sign. It tells drivers that vehicles must not enter from that direction.",
+      "sourceDerived": false,
+      "createdBy": "content-editor",
+      "createdAt": "2026-03-12T05:34:00Z",
+      "updatedAt": "2026-03-12T05:35:00Z"
+    },
+    {
       "id": "exp_0005_v1",
       "questionId": "q_0005",
       "origin": "manual",
@@ -1049,6 +1121,16 @@
       "reviewedAt": "2026-03-11T12:46:00Z"
     },
     {
+      "id": "tr_0015_v1",
+      "questionId": "q_0015",
+      "reviewer": "english-reviewer@example.com",
+      "status": "approved",
+      "accuracyCheck": true,
+      "naturalnessCheck": true,
+      "notes": "Image prompt and answer labels are clear for English learners.",
+      "reviewedAt": "2026-03-12T05:36:00Z"
+    },
+    {
       "id": "tr_0005_v1",
       "questionId": "q_0005",
       "reviewer": "english-reviewer@example.com",
@@ -1182,6 +1264,16 @@
       "reviewedAt": "2026-03-11T12:46:30Z"
     },
     {
+      "id": "er_0015_v1",
+      "explanationId": "exp_0015_v1",
+      "reviewer": "rule-reviewer@example.com",
+      "status": "approved",
+      "accuracyCheck": true,
+      "clarityCheck": true,
+      "notes": "Explanation states the meaning of the sign directly and correctly.",
+      "reviewedAt": "2026-03-12T05:37:00Z"
+    },
+    {
       "id": "er_0005_v1",
       "explanationId": "exp_0005_v1",
       "reviewer": "rule-reviewer@example.com",
@@ -1304,6 +1396,14 @@
     },
     {
       "questionId": "q_0004",
+      "tagId": "tag_no_entry"
+    },
+    {
+      "questionId": "q_0015",
+      "tagId": "tag_road_sign"
+    },
+    {
+      "questionId": "q_0015",
       "tagId": "tag_no_entry"
     },
     {

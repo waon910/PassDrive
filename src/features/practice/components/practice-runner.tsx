@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 
+import { QuestionFigure } from "@/components/question-figure";
 import { buildSessionSummary, isChoiceCorrect } from "@/domain/session-rules";
 import type { QuestionBundle } from "@/domain/content-types";
 import { recordPracticeAttempt } from "@/lib/learner-history-store";
@@ -188,6 +189,7 @@ export function PracticeRunner({
         </div>
 
         <p className="question-stem">{currentBundle.question.englishStem}</p>
+        <QuestionFigure question={currentBundle.question} />
 
         <div className="choice-stack" role="radiogroup" aria-label="Answer choices">
           {currentBundle.choices.map((choice) => {

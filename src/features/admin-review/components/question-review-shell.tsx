@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { QuestionFigure } from "@/components/question-figure";
 import { formatQuestionTypeLabel, formatReviewStatusLabel, formatRightsStatusLabel } from "@/domain/content-rules";
 import { formatReviewQueueStageLabel } from "@/domain/review-rules";
 import type { QuestionReviewViewModel } from "@/features/admin-review/get-question-review-view-model";
@@ -75,6 +76,8 @@ export function QuestionReviewShell({ viewModel }: QuestionReviewShellProps) {
               <dd>{bundle.question.englishStem}</dd>
             </div>
           </div>
+
+          <QuestionFigure question={bundle.question} size="compact" />
 
           <div className="stack-list admin-choice-list">
             {bundle.choices.map((choice) => (

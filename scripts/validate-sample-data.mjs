@@ -70,6 +70,22 @@ function assertRecordExists(map, id, label) {
   }
 }
 
+function assertImageAssetExists(assetPath, label) {
+  if (typeof assetPath !== "string" || assetPath.length === 0) {
+    fail(`${label} must provide a non-empty imageAssetPath.`);
+  }
+
+  if (!assetPath.startsWith("/")) {
+    fail(`${label} imageAssetPath must start with "/".`);
+  }
+
+  const assetFilePath = path.resolve(process.cwd(), "public", assetPath.slice(1));
+
+  if (!fs.existsSync(assetFilePath)) {
+    fail(`${label} image asset does not exist: ${assetPath}`);
+  }
+}
+
 const raw = fs.readFileSync(inputFilePath, "utf8");
 const data = JSON.parse(raw);
 
@@ -118,6 +134,15 @@ for (const question of data.questions) {
   const correctChoices = questionChoices.filter((choice) => choice.isCorrect === true);
   if (correctChoices.length !== 1) {
     fail(`Question ${question.id} must have exactly one correct choice in this MVP schema.`);
+  }
+
+  if (question.hasImage) {
+    assertImageAssetExists(question.imageAssetPath, `Question ${question.id}`);
+    if (typeof question.imageAltTextEn !== "string" || question.imageAltTextEn.length === 0) {
+      fail(`Question ${question.id} must include imageAltTextEn when hasImage=true.`);
+    }
+  } else if (question.imageAssetPath || question.imageAltTextEn || question.imageCaptionEn) {
+    fail(`Question ${question.id} includes image metadata but hasImage=false.`);
   }
 
   assertRecordExists(explanations, question.activeExplanationId, `Question ${question.id}`);

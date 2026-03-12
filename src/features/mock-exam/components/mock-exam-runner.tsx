@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 
+import { QuestionFigure } from "@/components/question-figure";
 import { buildSessionSummary } from "@/domain/session-rules";
 import type { QuestionBundle } from "@/domain/content-types";
 import { recordMockExamResult } from "@/lib/learner-history-store";
@@ -181,6 +182,7 @@ export function MockExamRunner({
           </div>
 
           <p className="question-stem">{currentBundle.question.englishStem}</p>
+          <QuestionFigure question={currentBundle.question} />
 
           <div className="choice-stack" role="radiogroup" aria-label="Mock exam answer choices">
             {currentBundle.choices.map((choice) => {

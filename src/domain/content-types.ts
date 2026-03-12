@@ -84,6 +84,8 @@ export interface Question {
   correctChoiceKey: string;
   hasImage: boolean;
   imageAssetPath?: string;
+  imageAltTextEn?: string;
+  imageCaptionEn?: string;
   explanationOrigin: ExplanationOrigin;
   activeExplanationId: string;
   translationReviewStatus: ReviewStatus;

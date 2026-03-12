@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 
+import { QuestionFigure } from "@/components/question-figure";
 import type { QuestionBundle } from "@/domain/content-types";
 import { mergeMistakeBundlesWithHistory } from "@/lib/learner-history-aggregates";
 import { useLearnerHistory } from "@/lib/use-learner-history";
@@ -49,6 +50,7 @@ export function MistakesReviewList({
           </div>
 
           <p className="question-stem">{bundle.question.englishStem}</p>
+          <QuestionFigure question={bundle.question} size="compact" />
           <p className="small-copy">{bundle.explanation.bodyEn}</p>
 
           <div className="action-row">

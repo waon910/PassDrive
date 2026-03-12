@@ -147,6 +147,8 @@ erDiagram
 | `correctChoiceKey` | string | Yes | `A`, `B`, `C`, `D`, `T`, `F` など |
 | `hasImage` | boolean | Yes | 画像有無 |
 | `imageAssetPath` | string | No | 画像パス |
+| `imageAltTextEn` | text | No | 画像付き問題で必須。英語の代替テキスト |
+| `imageCaptionEn` | text | No | 画像の補足説明や見方の英語キャプション |
 | `explanationOrigin` | enum | Yes | `source`, `ai`, `manual` |
 | `activeExplanationId` | string | No | 採用中の解説 |
 | `translationReviewStatus` | enum | Yes | `pending`, `approved`, `changes_requested` |
@@ -162,6 +164,7 @@ erDiagram
 - `explanationReviewStatus = approved`
 - `activeExplanationId` が存在する
 - 紐づく `SourceReference.rightsStatus = approved`
+- `hasImage = true` の場合は `imageAssetPath` と `imageAltTextEn` を必須にする
 - 条件を満たした上でのみ `status = published` に遷移できる
 
 ### 5.6 `Choice`

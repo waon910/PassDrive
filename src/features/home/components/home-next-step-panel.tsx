@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 
+import { QuestionFigure } from "@/components/question-figure";
 import { formatQuestionTypeLabel } from "@/domain/content-rules";
 import type { ExamSession, QuestionBundle, UserProgress } from "@/domain/content-types";
 import { buildHistoryTotals, getLatestMockExamFromHistory, mergeCategoryProgressWithHistory } from "@/lib/learner-history-aggregates";
@@ -58,6 +59,7 @@ export function HomeNextStepPanel({
       {featuredQuestion ? (
         <>
           <p className="question-stem">{featuredQuestion.question.englishStem}</p>
+          <QuestionFigure question={featuredQuestion.question} size="compact" />
           <p className="small-copy">
             Weakest area: {weakestCategory?.category.labelEn ?? "n/a"}
             {" · "}
