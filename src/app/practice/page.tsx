@@ -11,18 +11,7 @@ export default async function PracticePage() {
       eyebrow="Practice"
       title="Practice"
       description="Choose a set. Answer. Continue."
-      meta={
-        <div className="hero-meta-stack">
-          <div className="hero-meta-card">
-            <span className="meta-label">Question pool</span>
-            <strong>{viewModel.availableQuestionCount}</strong>
-          </div>
-          <div className="hero-meta-card">
-            <span className="meta-label">Active categories</span>
-            <strong>{viewModel.categoryProgress.length}</strong>
-          </div>
-        </div>
-      }
+      shellVariant="study"
     >
       <PracticeRunner
         questionBundles={viewModel.questionBundles}

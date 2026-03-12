@@ -14,6 +14,14 @@ interface MistakesReviewListProps {
   totalMistakeCount: number;
 }
 
+function truncateCopy(value: string, maxLength: number) {
+  if (value.length <= maxLength) {
+    return value;
+  }
+
+  return `${value.slice(0, maxLength - 1).trimEnd()}...`;
+}
+
 export function MistakesReviewList({
   baseMistakeBundles,
   allQuestionBundles,
@@ -155,7 +163,7 @@ export function MistakesReviewList({
                     <span className="small-copy">Mistakes only</span>
                   </div>
                   <strong>{bundle.question.englishStem}</strong>
-                  <p>{bundle.explanation.bodyEn}</p>
+                  <p>{truncateCopy(bundle.explanation.bodyEn, 140)}</p>
                 </button>
               ))}
             </div>

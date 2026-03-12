@@ -98,142 +98,201 @@ export function MockExamRunner({
   }
 
   return (
-    <article className="surface-card mock-exam-runner">
+    <>
       {!started && !completed ? (
-        <>
-          <div className="panel-head">
-            <div>
-              <p className="eyebrow">Exam Setup</p>
-              <h2>Start a timed set.</h2>
+        <section className="study-setup-layout">
+          <article className="surface-card focus-card mock-exam-runner">
+            <div className="panel-head">
+              <div>
+                <p className="eyebrow">Exam Setup</p>
+                <h2>Start a timed set without extra decisions.</h2>
+              </div>
+              <span className="chip">{questionBundles.length} questions</span>
             </div>
-            <span className="chip">{questionBundles.length} questions</span>
-          </div>
 
-          <dl className="detail-list">
-            <div>
-              <dt>Question count</dt>
-              <dd>{questionBundles.length}</dd>
-            </div>
-            <div>
-              <dt>Time limit</dt>
-              <dd>{timeLimitMinutes} min</dd>
-            </div>
-            <div>
-              <dt>Pass threshold</dt>
-              <dd>{passThresholdPercent}%</dd>
-            </div>
-          </dl>
+            <dl className="detail-list">
+              <div>
+                <dt>Question count</dt>
+                <dd>{questionBundles.length}</dd>
+              </div>
+              <div>
+                <dt>Time limit</dt>
+                <dd>{timeLimitMinutes} min</dd>
+              </div>
+              <div>
+                <dt>Pass threshold</dt>
+                <dd>{passThresholdPercent}%</dd>
+              </div>
+            </dl>
 
-          <p className="small-copy">
-            Explanations stay hidden until the end.
-          </p>
+            <p className="small-copy">Explanations stay hidden until the end.</p>
 
-          <div className="action-row">
-            <button className="primary-button" type="button" onClick={startExam} disabled={questionBundles.length === 0}>
-              Start Mock Exam
-            </button>
-          </div>
-        </>
+            <div className="action-row">
+              <button className="primary-button" type="button" onClick={startExam} disabled={questionBundles.length === 0}>
+                Start Mock Exam
+              </button>
+            </div>
+          </article>
+
+          <aside className="study-side-stack">
+            <article className="surface-card study-support-card">
+              <div className="panel-head">
+                <div>
+                  <p className="eyebrow">Exam Rules</p>
+                  <h2>Keep timing and scoring visible from the start.</h2>
+                </div>
+              </div>
+
+              <div className="compact-metrics">
+                <div className="compact-metric">
+                  <span>Time limit</span>
+                  <strong>{timeLimitMinutes} min</strong>
+                </div>
+                <div className="compact-metric">
+                  <span>Pass line</span>
+                  <strong>{passThresholdPercent}%</strong>
+                </div>
+                <div className="compact-metric">
+                  <span>Question count</span>
+                  <strong>{questionBundles.length}</strong>
+                </div>
+              </div>
+            </article>
+          </aside>
+        </section>
       ) : null}
 
       {started && currentBundle ? (
-        <>
-          <div className="panel-head">
-            <div>
-              <p className="eyebrow">Exam in Progress</p>
-              <h2>{currentBundle.category.labelEn}</h2>
+        <section className="study-session-layout">
+          <article className="surface-card focus-card study-main-card mock-exam-runner">
+            <div className="panel-head">
+              <div>
+                <p className="eyebrow">Exam in Progress</p>
+                <h2>{currentBundle.category.labelEn}</h2>
+              </div>
+              <div className="timer-badge">{formatRemainingTime(remainingSeconds)}</div>
             </div>
-            <div className="timer-badge">{formatRemainingTime(remainingSeconds)}</div>
-          </div>
 
-          <p className="small-copy exam-status-line">
-            Question {currentIndex + 1} / {questionBundles.length}
-            {" · "}
-            {answeredCount} answered
-          </p>
+            <div className="study-status-row" aria-label="Mock exam status">
+              <span className="home-highlight-chip">
+                Question {currentIndex + 1} / {questionBundles.length}
+              </span>
+              <span className="home-highlight-chip">{answeredCount} answered</span>
+              <span className="home-highlight-chip">Pass line {passThresholdPercent}%</span>
+            </div>
 
-          <div className="question-index-row" aria-label="Question navigation">
-            {visibleQuestionIndices.map((index, visibleIndex) => {
-              const bundle = questionBundles[index];
-              const answered = Boolean(answers[bundle.question.id]);
-              const active = index === currentIndex;
-              const previousVisibleIndex = visibleQuestionIndices[visibleIndex - 1];
-              const showGap = previousVisibleIndex !== undefined && index - previousVisibleIndex > 1;
+            <p className="question-stem">{currentBundle.question.englishStem}</p>
 
-              return (
-                <div key={bundle.question.id} className="question-index-group">
-                  {showGap ? <span className="question-index-gap">...</span> : null}
+            {currentBundle.question.hasImage ? <QuestionFigure question={currentBundle.question} /> : null}
+
+            <div className="choice-stack" role="radiogroup" aria-label="Mock exam answer choices">
+              {currentBundle.choices.map((choice) => {
+                const isSelected = answers[currentBundle.question.id] === choice.choiceKey;
+
+                return (
                   <button
-                    className={[
-                      "question-index-pill",
-                      answered ? "answered" : "",
-                      active ? "active" : ""
-                    ]
-                      .filter(Boolean)
-                      .join(" ")}
+                    key={choice.id}
+                    className={isSelected ? "choice-button selected" : "choice-button"}
                     type="button"
-                    onClick={() => setCurrentIndex(index)}
+                    onClick={() =>
+                      setAnswers((currentAnswers) => ({
+                        ...currentAnswers,
+                        [currentBundle.question.id]: choice.choiceKey
+                      }))
+                    }
+                    aria-pressed={isSelected}
                   >
-                    {index + 1}
+                    <span className="choice-key">{choice.choiceKey}</span>
+                    <span>{choice.englishText}</span>
                   </button>
+                );
+              })}
+            </div>
+
+            <div className="exam-actions study-action-bar">
+              <button
+                className="secondary-button"
+                type="button"
+                onClick={() => setCurrentIndex((value) => Math.max(0, value - 1))}
+                disabled={currentIndex === 0}
+              >
+                Previous
+              </button>
+              <button
+                className="secondary-button"
+                type="button"
+                onClick={() => setCurrentIndex((value) => Math.min(questionBundles.length - 1, value + 1))}
+                disabled={currentIndex === questionBundles.length - 1}
+              >
+                Next
+              </button>
+              <button className="primary-button" type="button" onClick={finishExam}>
+                Finish Exam
+              </button>
+            </div>
+          </article>
+
+          <aside className="study-side-stack">
+            <article className="surface-card study-support-card study-sticky-card">
+              <div className="panel-head">
+                <div>
+                  <p className="eyebrow">Question Navigator</p>
+                  <h2>Move through the exam without losing your place.</h2>
                 </div>
-              );
-            })}
-          </div>
+              </div>
 
-          <p className="question-stem">{currentBundle.question.englishStem}</p>
-          <QuestionFigure question={currentBundle.question} />
+              <div className="compact-metrics">
+                <div className="compact-metric">
+                  <span>Remaining time</span>
+                  <strong>{formatRemainingTime(remainingSeconds)}</strong>
+                </div>
+                <div className="compact-metric">
+                  <span>Current question</span>
+                  <strong>
+                    {currentIndex + 1} / {questionBundles.length}
+                  </strong>
+                </div>
+                <div className="compact-metric">
+                  <span>Answered</span>
+                  <strong>{answeredCount}</strong>
+                </div>
+              </div>
 
-          <div className="choice-stack" role="radiogroup" aria-label="Mock exam answer choices">
-            {currentBundle.choices.map((choice) => {
-              const isSelected = answers[currentBundle.question.id] === choice.choiceKey;
+              <div className="question-index-row" aria-label="Question navigation">
+                {visibleQuestionIndices.map((index, visibleIndex) => {
+                  const bundle = questionBundles[index];
+                  const answered = Boolean(answers[bundle.question.id]);
+                  const active = index === currentIndex;
+                  const previousVisibleIndex = visibleQuestionIndices[visibleIndex - 1];
+                  const showGap = previousVisibleIndex !== undefined && index - previousVisibleIndex > 1;
 
-              return (
-                <button
-                  key={choice.id}
-                  className={isSelected ? "choice-button selected" : "choice-button"}
-                  type="button"
-                  onClick={() =>
-                    setAnswers((currentAnswers) => ({
-                      ...currentAnswers,
-                      [currentBundle.question.id]: choice.choiceKey
-                    }))
-                  }
-                  aria-pressed={isSelected}
-                >
-                  <span className="choice-key">{choice.choiceKey}</span>
-                  <span>{choice.englishText}</span>
-                </button>
-              );
-            })}
-          </div>
-
-          <div className="exam-actions study-action-bar">
-            <button
-              className="secondary-button"
-              type="button"
-              onClick={() => setCurrentIndex((value) => Math.max(0, value - 1))}
-              disabled={currentIndex === 0}
-            >
-              Previous
-            </button>
-            <button
-              className="secondary-button"
-              type="button"
-              onClick={() => setCurrentIndex((value) => Math.min(questionBundles.length - 1, value + 1))}
-              disabled={currentIndex === questionBundles.length - 1}
-            >
-              Next
-            </button>
-            <button className="primary-button" type="button" onClick={finishExam}>
-              Finish Exam
-            </button>
-          </div>
-        </>
+                  return (
+                    <div key={bundle.question.id} className="question-index-group">
+                      {showGap ? <span className="question-index-gap">...</span> : null}
+                      <button
+                        className={[
+                          "question-index-pill",
+                          answered ? "answered" : "",
+                          active ? "active" : ""
+                        ]
+                          .filter(Boolean)
+                          .join(" ")}
+                        type="button"
+                        onClick={() => setCurrentIndex(index)}
+                      >
+                        {index + 1}
+                      </button>
+                    </div>
+                  );
+                })}
+              </div>
+            </article>
+          </aside>
+        </section>
       ) : null}
 
       {completed && summary ? (
-        <div className="session-summary">
+        <article className="surface-card session-summary">
           <div className="panel-head">
             <div>
               <p className="eyebrow">Results Summary</p>
@@ -283,8 +342,8 @@ export function MockExamRunner({
               Back to Setup
             </button>
           </div>
-        </div>
+        </article>
       ) : null}
-    </article>
+    </>
   );
 }

@@ -63,7 +63,7 @@ export function SignsTermsBrowser({ glossaryDetails }: SignsTermsBrowserProps) {
           />
         </label>
 
-        <div className="stack-list compact-list">
+        <div className="compact-list signs-list-grid">
           {filteredGlossaryDetails.map((item) => {
             const isActive = selectedTerm?.term.id === item.term.id;
 

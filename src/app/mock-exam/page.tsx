@@ -11,18 +11,7 @@ export default async function MockExamPage() {
       eyebrow="Mock Exam"
       title="Mock Exam"
       description="Start the timer. Finish the set. Review the result."
-      meta={
-        <div className="hero-meta-stack">
-          <div className="hero-meta-card">
-            <span className="meta-label">Target score</span>
-            <strong>{viewModel.setup.passThresholdPercent}%</strong>
-          </div>
-          <div className="hero-meta-card">
-            <span className="meta-label">Time limit</span>
-            <strong>{viewModel.setup.timeLimitMinutes} min</strong>
-          </div>
-        </div>
-      }
+      shellVariant="study"
     >
       <MockExamRunner
         questionBundles={viewModel.examQuestionBundles}
