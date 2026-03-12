@@ -238,15 +238,18 @@ export function getMistakeQuestionBundles(dataset: SampleQuestionDataset): Quest
 export interface GlossaryTermWithCategory {
   term: GlossaryTerm;
   category?: Category;
+  sourceReference?: SourceReference;
 }
 
 export function getGlossaryTermDetails(dataset: SampleQuestionDataset): GlossaryTermWithCategory[] {
   const categoryMap = buildMap<Category>(dataset.categories);
+  const sourceMap = buildMap<SourceReference>(dataset.sourceReferences);
 
   return [...dataset.glossaryTerms]
     .sort((left, right) => left.displayOrder - right.displayOrder)
     .map((term) => ({
       term,
-      category: term.relatedCategoryId ? categoryMap.get(term.relatedCategoryId) : undefined
+      category: term.relatedCategoryId ? categoryMap.get(term.relatedCategoryId) : undefined,
+      sourceReference: term.sourceReferenceId ? sourceMap.get(term.sourceReferenceId) : undefined
     }));
 }

@@ -86,6 +86,17 @@ function assertImageAssetExists(assetPath, label) {
   }
 }
 
+const TRAFFIC_SIGN_KINDS = new Set([
+  "warning",
+  "prohibitory",
+  "mandatory",
+  "priority",
+  "supplemental",
+  "expressway",
+  "regulatory",
+  "other"
+]);
+
 const raw = fs.readFileSync(inputFilePath, "utf8");
 const data = JSON.parse(raw);
 
@@ -236,6 +247,41 @@ for (const answer of data.examSessionAnswers) {
 for (const term of data.glossaryTerms) {
   if (term.relatedCategoryId) {
     assertRecordExists(categories, term.relatedCategoryId, `GlossaryTerm ${term.id}`);
+  }
+
+  if (term.sourceReferenceId) {
+    assertRecordExists(sourceReferences, term.sourceReferenceId, `GlossaryTerm ${term.id}`);
+  }
+
+  if (term.imageAssetPath) {
+    assertImageAssetExists(term.imageAssetPath, `GlossaryTerm ${term.id}`);
+
+    if (typeof term.imageAltTextEn !== "string" || term.imageAltTextEn.length === 0) {
+      fail(`GlossaryTerm ${term.id} must include imageAltTextEn when imageAssetPath is provided.`);
+    }
+
+    if (typeof term.sourceReferenceId !== "string" || term.sourceReferenceId.length === 0) {
+      fail(`GlossaryTerm ${term.id} must include sourceReferenceId when imageAssetPath is provided.`);
+    }
+
+    const sourceReference = sourceReferences.get(term.sourceReferenceId);
+    if (sourceReference?.rightsStatus !== "approved") {
+      fail(`GlossaryTerm ${term.id} must point to an approved source reference when imageAssetPath is provided.`);
+    }
+  } else if (term.imageAltTextEn) {
+    fail(`GlossaryTerm ${term.id} includes imageAltTextEn but has no imageAssetPath.`);
+  }
+
+  if (term.isTrafficSign) {
+    if (!term.imageAssetPath) {
+      fail(`Traffic sign glossary term ${term.id} must include imageAssetPath.`);
+    }
+
+    if (!term.trafficSignKind || !TRAFFIC_SIGN_KINDS.has(term.trafficSignKind)) {
+      fail(`Traffic sign glossary term ${term.id} must include a valid trafficSignKind.`);
+    }
+  } else if (term.trafficSignKind) {
+    fail(`GlossaryTerm ${term.id} includes trafficSignKind but isTrafficSign=false.`);
   }
 }
 

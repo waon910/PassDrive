@@ -11,16 +11,34 @@ export default async function SignsTermsPage() {
       eyebrow="Signs & Terms"
       title="Signs & Terms"
       description="Clarify a term, then return."
-      meta={
-        <div className="hero-meta-stack">
-          <div className="hero-meta-card">
-            <span className="meta-label">Glossary terms</span>
-            <strong>{viewModel.glossaryDetails.length}</strong>
-          </div>
-        </div>
-      }
+      shellVariant="study"
     >
-      <SignsTermsBrowser glossaryDetails={viewModel.glossaryDetails} />
+      <section className="signs-page-stack">
+        <article className="surface-card signs-overview-bar">
+          <div className="signs-overview-copy">
+            <p className="eyebrow">Signs & Terms</p>
+            <h1>Signs & Terms</h1>
+            <p className="small-copy">Search fast, compare signs, then return to study.</p>
+          </div>
+
+          <div className="signs-overview-stats" aria-label="Signs and terms summary">
+            <div className="signs-overview-stat">
+              <span className="meta-label">Traffic signs</span>
+              <strong>{viewModel.trafficSignCount}</strong>
+            </div>
+            <div className="signs-overview-stat">
+              <span className="meta-label">Study terms</span>
+              <strong>{viewModel.termCount}</strong>
+            </div>
+            <div className="signs-overview-stat">
+              <span className="meta-label">Total items</span>
+              <strong>{viewModel.glossaryDetails.length}</strong>
+            </div>
+          </div>
+        </article>
+
+        <SignsTermsBrowser glossaryDetails={viewModel.glossaryDetails} />
+      </section>
     </AppShell>
   );
 }

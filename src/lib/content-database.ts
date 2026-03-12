@@ -277,8 +277,11 @@ function normalizeGlossaryTerm(row: Record<string, unknown>): GlossaryTerm {
     shortDefinitionEn: String(row.shortDefinitionEn),
     longExplanationEn: toOptionalString(row.longExplanationEn),
     relatedCategoryId: toOptionalString(row.relatedCategoryId),
+    sourceReferenceId: toOptionalString(row.sourceReferenceId),
     imageAssetPath: toOptionalString(row.imageAssetPath),
+    imageAltTextEn: toOptionalString(row.imageAltTextEn),
     isTrafficSign: toBoolean(row.isTrafficSign),
+    trafficSignKind: toOptionalString(row.trafficSignKind) as GlossaryTerm["trafficSignKind"],
     displayOrder: Number(row.displayOrder)
   };
 }
@@ -317,6 +320,19 @@ async function ensureTable(db: Knex, tableName: string, build: (table: Knex.Crea
 
   if (!exists) {
     await db.schema.createTable(tableName, build);
+  }
+}
+
+async function ensureColumn(
+  db: Knex,
+  tableName: string,
+  columnName: string,
+  addColumn: (table: Knex.AlterTableBuilder) => void
+) {
+  const exists = await db.schema.hasColumn(tableName, columnName);
+
+  if (!exists) {
+    await db.schema.alterTable(tableName, addColumn);
   }
 }
 
@@ -500,15 +516,27 @@ async function ensureSchema(db: Knex) {
     table.text("shortDefinitionEn").notNullable();
     table.text("longExplanationEn");
     table.string("relatedCategoryId");
+    table.string("sourceReferenceId");
     table.text("imageAssetPath");
+    table.text("imageAltTextEn");
     table.boolean("isTrafficSign").notNullable();
+    table.string("trafficSignKind");
     table.integer("displayOrder").notNullable();
+  });
+
+  await ensureColumn(db, TABLES.glossaryTerms, "sourceReferenceId", (table) => {
+    table.string("sourceReferenceId");
+  });
+  await ensureColumn(db, TABLES.glossaryTerms, "imageAltTextEn", (table) => {
+    table.text("imageAltTextEn");
+  });
+  await ensureColumn(db, TABLES.glossaryTerms, "trafficSignKind", (table) => {
+    table.string("trafficSignKind");
   });
 }
 
-async function isDatasetEmpty(db: Knex) {
-  const metaRow = await db(TABLES.datasetMeta).first<{ count?: number }>("datasetId");
-  return !metaRow;
+async function getStoredDatasetMeta(db: Knex) {
+  return db(TABLES.datasetMeta).first<Record<string, unknown>>();
 }
 
 async function clearDatabase(trx: Knex.Transaction) {
@@ -643,9 +671,18 @@ export async function ensureContentDatabaseReady(mode: RelationalContentStoreMod
       const db = await getContentDatabase(mode);
       await ensureSchema(db);
 
-      if ((await isDatasetEmpty(db)) && shouldAutoSeedContentDatabase(mode)) {
+      if (shouldAutoSeedContentDatabase(mode)) {
         const dataset = await loadSampleDataset();
-        await replaceContentDatasetInDatabase(mode, dataset);
+        const storedMeta = await getStoredDatasetMeta(db);
+
+        const shouldReplaceDataset =
+          !storedMeta ||
+          String(storedMeta.datasetId) !== dataset.meta.datasetId ||
+          String(storedMeta.generatedAt) !== dataset.meta.generatedAt;
+
+        if (shouldReplaceDataset) {
+          await replaceContentDatasetInDatabase(mode, dataset);
+        }
       }
     })();
   }

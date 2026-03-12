@@ -18,6 +18,15 @@ export type AnswerResult = "correct" | "incorrect";
 export type ExamMode = "mock_exam" | "practice_set" | "mistakes_only";
 export type ExamResult = "in_progress" | "pass" | "fail" | "abandoned";
 export type LocaleCode = "ja" | "en";
+export type TrafficSignKind =
+  | "warning"
+  | "prohibitory"
+  | "mandatory"
+  | "priority"
+  | "supplemental"
+  | "expressway"
+  | "regulatory"
+  | "other";
 
 export interface SampleDatasetMeta {
   datasetId: string;
@@ -189,8 +198,11 @@ export interface GlossaryTerm {
   shortDefinitionEn: string;
   longExplanationEn?: string;
   relatedCategoryId?: string;
+  sourceReferenceId?: string;
   imageAssetPath?: string;
+  imageAltTextEn?: string;
   isTrafficSign: boolean;
+  trafficSignKind?: TrafficSignKind;
   displayOrder: number;
 }
 
