@@ -71,9 +71,11 @@ dl {
 }
 
 .app-nav,
+.app-topbar,
 .page-hero,
 .surface-card,
-.stat-card {
+.stat-card,
+.app-menu-panel {
   background: rgba(251, 247, 240, 0.84);
   backdrop-filter: blur(10px);
   border: 1px solid var(--line);
@@ -99,6 +101,64 @@ dl {
   font-family: "Iowan Old Style", "Palatino Linotype", serif;
   font-size: 1.55rem;
   letter-spacing: -0.03em;
+}
+
+.app-brand-mark-compact {
+  font-size: 1.32rem;
+}
+
+.app-topbar {
+  display: none;
+  grid-template-columns: auto auto;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  border-radius: 20px;
+  position: sticky;
+  top: 16px;
+  z-index: 80;
+}
+
+.app-menu {
+  position: relative;
+  z-index: 90;
+}
+
+.app-menu summary {
+  list-style: none;
+}
+
+.app-menu summary::-webkit-details-marker {
+  display: none;
+}
+
+.app-menu-trigger {
+  min-width: 92px;
+}
+
+.app-menu[open] .app-menu-trigger {
+  background: var(--accent-soft);
+  border-color: rgba(196, 109, 76, 0.24);
+  color: var(--accent-deep);
+}
+
+.app-menu-panel {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  z-index: 20;
+  width: min(320px, calc(100vw - 28px));
+  max-height: min(70vh, 560px);
+  overflow: auto;
+  padding: 16px;
+  border-radius: 20px;
+  display: grid;
+  gap: 16px;
+}
+
+.app-menu-panel .app-nav-footer {
+  padding: 14px 0 0;
 }
 
 .page-description,
@@ -169,8 +229,10 @@ dl {
   padding: 18px 22px;
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
-  gap: 16px;
+  gap: 14px;
   align-items: start;
+  position: relative;
+  z-index: 1;
 }
 
 .page-header-copy,
@@ -277,6 +339,25 @@ dl {
   gap: 14px;
 }
 
+.overview-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.3fr) minmax(300px, 0.85fr);
+  gap: 14px;
+  align-items: start;
+}
+
+.overview-support-stack {
+  display: grid;
+  gap: 14px;
+  align-content: start;
+}
+
+.overview-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+}
+
 .simple-route-list {
   margin-top: 22px;
 }
@@ -290,6 +371,12 @@ dl {
 .single-column-grid {
   display: grid;
   gap: 14px;
+}
+
+.overview-layout .focus-card,
+.overview-grid .focus-card,
+.review-browser-layout .focus-card {
+  max-width: none;
 }
 
 .panel-head {
@@ -411,6 +498,46 @@ dl {
   gap: 10px;
 }
 
+.tile-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.action-tile,
+.summary-tile {
+  display: grid;
+  gap: 8px;
+  min-height: 140px;
+  padding: 18px;
+  border-radius: 20px;
+  border: 1px solid rgba(20, 38, 60, 0.08);
+  background: rgba(20, 38, 60, 0.03);
+}
+
+.action-tile {
+  transition: transform 140ms ease, border-color 140ms ease, background-color 140ms ease;
+}
+
+.action-tile:hover {
+  transform: translateY(-1px);
+  border-color: rgba(196, 109, 76, 0.24);
+  background: var(--accent-soft);
+}
+
+.action-tile strong,
+.summary-tile strong,
+.review-select-card strong,
+.progress-category-card strong {
+  font-family: "Iowan Old Style", "Palatino Linotype", serif;
+  font-size: 1.3rem;
+  letter-spacing: -0.03em;
+}
+
+.summary-tile {
+  min-height: auto;
+}
+
 .list-card,
 .list-link {
   display: flex;
@@ -458,6 +585,107 @@ dl {
 
 .compact-metric strong {
   color: var(--accent-deep);
+}
+
+.home-question-preview {
+  margin-top: 18px;
+  display: grid;
+  gap: 12px;
+}
+
+.home-highlight-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.home-highlight-chip {
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
+  padding: 0 14px;
+  border-radius: 999px;
+  background: rgba(20, 38, 60, 0.04);
+  border: 1px solid rgba(20, 38, 60, 0.08);
+  color: var(--ink);
+}
+
+.review-browser-layout {
+  display: grid;
+  grid-template-columns: minmax(320px, 0.88fr) minmax(0, 1.12fr);
+  gap: 14px;
+  align-items: start;
+}
+
+.review-card-grid {
+  display: grid;
+  gap: 12px;
+}
+
+.review-select-card {
+  width: 100%;
+  display: grid;
+  gap: 10px;
+  padding: 16px 18px;
+  border-radius: 18px;
+  border: 1px solid rgba(20, 38, 60, 0.08);
+  background: rgba(20, 38, 60, 0.03);
+  text-align: left;
+  cursor: pointer;
+  transition: transform 140ms ease, border-color 140ms ease, background-color 140ms ease;
+}
+
+.review-select-card:hover {
+  transform: translateY(-1px);
+  border-color: rgba(117, 152, 174, 0.28);
+}
+
+.review-select-card.active {
+  border-color: rgba(196, 109, 76, 0.24);
+  background: var(--accent-soft);
+}
+
+.review-select-card p,
+.progress-category-card p {
+  color: var(--ink-soft);
+  line-height: 1.55;
+}
+
+.review-select-card .chip-row,
+.progress-card-header {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.review-detail-card {
+  position: sticky;
+  top: 0;
+}
+
+.progress-category-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.progress-category-card {
+  display: grid;
+  gap: 12px;
+  padding: 16px 18px;
+  border-radius: 18px;
+  border: 1px solid rgba(20, 38, 60, 0.08);
+  background: rgba(20, 38, 60, 0.03);
+}
+
+.progress-category-card .progress-track {
+  margin: 0;
+}
+
+.support-note {
+  margin-top: 4px;
 }
 
 .mode-toggle,
@@ -641,7 +869,7 @@ dl {
   min-height: 84px;
   padding: 18px 18px;
   border-radius: 18px;
-  border: 1px solid rgba(20, 38, 60, 0.08);
+  border: 1px solid rgba(20, 38, 60, 0.12);
   background: rgba(20, 38, 60, 0.03);
   cursor: pointer;
   transition: border-color 140ms ease, background-color 140ms ease, transform 140ms ease;
@@ -890,17 +1118,21 @@ dl {
   color: var(--danger);
 }
 
-@media (max-width: 1180px) {
+@media (max-width: 980px) {
   .app-shell {
     grid-template-columns: 1fr;
   }
 
   .app-nav {
-    position: static;
-    max-height: none;
+    display: none;
   }
 
-  .page-hero,
+  .app-topbar {
+    display: grid;
+  }
+
+  .overview-layout,
+  .review-browser-layout,
   .dashboard-grid,
   .two-column-grid,
   .admin-review-summary,
@@ -917,6 +1149,14 @@ dl {
   .stats-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+
+  .overview-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .review-detail-card {
+    position: static;
+  }
 }
 
 @media (max-width: 760px) {
@@ -926,6 +1166,7 @@ dl {
   }
 
   .app-nav,
+  .app-topbar,
   .page-hero,
   .surface-card,
   .stat-card {
@@ -934,6 +1175,22 @@ dl {
 
   .page-hero {
     padding: 18px;
+  }
+
+  .page-hero {
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: start;
+  }
+
+  .overview-grid,
+  .tile-grid,
+  .progress-category-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .page-meta,
+  .hero-meta-stack {
+    justify-content: flex-start;
   }
 
   .stats-grid {

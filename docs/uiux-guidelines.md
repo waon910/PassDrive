@@ -51,6 +51,20 @@ Implementation consequences for PassDrive:
 - Secondary information should be collapsed into short status lines or lightweight metadata instead of card walls.
 - Learner-facing copy should be compressed aggressively so the study surface stays dominant.
 
+### 3.2 PassDrive viewport classes
+
+Use coarse viewport classes so layout decisions stay predictable across iPad orientations and Split View.
+
+- `wide tablet`: landscape widths that can sustain persistent primary navigation and a two-or-three-zone content layout
+- `standard tablet`: portrait widths or narrower landscape widths that can sustain a compact header and two content zones, but not a full dashboard wall
+- `narrow tablet`: Split View-like widths where content should collapse to one dominant zone at a time
+
+Rules:
+
+- Do not switch directly from `wide tablet` desktop-like layouts to phone-like stacked cards.
+- Keep the global navigation model stable across classes. The presentation may change, but the destination set should stay the same.
+- Optimize each class for `first-screen usefulness`: the learner should see the current mode, primary action, and at least one supporting status block without long scrolling.
+
 ## 4. UX Principles
 
 ### 4.1 One primary action per screen
@@ -95,6 +109,13 @@ Default pattern:
 
 Use landscape to reduce context switching, not to add extra noise.
 
+Landscape requirements:
+
+- The first viewport should generally resolve into `navigation + main content` or `navigation + main content + support panel`.
+- Avoid single full-width content columns for overview pages unless the page is intentionally article-like.
+- Prefer `2-column` or `feature + support rail` compositions for dashboard, progress, mistakes, and reference browsing.
+- When many cards exist, group them into sections with internal grids instead of rendering every card as a separate full-width block.
+
 ### 5.2 Portrait layout
 
 Default pattern:
@@ -103,12 +124,56 @@ Default pattern:
 - stacked content sections
 - bottom-pinned or visually strong primary action when needed
 
+Portrait requirements:
+
+- Portrait may stack sections, but the first viewport must still expose more than one actionable destination.
+- Use `2-up` card grids when card content is short enough to scan comfortably.
+- Reserve single-column stacking for long-form reading, active answering, and detailed explanations.
+- If the destination count exceeds what fits comfortably, use segmented sections, tabs, or a menu trigger rather than a long uninterrupted card list.
+
 ### 5.3 Spacing
 
 - Use generous spacing around question content
 - Prefer fewer, larger sections over many dense blocks
 - Cards must not become narrow phone-style widgets on tablet widths
 - Minimize dead header space above the active study content
+
+### 5.4 App shell patterns
+
+Use one of these patterns. Do not invent page-specific navigation behavior unless the study flow demands it.
+
+1. `Persistent rail`
+   Use in wide landscape. Show the primary destinations at all times.
+2. `Compact rail + top bar`
+   Use when a full rail would steal too much width but stable navigation is still valuable.
+3. `Top bar + drawer`
+   Use in portrait or narrow tablet widths. The drawer should expose the same global destinations as the rail.
+
+Guidance:
+
+- A hamburger trigger is acceptable only when paired with a visible page title and current-mode label.
+- Do not hide the current screen identity behind the drawer.
+- Avoid bottom tab bars for this product. The learning app benefits more from reading space than from persistent bottom chrome.
+
+### 5.5 Overview page composition
+
+Overview pages include `Home`, `Mistakes`, `Progress`, and `Signs & Terms`.
+
+Rules:
+
+- The first viewport should contain one dominant action area and one or two supporting panels.
+- Keep overview pages within `2 viewport heights` for the main information scent. Deep detail can continue below.
+- Use short summary panels for metrics. Do not spend a full card for every single statistic.
+- Repeated content collections should default to a grid or grouped list with clear section labels.
+- If a collection item requires more than a sentence or two of preview text, move the full detail into a dedicated pane, drill-in view, or expandable row.
+
+### 5.6 Card system rules
+
+- Use full-width cards only for question reading, exam review, or dense reference detail.
+- For navigation and status content, prefer compact cards arranged in `2-up`, `3-up`, or `main + side stack` layouts depending on width.
+- Cap repeated primary cards shown at once. Remaining items should move into filters, grouped lists, or secondary views.
+- Cards in the same zone should have comparable height where possible so scanning stays fast.
+- Do not mix large editorial cards and many small dashboard cards in the same uninterrupted vertical stream.
 
 ## 6. Typography
 
@@ -159,6 +224,12 @@ Must include:
 - recent or current progress
 - fast access to mistakes and mock exam
 
+Recommended structure:
+
+- wide landscape: `next action hero + progress/support rail + quick destination grid`
+- portrait: `next action hero + 2-up quick actions + compact weak-area/progress section`
+- avoid a long sequence of full-width route cards
+
 ### 9.2 Practice Setup
 
 - Keep setup lightweight
@@ -191,10 +262,22 @@ Must include:
 - Make it easy to restart only weak items
 - Sorting and filtering should emphasize rapid correction
 
+Recommended structure:
+
+- summary and filters in a compact top section
+- mistake items in a `2-up` review grid in portrait-capable widths
+- detail preview in a side pane or drill-in row in wide landscape
+
 ### 9.7 Signs and Terms
 
 - In MVP, prefer one dominant reference card and one lightweight supporting list
 - Searching must be lightweight and immediate when introduced
+
+### 9.8 Progress
+
+- Show the weakest area and next recommendation before the full category breakdown
+- Use compact metric summaries for accuracy and mock performance
+- Category progress should be scannable in a grid or grouped rows, not a long undifferentiated stack
 
 ## 10. Interaction Design Rules
 
@@ -234,8 +317,10 @@ Examples:
 Avoid:
 
 - phone-first cramped layouts stretched onto iPad
+- desktop-like full-width single columns for overview screens on iPad landscape
 - more than one dominant CTA in the same visual zone
 - dense metric walls with no instructional meaning
+- long vertical walls of same-weight cards for navigation or status
 - hidden answer state
 - instant explanation walls before answer submission in normal practice
 - decorative motion that slows repeated study

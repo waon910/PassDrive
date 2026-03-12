@@ -43,60 +43,119 @@ export function HomeNextStepPanel({
   const localLatestMockExam = getLatestMockExamFromHistory(history);
   const visibleLatestMockScore = localLatestMockExam?.scorePercent ?? latestMockExam?.scorePercent;
   const totals = buildHistoryTotals(totalAttempts, totalCorrect, history);
+  const weakestCategories = [...mergedProgress]
+    .sort((left, right) => left.accuracyPercent - right.accuracyPercent)
+    .slice(0, 3);
 
   return (
-    <article className="surface-card focus-card">
-      <div className="panel-head">
-        <div>
-          <p className="eyebrow">Next Step</p>
-          <h2>Start with one focused action.</h2>
+    <section className="single-column-grid">
+      <section className="overview-layout">
+        <article className="surface-card focus-card">
+          <div className="panel-head">
+            <div>
+              <p className="eyebrow">Next Step</p>
+              <h2>Start with one focused action.</h2>
+            </div>
+            {featuredQuestion ? (
+              <span className="chip">{formatQuestionTypeLabel(featuredQuestion.question.questionType)}</span>
+            ) : null}
+          </div>
+
+          {featuredQuestion ? (
+            <>
+              <p className="question-stem">{featuredQuestion.question.englishStem}</p>
+
+              <div className="home-question-preview">
+                <QuestionFigure question={featuredQuestion.question} size="compact" />
+                <div className="compact-metrics">
+                  <div className="compact-metric">
+                    <span>Weakest area</span>
+                    <strong>{weakestCategory?.category.labelEn ?? "n/a"}</strong>
+                  </div>
+                  <div className="compact-metric">
+                    <span>Overall accuracy</span>
+                    <strong>{totals.overallAccuracyPercent}%</strong>
+                  </div>
+                  <div className="compact-metric">
+                    <span>Latest mock</span>
+                    <strong>{visibleLatestMockScore !== undefined ? `${visibleLatestMockScore}%` : "n/a"}</strong>
+                  </div>
+                </div>
+              </div>
+
+              <p className="small-copy">
+                {featuredQuestion.category.labelEn}
+                {" · "}
+                {overview.publishedQuestionCount} published question(s)
+              </p>
+            </>
+          ) : (
+            <p className="small-copy">No published practice question is currently available.</p>
+          )}
+
+          <div className="action-row">
+            <Link className="primary-button link-button" href="/practice">
+              Start Practice
+            </Link>
+            <Link className="secondary-button link-button" href="/mock-exam">
+              Open Mock Exam
+            </Link>
+          </div>
+
+          <div className="home-highlight-row" aria-label="Quick highlights">
+            <span className="home-highlight-chip">Weakest: {weakestCategory?.category.labelEn ?? "n/a"}</span>
+            <span className="home-highlight-chip">{totals.totalAttempts} total attempts</span>
+            <span className="home-highlight-chip">{overview.publishedQuestionCount} study items ready</span>
+          </div>
+        </article>
+
+        <div className="overview-support-stack">
+          <article className="surface-card">
+            <div className="panel-head">
+              <div>
+                <p className="eyebrow">Snapshot</p>
+                <h2>See the study state at a glance.</h2>
+              </div>
+            </div>
+
+            <div className="compact-metrics">
+              <div className="compact-metric">
+                <span>Questions ready</span>
+                <strong>{overview.publishedQuestionCount}</strong>
+              </div>
+              <div className="compact-metric">
+                <span>Latest mock score</span>
+                <strong>{visibleLatestMockScore !== undefined ? `${visibleLatestMockScore}%` : "n/a"}</strong>
+              </div>
+              <div className="compact-metric">
+                <span>Review items</span>
+                <strong>{weakestCategories.reduce((total, item) => total + item.needsReviewCount, 0)}</strong>
+              </div>
+            </div>
+          </article>
         </div>
-        {featuredQuestion ? (
-          <span className="chip">{formatQuestionTypeLabel(featuredQuestion.question.questionType)}</span>
-        ) : null}
-      </div>
+      </section>
 
-      {featuredQuestion ? (
-        <>
-          <p className="question-stem">{featuredQuestion.question.englishStem}</p>
-          <QuestionFigure question={featuredQuestion.question} size="compact" />
-          <p className="small-copy">
-            Weakest area: {weakestCategory?.category.labelEn ?? "n/a"}
-            {" · "}
-            Accuracy: {totals.overallAccuracyPercent}%
-            {" · "}
-            Latest mock: {visibleLatestMockScore !== undefined ? `${visibleLatestMockScore}%` : "n/a"}
-          </p>
-          <p className="small-copy">
-            {featuredQuestion.category.labelEn}
-            {" · "}
-            {overview.publishedQuestionCount} published question(s)
-          </p>
-        </>
-      ) : (
-        <p className="small-copy">No published practice question is currently available.</p>
-      )}
+      <article className="surface-card focus-card">
+        <div className="panel-head">
+          <div>
+            <p className="eyebrow">Weak Areas</p>
+            <h2>Fix the lowest categories before the next mock.</h2>
+          </div>
+        </div>
 
-      <div className="action-row">
-        <Link className="primary-button link-button" href="/practice">
-          Start Practice
-        </Link>
-        <Link className="secondary-button link-button" href="/mock-exam">
-          Open Mock Exam
-        </Link>
-      </div>
-
-      <div className="stack-list simple-route-list">
-        <Link className="list-link" href="/mistakes">
-          <span>Review Mistakes</span>
-        </Link>
-        <Link className="list-link" href="/progress">
-          <span>Check Progress</span>
-        </Link>
-        <Link className="list-link" href="/signs-terms">
-          <span>Signs & Terms</span>
-        </Link>
-      </div>
-    </article>
+        <div className="tile-grid">
+          {weakestCategories.map((item) => (
+            <div key={item.category.id} className="summary-tile">
+              <span className="eyebrow">{item.category.labelEn}</span>
+              <strong>{item.accuracyPercent}% accuracy</strong>
+              <p className="small-copy">
+                {item.attempts} attempt(s) · {item.needsReviewCount} item(s) still need review
+              </p>
+            </div>
+          ))}
+        </div>
+      </article>
+    </section>
   );
 }
