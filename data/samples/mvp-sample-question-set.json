@@ -3,8 +3,8 @@
     "datasetId": "mvp-sample-question-set-v4",
     "datasetType": "sample_fixture",
     "locale": "en",
-    "notes": "Sample fixture with synthetic MVP seed questions, one published image-based sign question, and 10 review-pending PassDrive-authored questions based on public JAF driving guidance pages. Reviewer identities remain mocked for workflow testing.",
-    "generatedAt": "2026-03-12T06:00:00Z"
+    "notes": "Sample fixture with synthetic MVP seed questions, JAF traffic-rules study prompts, and the full JAF Japan Traffic Rules Training quiz set with locally downloaded figure assets. All JAF-derived items remain blocked behind manual rights and review checks.",
+    "generatedAt": "2026-03-12T01:31:07.919Z"
   },
   "sourceReferences": [
     {
@@ -81,10 +81,10 @@
       "originalLanguage": "en",
       "fetchedAt": "2026-03-12T01:00:00Z",
       "rightsStatus": "review_required",
-      "rightsNotes": "PassDrive-authored question and explanation wording based on public JAF safety guidance. Manual rights review is still required before publication.",
-      "lastVerifiedAt": "2026-03-12T01:05:00Z",
+      "rightsNotes": "Imported from a public JAF quiz page. Local image assets were downloaded for review only. Manual rights review is required before publication.",
+      "lastVerifiedAt": "2026-03-12T01:31:07.919Z",
       "createdAt": "2026-03-12T01:00:00Z",
-      "updatedAt": "2026-03-12T01:05:00Z"
+      "updatedAt": "2026-03-12T01:31:07.919Z"
     },
     {
       "id": "src_006",
@@ -96,10 +96,10 @@
       "originalLanguage": "en",
       "fetchedAt": "2026-03-12T01:06:00Z",
       "rightsStatus": "review_required",
-      "rightsNotes": "PassDrive-authored question and explanation wording based on public JAF safety guidance. Manual rights review is still required before publication.",
-      "lastVerifiedAt": "2026-03-12T01:10:00Z",
+      "rightsNotes": "Imported from a public JAF quiz page. Local image assets were downloaded for review only. Manual rights review is required before publication.",
+      "lastVerifiedAt": "2026-03-12T01:31:07.919Z",
       "createdAt": "2026-03-12T01:06:00Z",
-      "updatedAt": "2026-03-12T01:10:00Z"
+      "updatedAt": "2026-03-12T01:31:07.919Z"
     },
     {
       "id": "src_007",
@@ -115,6 +115,51 @@
       "lastVerifiedAt": "2026-03-12T01:05:02.680Z",
       "createdAt": "2026-03-12T01:11:00Z",
       "updatedAt": "2026-03-12T01:05:02.680Z"
+    },
+    {
+      "id": "src_008",
+      "sourceName": "JAF Safe Driving Quiz: For Pedestrians",
+      "sourceType": "other",
+      "sourceUrl": "https://english.jaf.or.jp/safe-driving/quiz/pedestrian",
+      "publisher": "Japan Automobile Federation (JAF)",
+      "regionScope": "national",
+      "originalLanguage": "en",
+      "fetchedAt": "2026-03-12T01:31:07.919Z",
+      "rightsStatus": "review_required",
+      "rightsNotes": "Imported from a public JAF quiz page. Local image assets were downloaded for review only. Manual rights review is required before publication.",
+      "lastVerifiedAt": "2026-03-12T01:31:07.919Z",
+      "createdAt": "2026-03-12T01:31:07.919Z",
+      "updatedAt": "2026-03-12T01:31:07.919Z"
+    },
+    {
+      "id": "src_009",
+      "sourceName": "JAF Safe Driving Quiz: For Bicycles",
+      "sourceType": "other",
+      "sourceUrl": "https://english.jaf.or.jp/safe-driving/quiz/bicycles",
+      "publisher": "Japan Automobile Federation (JAF)",
+      "regionScope": "national",
+      "originalLanguage": "en",
+      "fetchedAt": "2026-03-12T01:31:07.919Z",
+      "rightsStatus": "review_required",
+      "rightsNotes": "Imported from a public JAF quiz page. Local image assets were downloaded for review only. Manual rights review is required before publication.",
+      "lastVerifiedAt": "2026-03-12T01:31:07.919Z",
+      "createdAt": "2026-03-12T01:31:07.919Z",
+      "updatedAt": "2026-03-12T01:31:07.919Z"
+    },
+    {
+      "id": "src_010",
+      "sourceName": "JAF Safe Driving Quiz: For Motorcycles",
+      "sourceType": "other",
+      "sourceUrl": "https://english.jaf.or.jp/safe-driving/quiz/motorcycles",
+      "publisher": "Japan Automobile Federation (JAF)",
+      "regionScope": "national",
+      "originalLanguage": "en",
+      "fetchedAt": "2026-03-12T01:31:07.919Z",
+      "rightsStatus": "review_required",
+      "rightsNotes": "Imported from a public JAF quiz page. Local image assets were downloaded for review only. Manual rights review is required before publication.",
+      "lastVerifiedAt": "2026-03-12T01:31:07.919Z",
+      "createdAt": "2026-03-12T01:31:07.919Z",
+      "updatedAt": "2026-03-12T01:31:07.919Z"
     }
   ],
   "contentVersions": [
@@ -389,32 +434,6 @@
       "updatedAt": "2026-03-11T12:47:00Z"
     },
     {
-      "id": "q_0015",
-      "sourceReferenceId": "src_004",
-      "contentVersionId": "cv_2026_03_11",
-      "sourceQuestionRef": "sample-q15",
-      "questionType": "single_choice",
-      "mainCategoryId": "cat_road_signs",
-      "difficulty": "easy",
-      "status": "published",
-      "originalStem": "図の標識が示す意味として正しいものはどれですか。",
-      "originalLanguage": "ja",
-      "englishStem": "Look at the sign. What does it mean?",
-      "correctChoiceKey": "A",
-      "hasImage": true,
-      "imageAssetPath": "/question-images/no-entry-sign.svg",
-      "imageAltTextEn": "A red circular no entry sign with a wide white horizontal bar across the middle.",
-      "imageCaptionEn": "Use the figure to identify the road sign.",
-      "explanationOrigin": "manual",
-      "activeExplanationId": "exp_0015_v1",
-      "translationReviewStatus": "approved",
-      "explanationReviewStatus": "approved",
-      "isExamEligible": true,
-      "publishedAt": "2026-03-12T05:40:00Z",
-      "createdAt": "2026-03-12T05:32:00Z",
-      "updatedAt": "2026-03-12T05:40:00Z"
-    },
-    {
       "id": "q_0005",
       "sourceReferenceId": "src_005",
       "contentVersionId": "cv_2026_03_11",
@@ -427,14 +446,17 @@
       "originalLanguage": "en",
       "englishStem": "If you entered the intersection first, you may turn right ahead of an oncoming vehicle that is going straight.",
       "correctChoiceKey": "F",
-      "hasImage": false,
+      "hasImage": true,
       "explanationOrigin": "manual",
       "activeExplanationId": "exp_0005_v1",
       "translationReviewStatus": "pending",
       "explanationReviewStatus": "pending",
       "isExamEligible": true,
       "createdAt": "2026-03-12T01:16:00Z",
-      "updatedAt": "2026-03-12T01:20:00Z"
+      "updatedAt": "2026-03-12T01:31:07.919Z",
+      "imageAssetPath": "/question-images/jaf-quiz/motorvehicles-01.jpg",
+      "imageAltTextEn": "JAF quiz illustration for Turning Right at an Intersection.",
+      "imageCaptionEn": "Turning Right at an Intersection"
     },
     {
       "id": "q_0006",
@@ -449,14 +471,17 @@
       "originalLanguage": "en",
       "englishStem": "At a stop sign with no stop line, you should stop just before the intersection.",
       "correctChoiceKey": "T",
-      "hasImage": false,
+      "hasImage": true,
       "explanationOrigin": "manual",
       "activeExplanationId": "exp_0006_v1",
       "translationReviewStatus": "pending",
       "explanationReviewStatus": "pending",
       "isExamEligible": true,
       "createdAt": "2026-03-12T01:21:00Z",
-      "updatedAt": "2026-03-12T01:24:00Z"
+      "updatedAt": "2026-03-12T01:31:07.919Z",
+      "imageAssetPath": "/question-images/jaf-quiz/motorvehicles-03.jpg",
+      "imageAltTextEn": "JAF quiz illustration for Stop Signs.",
+      "imageCaptionEn": "Stop Signs"
     },
     {
       "id": "q_0007",
@@ -471,14 +496,17 @@
       "originalLanguage": "en",
       "englishStem": "Before a railroad level crossing without traffic lights, you should stop and check both directions for safety.",
       "correctChoiceKey": "T",
-      "hasImage": false,
+      "hasImage": true,
       "explanationOrigin": "manual",
       "activeExplanationId": "exp_0007_v1",
       "translationReviewStatus": "pending",
       "explanationReviewStatus": "pending",
       "isExamEligible": true,
       "createdAt": "2026-03-12T01:25:00Z",
-      "updatedAt": "2026-03-12T01:28:00Z"
+      "updatedAt": "2026-03-12T01:31:07.919Z",
+      "imageAssetPath": "/question-images/jaf-quiz/motorvehicles-04.jpg",
+      "imageAltTextEn": "JAF quiz illustration for Crossing a Level Crossing.",
+      "imageCaptionEn": "Crossing a Level Crossing"
     },
     {
       "id": "q_0008",
@@ -493,14 +521,17 @@
       "originalLanguage": "en",
       "englishStem": "Only people in the front seats are required to wear seat belts.",
       "correctChoiceKey": "F",
-      "hasImage": false,
+      "hasImage": true,
       "explanationOrigin": "manual",
       "activeExplanationId": "exp_0008_v1",
       "translationReviewStatus": "pending",
       "explanationReviewStatus": "pending",
       "isExamEligible": true,
       "createdAt": "2026-03-12T01:29:00Z",
-      "updatedAt": "2026-03-12T01:32:00Z"
+      "updatedAt": "2026-03-12T01:31:07.919Z",
+      "imageAssetPath": "/question-images/jaf-quiz/motorvehicles-05.jpg",
+      "imageAltTextEn": "JAF quiz illustration for Wearing Seatbelts.",
+      "imageCaptionEn": "Wearing Seatbelts"
     },
     {
       "id": "q_0009",
@@ -515,14 +546,17 @@
       "originalLanguage": "en",
       "englishStem": "It is acceptable to leave your car on a quiet side street for a short shopping stop if the engine is still running.",
       "correctChoiceKey": "F",
-      "hasImage": false,
+      "hasImage": true,
       "explanationOrigin": "manual",
       "activeExplanationId": "exp_0009_v1",
       "translationReviewStatus": "pending",
       "explanationReviewStatus": "pending",
       "isExamEligible": true,
       "createdAt": "2026-03-12T01:33:00Z",
-      "updatedAt": "2026-03-12T01:36:00Z"
+      "updatedAt": "2026-03-12T01:31:07.919Z",
+      "imageAssetPath": "/question-images/jaf-quiz/parkinglot-01.jpg",
+      "imageAltTextEn": "JAF quiz illustration for On-Street Parking.",
+      "imageCaptionEn": "On-Street Parking"
     },
     {
       "id": "q_0010",
@@ -537,14 +571,17 @@
       "originalLanguage": "en",
       "englishStem": "When a parking lot requires front-end parking, you should park nose-in as instructed.",
       "correctChoiceKey": "T",
-      "hasImage": false,
+      "hasImage": true,
       "explanationOrigin": "manual",
       "activeExplanationId": "exp_0010_v1",
       "translationReviewStatus": "pending",
       "explanationReviewStatus": "pending",
       "isExamEligible": true,
       "createdAt": "2026-03-12T01:37:00Z",
-      "updatedAt": "2026-03-12T01:40:00Z"
+      "updatedAt": "2026-03-12T01:31:07.919Z",
+      "imageAssetPath": "/question-images/jaf-quiz/parkinglot-02.jpg",
+      "imageAltTextEn": "JAF quiz illustration for Front End Parking.",
+      "imageCaptionEn": "Front End Parking"
     },
     {
       "id": "q_0011",
@@ -559,14 +596,17 @@
       "originalLanguage": "en",
       "englishStem": "A disabled parking space may be used by any driver for a short time when no disabled vehicle is waiting.",
       "correctChoiceKey": "F",
-      "hasImage": false,
+      "hasImage": true,
       "explanationOrigin": "manual",
       "activeExplanationId": "exp_0011_v1",
       "translationReviewStatus": "pending",
       "explanationReviewStatus": "pending",
       "isExamEligible": true,
       "createdAt": "2026-03-12T01:41:00Z",
-      "updatedAt": "2026-03-12T01:44:00Z"
+      "updatedAt": "2026-03-12T01:31:07.919Z",
+      "imageAssetPath": "/question-images/jaf-quiz/parkinglot-03.jpg",
+      "imageAltTextEn": "JAF quiz illustration for Disabled Parking.",
+      "imageCaptionEn": "Disabled Parking"
     },
     {
       "id": "q_0012",
@@ -633,18 +673,410 @@
       "isExamEligible": true,
       "createdAt": "2026-03-12T01:53:00Z",
       "updatedAt": "2026-03-12T01:04:57.965Z"
+    },
+    {
+      "id": "q_0015",
+      "sourceReferenceId": "src_004",
+      "contentVersionId": "cv_2026_03_11",
+      "sourceQuestionRef": "sample-q15",
+      "questionType": "single_choice",
+      "mainCategoryId": "cat_road_signs",
+      "difficulty": "easy",
+      "status": "published",
+      "originalStem": "図の標識が示す意味として正しいものはどれですか。",
+      "originalLanguage": "ja",
+      "englishStem": "Look at the sign. What does it mean?",
+      "correctChoiceKey": "A",
+      "hasImage": true,
+      "imageAssetPath": "/question-images/no-entry-sign.svg",
+      "imageAltTextEn": "A red circular no entry sign with a wide white horizontal bar across the middle.",
+      "imageCaptionEn": "Use the figure to identify the road sign.",
+      "explanationOrigin": "manual",
+      "activeExplanationId": "exp_0015_v1",
+      "translationReviewStatus": "approved",
+      "explanationReviewStatus": "approved",
+      "isExamEligible": true,
+      "publishedAt": "2026-03-12T05:40:00Z",
+      "createdAt": "2026-03-12T05:32:00Z",
+      "updatedAt": "2026-03-12T05:40:00Z"
+    },
+    {
+      "id": "q_0016",
+      "sourceReferenceId": "src_008",
+      "contentVersionId": "cv_2026_03_11",
+      "sourceQuestionRef": "pedestrian-01",
+      "questionType": "single_choice",
+      "mainCategoryId": "cat_pedestrians_bicycles",
+      "difficulty": "easy",
+      "status": "translation_review",
+      "originalStem": "When you are about to cross a road using a crosswalk, the green light is flashing. What do you do?",
+      "originalLanguage": "en",
+      "englishStem": "When you are about to cross a road using a crosswalk, the green light is flashing. What do you do?",
+      "correctChoiceKey": "B",
+      "hasImage": true,
+      "imageAssetPath": "/question-images/jaf-quiz/pedestrian-01.jpg",
+      "imageAltTextEn": "JAF quiz illustration for Traffic Lights when Crossing a Street in a Crosswalk.",
+      "imageCaptionEn": "Traffic Lights when Crossing a Street in a Crosswalk",
+      "explanationOrigin": "source",
+      "activeExplanationId": "exp_0016_v1",
+      "translationReviewStatus": "pending",
+      "explanationReviewStatus": "pending",
+      "isExamEligible": true,
+      "createdAt": "2026-03-12T01:31:07.919Z",
+      "updatedAt": "2026-03-12T01:31:07.919Z"
+    },
+    {
+      "id": "q_0017",
+      "sourceReferenceId": "src_008",
+      "contentVersionId": "cv_2026_03_11",
+      "sourceQuestionRef": "pedestrian-02",
+      "questionType": "single_choice",
+      "mainCategoryId": "cat_pedestrians_bicycles",
+      "difficulty": "easy",
+      "status": "translation_review",
+      "originalStem": "When you are about to cross a road using a crosswalk, and traffic lights like those in the diagram at left are red. What do you do?",
+      "originalLanguage": "en",
+      "englishStem": "When you are about to cross a road using a crosswalk, and traffic lights like those in the diagram at left are red. What do you do?",
+      "correctChoiceKey": "B",
+      "hasImage": true,
+      "imageAssetPath": "/question-images/jaf-quiz/pedestrian-02.jpg",
+      "imageAltTextEn": "JAF quiz illustration for Traffic Lights with Pedestrian Crossing Buttons.",
+      "imageCaptionEn": "Traffic Lights with Pedestrian Crossing Buttons",
+      "explanationOrigin": "source",
+      "activeExplanationId": "exp_0017_v1",
+      "translationReviewStatus": "pending",
+      "explanationReviewStatus": "pending",
+      "isExamEligible": true,
+      "createdAt": "2026-03-12T01:31:07.919Z",
+      "updatedAt": "2026-03-12T01:31:07.919Z"
+    },
+    {
+      "id": "q_0018",
+      "sourceReferenceId": "src_008",
+      "contentVersionId": "cv_2026_03_11",
+      "sourceQuestionRef": "pedestrian-03",
+      "questionType": "single_choice",
+      "mainCategoryId": "cat_pedestrians_bicycles",
+      "difficulty": "easy",
+      "status": "translation_review",
+      "originalStem": "You are going to cross a road where there is a sign prohibiting pedestrians crossing. What do you do?",
+      "originalLanguage": "en",
+      "englishStem": "You are going to cross a road where there is a sign prohibiting pedestrians crossing. What do you do?",
+      "correctChoiceKey": "A",
+      "hasImage": true,
+      "imageAssetPath": "/question-images/jaf-quiz/pedestrian-03.jpg",
+      "imageAltTextEn": "JAF quiz illustration for No Pedestrian Crossing Sign.",
+      "imageCaptionEn": "No Pedestrian Crossing Sign",
+      "explanationOrigin": "source",
+      "activeExplanationId": "exp_0018_v1",
+      "translationReviewStatus": "pending",
+      "explanationReviewStatus": "pending",
+      "isExamEligible": true,
+      "createdAt": "2026-03-12T01:31:07.919Z",
+      "updatedAt": "2026-03-12T01:31:07.919Z"
+    },
+    {
+      "id": "q_0019",
+      "sourceReferenceId": "src_009",
+      "contentVersionId": "cv_2026_03_11",
+      "sourceQuestionRef": "bicycles-01",
+      "questionType": "single_choice",
+      "mainCategoryId": "cat_road_signs",
+      "difficulty": "easy",
+      "status": "translation_review",
+      "originalStem": "Are people permitted to ride bicycles on sidewalks with this sign?",
+      "originalLanguage": "en",
+      "englishStem": "Are people permitted to ride bicycles on sidewalks with this sign?",
+      "correctChoiceKey": "A",
+      "hasImage": true,
+      "imageAssetPath": "/question-images/jaf-quiz/bicycles-01.jpg",
+      "imageAltTextEn": "JAF quiz illustration for Bicycles Permitted on Sidewalk Sign.",
+      "imageCaptionEn": "Bicycles Permitted on Sidewalk Sign",
+      "explanationOrigin": "source",
+      "activeExplanationId": "exp_0019_v1",
+      "translationReviewStatus": "pending",
+      "explanationReviewStatus": "pending",
+      "isExamEligible": true,
+      "createdAt": "2026-03-12T01:31:07.919Z",
+      "updatedAt": "2026-03-12T01:31:07.919Z"
+    },
+    {
+      "id": "q_0020",
+      "sourceReferenceId": "src_009",
+      "contentVersionId": "cv_2026_03_11",
+      "sourceQuestionRef": "bicycles-02",
+      "questionType": "single_choice",
+      "mainCategoryId": "cat_pedestrians_bicycles",
+      "difficulty": "medium",
+      "status": "translation_review",
+      "originalStem": "Are bicyclists allowed to ride outside the bicycle lane within sidewalks as shown in the diagram at left if there are no pedestrians using the sidewalk?",
+      "originalLanguage": "en",
+      "englishStem": "Are bicyclists allowed to ride outside the bicycle lane within sidewalks as shown in the diagram at left if there are no pedestrians using the sidewalk?",
+      "correctChoiceKey": "B",
+      "hasImage": true,
+      "imageAssetPath": "/question-images/jaf-quiz/bicycles-02.jpg",
+      "imageAltTextEn": "JAF quiz illustration for Bicycle Lanes.",
+      "imageCaptionEn": "Bicycle Lanes",
+      "explanationOrigin": "source",
+      "activeExplanationId": "exp_0020_v1",
+      "translationReviewStatus": "pending",
+      "explanationReviewStatus": "pending",
+      "isExamEligible": true,
+      "createdAt": "2026-03-12T01:31:07.919Z",
+      "updatedAt": "2026-03-12T01:31:07.919Z"
+    },
+    {
+      "id": "q_0021",
+      "sourceReferenceId": "src_009",
+      "contentVersionId": "cv_2026_03_11",
+      "sourceQuestionRef": "bicycles-03",
+      "questionType": "single_choice",
+      "mainCategoryId": "cat_road_signs",
+      "difficulty": "easy",
+      "status": "translation_review",
+      "originalStem": "You see a stop sign. What do you do?",
+      "originalLanguage": "en",
+      "englishStem": "You see a stop sign. What do you do?",
+      "correctChoiceKey": "B",
+      "hasImage": true,
+      "imageAssetPath": "/question-images/jaf-quiz/bicycles-03.jpg",
+      "imageAltTextEn": "JAF quiz illustration for Stop Signs.",
+      "imageCaptionEn": "Stop Signs",
+      "explanationOrigin": "source",
+      "activeExplanationId": "exp_0021_v1",
+      "translationReviewStatus": "pending",
+      "explanationReviewStatus": "pending",
+      "isExamEligible": true,
+      "createdAt": "2026-03-12T01:31:07.919Z",
+      "updatedAt": "2026-03-12T01:31:07.919Z"
+    },
+    {
+      "id": "q_0022",
+      "sourceReferenceId": "src_009",
+      "contentVersionId": "cv_2026_03_11",
+      "sourceQuestionRef": "bicycles-04",
+      "questionType": "single_choice",
+      "mainCategoryId": "cat_safety_checks",
+      "difficulty": "easy",
+      "status": "translation_review",
+      "originalStem": "Is it okay to make a phone call while riding a bicycle?",
+      "originalLanguage": "en",
+      "englishStem": "Is it okay to make a phone call while riding a bicycle?",
+      "correctChoiceKey": "B",
+      "hasImage": true,
+      "imageAssetPath": "/question-images/jaf-quiz/bicycles-04.jpg",
+      "imageAltTextEn": "JAF quiz illustration for Using a smartphone.",
+      "imageCaptionEn": "Using a smartphone",
+      "explanationOrigin": "source",
+      "activeExplanationId": "exp_0022_v1",
+      "translationReviewStatus": "pending",
+      "explanationReviewStatus": "pending",
+      "isExamEligible": true,
+      "createdAt": "2026-03-12T01:31:07.919Z",
+      "updatedAt": "2026-03-12T01:31:07.919Z"
+    },
+    {
+      "id": "q_0023",
+      "sourceReferenceId": "src_009",
+      "contentVersionId": "cv_2026_03_11",
+      "sourceQuestionRef": "bicycles-05",
+      "questionType": "single_choice",
+      "mainCategoryId": "cat_safety_checks",
+      "difficulty": "easy",
+      "status": "translation_review",
+      "originalStem": "As you were leaving to go to the nearby convenience store by bicycle, you noticed that the battery for your headlight was dead. What would you do?",
+      "originalLanguage": "en",
+      "englishStem": "As you were leaving to go to the nearby convenience store by bicycle, you noticed that the battery for your headlight was dead. What would you do?",
+      "correctChoiceKey": "B",
+      "hasImage": true,
+      "imageAssetPath": "/question-images/jaf-quiz/bicycles-05.jpg",
+      "imageAltTextEn": "JAF quiz illustration for Bicycle Headlight.",
+      "imageCaptionEn": "Bicycle Headlight",
+      "explanationOrigin": "source",
+      "activeExplanationId": "exp_0023_v1",
+      "translationReviewStatus": "pending",
+      "explanationReviewStatus": "pending",
+      "isExamEligible": true,
+      "createdAt": "2026-03-12T01:31:07.919Z",
+      "updatedAt": "2026-03-12T01:31:07.919Z"
+    },
+    {
+      "id": "q_0024",
+      "sourceReferenceId": "src_010",
+      "contentVersionId": "cv_2026_03_11",
+      "sourceQuestionRef": "motorcycles-01",
+      "questionType": "single_choice",
+      "mainCategoryId": "cat_safety_checks",
+      "difficulty": "medium",
+      "status": "translation_review",
+      "originalStem": "Can I give my child a ride to and from the nearby nursery school on my motorized bicycle (category one - 50cc or less)?",
+      "originalLanguage": "en",
+      "englishStem": "Can I give my child a ride to and from the nearby nursery school on my motorized bicycle (category one - 50cc or less)?",
+      "correctChoiceKey": "B",
+      "hasImage": true,
+      "imageAssetPath": "/question-images/jaf-quiz/motorcycles-01.jpg",
+      "imageAltTextEn": "JAF quiz illustration for Riding Double on Motorized Bicycles.",
+      "imageCaptionEn": "Riding Double on Motorized Bicycles",
+      "explanationOrigin": "source",
+      "activeExplanationId": "exp_0024_v1",
+      "translationReviewStatus": "pending",
+      "explanationReviewStatus": "pending",
+      "isExamEligible": true,
+      "createdAt": "2026-03-12T01:31:07.919Z",
+      "updatedAt": "2026-03-12T01:31:07.919Z"
+    },
+    {
+      "id": "q_0025",
+      "sourceReferenceId": "src_010",
+      "contentVersionId": "cv_2026_03_11",
+      "sourceQuestionRef": "motorcycles-02",
+      "questionType": "single_choice",
+      "mainCategoryId": "cat_lane_rules",
+      "difficulty": "hard",
+      "status": "translation_review",
+      "originalStem": "Is it okay to turn right from the right turn lane at an intersection with a road sign as shown on the left, on a motorized bicycle of 50cc or less (category one)?",
+      "originalLanguage": "en",
+      "englishStem": "Is it okay to turn right from the right turn lane at an intersection with a road sign as shown on the left, on a motorized bicycle of 50cc or less (category one)?",
+      "correctChoiceKey": "B",
+      "hasImage": true,
+      "imageAssetPath": "/question-images/jaf-quiz/motorcycles-02.jpg",
+      "imageAltTextEn": "JAF quiz illustration for Turning Right on a Motorized Bicycle.",
+      "imageCaptionEn": "Turning Right on a Motorized Bicycle",
+      "explanationOrigin": "source",
+      "activeExplanationId": "exp_0025_v1",
+      "translationReviewStatus": "pending",
+      "explanationReviewStatus": "pending",
+      "isExamEligible": true,
+      "createdAt": "2026-03-12T01:31:07.919Z",
+      "updatedAt": "2026-03-12T01:31:07.919Z"
+    },
+    {
+      "id": "q_0026",
+      "sourceReferenceId": "src_005",
+      "contentVersionId": "cv_2026_03_11",
+      "sourceQuestionRef": "motorvehicles-02",
+      "questionType": "single_choice",
+      "mainCategoryId": "cat_speed_stopping",
+      "difficulty": "easy",
+      "status": "translation_review",
+      "originalStem": "Is it okay to turn left at red lights?",
+      "originalLanguage": "en",
+      "englishStem": "Is it okay to turn left at red lights?",
+      "correctChoiceKey": "B",
+      "hasImage": true,
+      "imageAssetPath": "/question-images/jaf-quiz/motorvehicles-02.jpg",
+      "imageAltTextEn": "JAF quiz illustration for Turning Left on Red.",
+      "imageCaptionEn": "Turning Left on Red",
+      "explanationOrigin": "source",
+      "activeExplanationId": "exp_0026_v1",
+      "translationReviewStatus": "pending",
+      "explanationReviewStatus": "pending",
+      "isExamEligible": true,
+      "createdAt": "2026-03-12T01:31:07.919Z",
+      "updatedAt": "2026-03-12T01:31:07.919Z"
+    },
+    {
+      "id": "q_0027",
+      "sourceReferenceId": "src_005",
+      "contentVersionId": "cv_2026_03_11",
+      "sourceQuestionRef": "motorvehicles-06",
+      "questionType": "single_choice",
+      "mainCategoryId": "cat_speed_stopping",
+      "difficulty": "medium",
+      "status": "translation_review",
+      "originalStem": "The traffic signals at the intersection up ahead have changed, as shown on the left. May vehicles turn right?",
+      "originalLanguage": "en",
+      "englishStem": "The traffic signals at the intersection up ahead have changed, as shown on the left. May vehicles turn right?",
+      "correctChoiceKey": "A",
+      "hasImage": true,
+      "imageAssetPath": "/question-images/jaf-quiz/motorvehicles-06.jpg",
+      "imageAltTextEn": "JAF quiz illustration for Yellow Arrow Traffic Signal.",
+      "imageCaptionEn": "Yellow Arrow Traffic Signal",
+      "explanationOrigin": "source",
+      "activeExplanationId": "exp_0027_v1",
+      "translationReviewStatus": "pending",
+      "explanationReviewStatus": "pending",
+      "isExamEligible": true,
+      "createdAt": "2026-03-12T01:31:07.919Z",
+      "updatedAt": "2026-03-12T01:31:07.919Z"
+    },
+    {
+      "id": "q_0028",
+      "sourceReferenceId": "src_005",
+      "contentVersionId": "cv_2026_03_11",
+      "sourceQuestionRef": "motorvehicles-07",
+      "questionType": "single_choice",
+      "mainCategoryId": "cat_lane_rules",
+      "difficulty": "hard",
+      "status": "translation_review",
+      "originalStem": "You want to turn right at the intersection but cannot proceed because the through lane is congested. You could get to the right-turn lane by passing through the white striped zebra zone on the right side. What would you do?",
+      "originalLanguage": "en",
+      "englishStem": "You want to turn right at the intersection but cannot proceed because the through lane is congested. You could get to the right-turn lane by passing through the white striped zebra zone on the right side. What would you do?",
+      "correctChoiceKey": "B",
+      "hasImage": true,
+      "imageAssetPath": "/question-images/jaf-quiz/motorvehicles-07.jpg",
+      "imageAltTextEn": "JAF quiz illustration for Proceeding in the Zebra Zone.",
+      "imageCaptionEn": "Proceeding in the Zebra Zone",
+      "explanationOrigin": "source",
+      "activeExplanationId": "exp_0028_v1",
+      "translationReviewStatus": "pending",
+      "explanationReviewStatus": "pending",
+      "isExamEligible": true,
+      "createdAt": "2026-03-12T01:31:07.919Z",
+      "updatedAt": "2026-03-12T01:31:07.919Z"
+    },
+    {
+      "id": "q_0029",
+      "sourceReferenceId": "src_005",
+      "contentVersionId": "cv_2026_03_11",
+      "sourceQuestionRef": "motorvehicles-08",
+      "questionType": "single_choice",
+      "mainCategoryId": "cat_lane_rules",
+      "difficulty": "medium",
+      "status": "translation_review",
+      "originalStem": "After switching from the slow lane to the passing lane to overtake a vehicle ahead, if the expressway is open, it is okay stay in the fast lane.",
+      "originalLanguage": "en",
+      "englishStem": "After switching from the slow lane to the passing lane to overtake a vehicle ahead, if the expressway is open, it is okay stay in the fast lane.",
+      "correctChoiceKey": "A",
+      "hasImage": true,
+      "imageAssetPath": "/question-images/jaf-quiz/motorvehicles-08.jpg",
+      "imageAltTextEn": "JAF quiz illustration for Proceeding on the Expressway.",
+      "imageCaptionEn": "Proceeding on the Expressway",
+      "explanationOrigin": "source",
+      "activeExplanationId": "exp_0029_v1",
+      "translationReviewStatus": "pending",
+      "explanationReviewStatus": "pending",
+      "isExamEligible": true,
+      "createdAt": "2026-03-12T01:31:07.919Z",
+      "updatedAt": "2026-03-12T01:31:07.919Z"
+    },
+    {
+      "id": "q_0030",
+      "sourceReferenceId": "src_005",
+      "contentVersionId": "cv_2026_03_11",
+      "sourceQuestionRef": "motorvehicles-09",
+      "questionType": "single_choice",
+      "mainCategoryId": "cat_lane_rules",
+      "difficulty": "medium",
+      "status": "translation_review",
+      "originalStem": "You're about to make a U-turn but there are markings on the road as shown on the left. There are no pedestrians or vehicles in the vicinity. What would you do?",
+      "originalLanguage": "en",
+      "englishStem": "You're about to make a U-turn but there are markings on the road as shown on the left. There are no pedestrians or vehicles in the vicinity. What would you do?",
+      "correctChoiceKey": "A",
+      "hasImage": true,
+      "imageAssetPath": "/question-images/jaf-quiz/motorvehicles-09.jpg",
+      "imageAltTextEn": "JAF quiz illustration for U-turns on General Roads.",
+      "imageCaptionEn": "U-turns on General Roads",
+      "explanationOrigin": "source",
+      "activeExplanationId": "exp_0030_v1",
+      "translationReviewStatus": "pending",
+      "explanationReviewStatus": "pending",
+      "isExamEligible": true,
+      "createdAt": "2026-03-12T01:31:07.919Z",
+      "updatedAt": "2026-03-12T01:31:07.919Z"
     }
   ],
   "choices": [
-    {
-      "id": "ch_0001_t",
-      "questionId": "q_0001",
-      "choiceKey": "T",
-      "displayOrder": 1,
-      "originalText": "正しい",
-      "englishText": "True",
-      "isCorrect": true
-    },
     {
       "id": "ch_0001_f",
       "questionId": "q_0001",
@@ -655,13 +1087,13 @@
       "isCorrect": false
     },
     {
-      "id": "ch_0002_t",
-      "questionId": "q_0002",
+      "id": "ch_0001_t",
+      "questionId": "q_0001",
       "choiceKey": "T",
       "displayOrder": 1,
       "originalText": "正しい",
       "englishText": "True",
-      "isCorrect": false
+      "isCorrect": true
     },
     {
       "id": "ch_0002_f",
@@ -673,13 +1105,13 @@
       "isCorrect": true
     },
     {
-      "id": "ch_0003_t",
-      "questionId": "q_0003",
+      "id": "ch_0002_t",
+      "questionId": "q_0002",
       "choiceKey": "T",
       "displayOrder": 1,
       "originalText": "正しい",
       "englishText": "True",
-      "isCorrect": true
+      "isCorrect": false
     },
     {
       "id": "ch_0003_f",
@@ -689,6 +1121,15 @@
       "originalText": "誤り",
       "englishText": "False",
       "isCorrect": false
+    },
+    {
+      "id": "ch_0003_t",
+      "questionId": "q_0003",
+      "choiceKey": "T",
+      "displayOrder": 1,
+      "originalText": "正しい",
+      "englishText": "True",
+      "isCorrect": true
     },
     {
       "id": "ch_0004_a",
@@ -727,6 +1168,166 @@
       "isCorrect": false
     },
     {
+      "id": "ch_0005_f",
+      "questionId": "q_0005",
+      "choiceKey": "F",
+      "displayOrder": 2,
+      "englishText": "False",
+      "isCorrect": true
+    },
+    {
+      "id": "ch_0005_t",
+      "questionId": "q_0005",
+      "choiceKey": "T",
+      "displayOrder": 1,
+      "englishText": "True",
+      "isCorrect": false
+    },
+    {
+      "id": "ch_0006_f",
+      "questionId": "q_0006",
+      "choiceKey": "F",
+      "displayOrder": 2,
+      "englishText": "False",
+      "isCorrect": false
+    },
+    {
+      "id": "ch_0006_t",
+      "questionId": "q_0006",
+      "choiceKey": "T",
+      "displayOrder": 1,
+      "englishText": "True",
+      "isCorrect": true
+    },
+    {
+      "id": "ch_0007_f",
+      "questionId": "q_0007",
+      "choiceKey": "F",
+      "displayOrder": 2,
+      "englishText": "False",
+      "isCorrect": false
+    },
+    {
+      "id": "ch_0007_t",
+      "questionId": "q_0007",
+      "choiceKey": "T",
+      "displayOrder": 1,
+      "englishText": "True",
+      "isCorrect": true
+    },
+    {
+      "id": "ch_0008_f",
+      "questionId": "q_0008",
+      "choiceKey": "F",
+      "displayOrder": 2,
+      "englishText": "False",
+      "isCorrect": true
+    },
+    {
+      "id": "ch_0008_t",
+      "questionId": "q_0008",
+      "choiceKey": "T",
+      "displayOrder": 1,
+      "englishText": "True",
+      "isCorrect": false
+    },
+    {
+      "id": "ch_0009_f",
+      "questionId": "q_0009",
+      "choiceKey": "F",
+      "displayOrder": 2,
+      "englishText": "False",
+      "isCorrect": true
+    },
+    {
+      "id": "ch_0009_t",
+      "questionId": "q_0009",
+      "choiceKey": "T",
+      "displayOrder": 1,
+      "englishText": "True",
+      "isCorrect": false
+    },
+    {
+      "id": "ch_0010_f",
+      "questionId": "q_0010",
+      "choiceKey": "F",
+      "displayOrder": 2,
+      "englishText": "False",
+      "isCorrect": false
+    },
+    {
+      "id": "ch_0010_t",
+      "questionId": "q_0010",
+      "choiceKey": "T",
+      "displayOrder": 1,
+      "englishText": "True",
+      "isCorrect": true
+    },
+    {
+      "id": "ch_0011_f",
+      "questionId": "q_0011",
+      "choiceKey": "F",
+      "displayOrder": 2,
+      "englishText": "False",
+      "isCorrect": true
+    },
+    {
+      "id": "ch_0011_t",
+      "questionId": "q_0011",
+      "choiceKey": "T",
+      "displayOrder": 1,
+      "englishText": "True",
+      "isCorrect": false
+    },
+    {
+      "id": "ch_0012_f",
+      "questionId": "q_0012",
+      "choiceKey": "F",
+      "displayOrder": 2,
+      "englishText": "False",
+      "isCorrect": false
+    },
+    {
+      "id": "ch_0012_t",
+      "questionId": "q_0012",
+      "choiceKey": "T",
+      "displayOrder": 1,
+      "englishText": "True",
+      "isCorrect": true
+    },
+    {
+      "id": "ch_0013_f",
+      "questionId": "q_0013",
+      "choiceKey": "F",
+      "displayOrder": 2,
+      "englishText": "False",
+      "isCorrect": false
+    },
+    {
+      "id": "ch_0013_t",
+      "questionId": "q_0013",
+      "choiceKey": "T",
+      "displayOrder": 1,
+      "englishText": "True",
+      "isCorrect": true
+    },
+    {
+      "id": "ch_0014_f",
+      "questionId": "q_0014",
+      "choiceKey": "F",
+      "displayOrder": 2,
+      "englishText": "False",
+      "isCorrect": false
+    },
+    {
+      "id": "ch_0014_t",
+      "questionId": "q_0014",
+      "choiceKey": "T",
+      "displayOrder": 1,
+      "englishText": "True",
+      "isCorrect": true
+    },
+    {
       "id": "ch_0015_a",
       "questionId": "q_0015",
       "choiceKey": "A",
@@ -763,163 +1364,243 @@
       "isCorrect": false
     },
     {
-      "id": "ch_0005_t",
-      "questionId": "q_0005",
-      "choiceKey": "T",
+      "id": "ch_0016_a",
+      "questionId": "q_0016",
+      "choiceKey": "A",
       "displayOrder": 1,
-      "englishText": "True",
+      "englishText": "I start to cross quickly.",
       "isCorrect": false
     },
     {
-      "id": "ch_0005_f",
-      "questionId": "q_0005",
-      "choiceKey": "F",
+      "id": "ch_0016_b",
+      "questionId": "q_0016",
+      "choiceKey": "B",
       "displayOrder": 2,
-      "englishText": "False",
+      "englishText": "I do not start to cross.",
       "isCorrect": true
     },
     {
-      "id": "ch_0006_t",
-      "questionId": "q_0006",
-      "choiceKey": "T",
+      "id": "ch_0017_a",
+      "questionId": "q_0017",
+      "choiceKey": "A",
       "displayOrder": 1,
-      "englishText": "True",
-      "isCorrect": true
-    },
-    {
-      "id": "ch_0006_f",
-      "questionId": "q_0006",
-      "choiceKey": "F",
-      "displayOrder": 2,
-      "englishText": "False",
+      "englishText": "I will wait until the lights turn green.",
       "isCorrect": false
     },
     {
-      "id": "ch_0007_t",
-      "questionId": "q_0007",
-      "choiceKey": "T",
-      "displayOrder": 1,
-      "englishText": "True",
+      "id": "ch_0017_b",
+      "questionId": "q_0017",
+      "choiceKey": "B",
+      "displayOrder": 2,
+      "englishText": "I will press the button and wait. After the lights turn green, I will cross the road.",
       "isCorrect": true
     },
     {
-      "id": "ch_0007_f",
-      "questionId": "q_0007",
-      "choiceKey": "F",
+      "id": "ch_0018_a",
+      "questionId": "q_0018",
+      "choiceKey": "A",
+      "displayOrder": 1,
+      "englishText": "I will cross at a nearby pedestrian overpass.",
+      "isCorrect": true
+    },
+    {
+      "id": "ch_0018_b",
+      "questionId": "q_0018",
+      "choiceKey": "B",
       "displayOrder": 2,
-      "englishText": "False",
+      "englishText": "Crossing is allowed if there are no moving vehicles around.",
       "isCorrect": false
     },
     {
-      "id": "ch_0008_t",
-      "questionId": "q_0008",
-      "choiceKey": "T",
+      "id": "ch_0019_a",
+      "questionId": "q_0019",
+      "choiceKey": "A",
       "displayOrder": 1,
-      "englishText": "True",
+      "englishText": "Yes.",
+      "isCorrect": true
+    },
+    {
+      "id": "ch_0019_b",
+      "questionId": "q_0019",
+      "choiceKey": "B",
+      "displayOrder": 2,
+      "englishText": "Only pedestrians are permitted to use the sidewalk.",
       "isCorrect": false
     },
     {
-      "id": "ch_0008_f",
-      "questionId": "q_0008",
-      "choiceKey": "F",
-      "displayOrder": 2,
-      "englishText": "False",
-      "isCorrect": true
-    },
-    {
-      "id": "ch_0009_t",
-      "questionId": "q_0009",
-      "choiceKey": "T",
+      "id": "ch_0020_a",
+      "questionId": "q_0020",
+      "choiceKey": "A",
       "displayOrder": 1,
-      "englishText": "True",
+      "englishText": "Yes.",
       "isCorrect": false
     },
     {
-      "id": "ch_0009_f",
-      "questionId": "q_0009",
-      "choiceKey": "F",
+      "id": "ch_0020_b",
+      "questionId": "q_0020",
+      "choiceKey": "B",
       "displayOrder": 2,
-      "englishText": "False",
+      "englishText": "They must stay inside the bicycle lane.",
       "isCorrect": true
     },
     {
-      "id": "ch_0010_t",
-      "questionId": "q_0010",
-      "choiceKey": "T",
+      "id": "ch_0021_a",
+      "questionId": "q_0021",
+      "choiceKey": "A",
       "displayOrder": 1,
-      "englishText": "True",
-      "isCorrect": true
-    },
-    {
-      "id": "ch_0010_f",
-      "questionId": "q_0010",
-      "choiceKey": "F",
-      "displayOrder": 2,
-      "englishText": "False",
+      "englishText": "This sign is for motor vehicles only. Bicyclists do not need to stop here.",
       "isCorrect": false
     },
     {
-      "id": "ch_0011_t",
-      "questionId": "q_0011",
-      "choiceKey": "T",
+      "id": "ch_0021_b",
+      "questionId": "q_0021",
+      "choiceKey": "B",
+      "displayOrder": 2,
+      "englishText": "Bicyclists must stop.",
+      "isCorrect": true
+    },
+    {
+      "id": "ch_0022_a",
+      "questionId": "q_0022",
+      "choiceKey": "A",
       "displayOrder": 1,
-      "englishText": "True",
+      "englishText": "It is permitted, because it is unavoidable.",
       "isCorrect": false
     },
     {
-      "id": "ch_0011_f",
-      "questionId": "q_0011",
-      "choiceKey": "F",
+      "id": "ch_0022_b",
+      "questionId": "q_0022",
+      "choiceKey": "B",
       "displayOrder": 2,
-      "englishText": "False",
+      "englishText": "Using a phone when riding is not permitted.",
       "isCorrect": true
     },
     {
-      "id": "ch_0012_t",
-      "questionId": "q_0012",
-      "choiceKey": "T",
+      "id": "ch_0023_a",
+      "questionId": "q_0023",
+      "choiceKey": "A",
       "displayOrder": 1,
-      "englishText": "True",
-      "isCorrect": true
-    },
-    {
-      "id": "ch_0012_f",
-      "questionId": "q_0012",
-      "choiceKey": "F",
-      "displayOrder": 2,
-      "englishText": "False",
+      "englishText": "Being familiar with the directions, leave with the light out.",
       "isCorrect": false
     },
     {
-      "id": "ch_0013_t",
-      "questionId": "q_0013",
-      "choiceKey": "T",
-      "displayOrder": 1,
-      "englishText": "True",
+      "id": "ch_0023_b",
+      "questionId": "q_0023",
+      "choiceKey": "B",
+      "displayOrder": 2,
+      "englishText": "With no spare batteries, leave the bicycle at home and walk.",
       "isCorrect": true
     },
     {
-      "id": "ch_0013_f",
-      "questionId": "q_0013",
-      "choiceKey": "F",
-      "displayOrder": 2,
-      "englishText": "False",
+      "id": "ch_0024_a",
+      "questionId": "q_0024",
+      "choiceKey": "A",
+      "displayOrder": 1,
+      "englishText": "Like a bicycle with a baby seat, you may carry your child as long as she is wearing a helmet.",
       "isCorrect": false
     },
     {
-      "id": "ch_0014_t",
-      "questionId": "q_0014",
-      "choiceKey": "T",
-      "displayOrder": 1,
-      "englishText": "True",
+      "id": "ch_0024_b",
+      "questionId": "q_0024",
+      "choiceKey": "B",
+      "displayOrder": 2,
+      "englishText": "Riding double is prohibited. You may not carry your child on your motorized bicycle.",
       "isCorrect": true
     },
     {
-      "id": "ch_0014_f",
-      "questionId": "q_0014",
-      "choiceKey": "F",
+      "id": "ch_0025_a",
+      "questionId": "q_0025",
+      "choiceKey": "A",
+      "displayOrder": 1,
+      "englishText": "The traffic light has turned to the green arrow (pointing right), so it is okay to turn right.",
+      "isCorrect": false
+    },
+    {
+      "id": "ch_0025_b",
+      "questionId": "q_0025",
+      "choiceKey": "B",
       "displayOrder": 2,
-      "englishText": "False",
+      "englishText": "You may only turn right by making a hook turn.",
+      "isCorrect": true
+    },
+    {
+      "id": "ch_0026_a",
+      "questionId": "q_0026",
+      "choiceKey": "A",
+      "displayOrder": 1,
+      "englishText": "We can turn left if there are no pedestrians or moving vehicles.",
+      "isCorrect": false
+    },
+    {
+      "id": "ch_0026_b",
+      "questionId": "q_0026",
+      "choiceKey": "B",
+      "displayOrder": 2,
+      "englishText": "Turning left is prohibited when the light is red.",
+      "isCorrect": true
+    },
+    {
+      "id": "ch_0027_a",
+      "questionId": "q_0027",
+      "choiceKey": "A",
+      "displayOrder": 1,
+      "englishText": "Vehicles may not turn right.",
+      "isCorrect": true
+    },
+    {
+      "id": "ch_0027_b",
+      "questionId": "q_0027",
+      "choiceKey": "B",
+      "displayOrder": 2,
+      "englishText": "Vehicles may turn right.",
+      "isCorrect": false
+    },
+    {
+      "id": "ch_0028_a",
+      "questionId": "q_0028",
+      "choiceKey": "A",
+      "displayOrder": 1,
+      "englishText": "Wait until the cars in front move along because the zebra zone is closed to traffic.",
+      "isCorrect": false
+    },
+    {
+      "id": "ch_0028_b",
+      "questionId": "q_0028",
+      "choiceKey": "B",
+      "displayOrder": 2,
+      "englishText": "Go through the zebra zone, paying attention to the movement of vehicles behind and ahead.",
+      "isCorrect": true
+    },
+    {
+      "id": "ch_0029_a",
+      "questionId": "q_0029",
+      "choiceKey": "A",
+      "displayOrder": 1,
+      "englishText": "It is not okay to continue driving in the passing lane.",
+      "isCorrect": true
+    },
+    {
+      "id": "ch_0029_b",
+      "questionId": "q_0029",
+      "choiceKey": "B",
+      "displayOrder": 2,
+      "englishText": "It is okay to continue driving in the passing lane.",
+      "isCorrect": false
+    },
+    {
+      "id": "ch_0030_a",
+      "questionId": "q_0030",
+      "choiceKey": "A",
+      "displayOrder": 1,
+      "englishText": "Will not make a U-turn because U-turns are prohibited.",
+      "isCorrect": true
+    },
+    {
+      "id": "ch_0030_b",
+      "questionId": "q_0030",
+      "choiceKey": "B",
+      "displayOrder": 2,
+      "englishText": "Will make a quick U-turn while paying close attention to the surroundings.",
       "isCorrect": false
     }
   ],
@@ -967,16 +1648,6 @@
       "createdBy": "source-import",
       "createdAt": "2026-03-11T12:44:00Z",
       "updatedAt": "2026-03-11T12:45:00Z"
-    },
-    {
-      "id": "exp_0015_v1",
-      "questionId": "q_0015",
-      "origin": "manual",
-      "bodyEn": "The sign shown is the no entry sign. It tells drivers that vehicles must not enter from that direction.",
-      "sourceDerived": false,
-      "createdBy": "content-editor",
-      "createdAt": "2026-03-12T05:34:00Z",
-      "updatedAt": "2026-03-12T05:35:00Z"
     },
     {
       "id": "exp_0005_v1",
@@ -1077,6 +1748,166 @@
       "createdBy": "passdrive-editorial",
       "createdAt": "2026-03-12T01:54:00Z",
       "updatedAt": "2026-03-12T01:55:00Z"
+    },
+    {
+      "id": "exp_0015_v1",
+      "questionId": "q_0015",
+      "origin": "manual",
+      "bodyEn": "The sign shown is the no entry sign. It tells drivers that vehicles must not enter from that direction.",
+      "sourceDerived": false,
+      "createdBy": "content-editor",
+      "createdAt": "2026-03-12T05:34:00Z",
+      "updatedAt": "2026-03-12T05:35:00Z"
+    },
+    {
+      "id": "exp_0016_v1",
+      "questionId": "q_0016",
+      "origin": "source",
+      "bodyEn": "When the green light is flashing, pedestrians must not start crossing the road. Pedestrians already in the crosswalk must quickly finish crossing the road or turn around and return.",
+      "sourceDerived": true,
+      "createdBy": "import-jaf-quiz-script",
+      "createdAt": "2026-03-12T01:31:07.919Z",
+      "updatedAt": "2026-03-12T01:31:07.919Z"
+    },
+    {
+      "id": "exp_0017_v1",
+      "questionId": "q_0017",
+      "origin": "source",
+      "bodyEn": "Where there are traffic lights with pedestrian crossing buttons, press the button and wait. Start to cross the road after the lights turn green. (After pressing the button, the lights may not immediately turn green.)",
+      "sourceDerived": true,
+      "createdBy": "import-jaf-quiz-script",
+      "createdAt": "2026-03-12T01:31:07.919Z",
+      "updatedAt": "2026-03-12T01:31:07.919Z"
+    },
+    {
+      "id": "exp_0018_v1",
+      "questionId": "q_0018",
+      "origin": "source",
+      "bodyEn": "You must not cross roads where there are signs prohibiting pedestrians crossing. In addition, it is very dangerous to cross roads with guardrails. When walking in a crosswalk, keep away from the bicycle crossing lane.",
+      "sourceDerived": true,
+      "createdBy": "import-jaf-quiz-script",
+      "createdAt": "2026-03-12T01:31:07.919Z",
+      "updatedAt": "2026-03-12T01:31:07.919Z"
+    },
+    {
+      "id": "exp_0019_v1",
+      "questionId": "q_0019",
+      "origin": "source",
+      "bodyEn": "This is a road sign permitting bicyclists to use the sidewalk with pedestrians. However, bicyclists must ride slowly on the roadway side of the sidewalk.",
+      "sourceDerived": true,
+      "createdBy": "import-jaf-quiz-script",
+      "createdAt": "2026-03-12T01:31:07.919Z",
+      "updatedAt": "2026-03-12T01:31:07.919Z"
+    },
+    {
+      "id": "exp_0020_v1",
+      "questionId": "q_0020",
+      "origin": "source",
+      "bodyEn": "Bicycles are vehicles. They must, in principle, be ridden on the roadway. Bicyclists should ride on the left of the roadway, inside the lines marking pedestrian paths on the left , on the roadway side of sidewalks where bicycles are permitted, on bicycle paths, and in other permitted locations.",
+      "sourceDerived": true,
+      "createdBy": "import-jaf-quiz-script",
+      "createdAt": "2026-03-12T01:31:07.919Z",
+      "updatedAt": "2026-03-12T01:31:07.919Z"
+    },
+    {
+      "id": "exp_0021_v1",
+      "questionId": "q_0021",
+      "origin": "source",
+      "bodyEn": "Bicycles are vehicles, so bicyclists must come to a stop at stop signs and check that it is safe before proceeding.",
+      "sourceDerived": true,
+      "createdBy": "import-jaf-quiz-script",
+      "createdAt": "2026-03-12T01:31:07.919Z",
+      "updatedAt": "2026-03-12T01:31:07.919Z"
+    },
+    {
+      "id": "exp_0022_v1",
+      "questionId": "q_0022",
+      "origin": "source",
+      "bodyEn": "Making phone calls, e-mailing, texting and using headphones to listen to music while riding are all violations of the safety rules. These actions impede your ability to identify the dangers around you and may result in an accident.",
+      "sourceDerived": true,
+      "createdBy": "import-jaf-quiz-script",
+      "createdAt": "2026-03-12T01:31:07.919Z",
+      "updatedAt": "2026-03-12T01:31:07.919Z"
+    },
+    {
+      "id": "exp_0023_v1",
+      "questionId": "q_0023",
+      "origin": "source",
+      "bodyEn": "You must not ride a bicycle with no headlight. Just because you always go there and know the area well, don't let your guard down. Riding with no headlight is extremely dangerous because it delays cars and pedestrians from noticing you (on your bicycle). Always keep your light on when riding at night to let others know that you are there.",
+      "sourceDerived": true,
+      "createdBy": "import-jaf-quiz-script",
+      "createdAt": "2026-03-12T01:31:07.919Z",
+      "updatedAt": "2026-03-12T01:31:07.919Z"
+    },
+    {
+      "id": "exp_0024_v1",
+      "questionId": "q_0024",
+      "origin": "source",
+      "bodyEn": "This would be considered riding double. You may not carry your child on your motorized bicycle. Motorized bicycles of 50cc or less (category one) can only seat one person by law. Riding double is prohibited. For this reason, regardless of whether the person is an adult or a child, you may not take any passengers, even if they are wearing a helmet.",
+      "sourceDerived": true,
+      "createdBy": "import-jaf-quiz-script",
+      "createdAt": "2026-03-12T01:31:07.919Z",
+      "updatedAt": "2026-03-12T01:31:07.919Z"
+    },
+    {
+      "id": "exp_0025_v1",
+      "questionId": "q_0025",
+      "origin": "source",
+      "bodyEn": "You must make a hook turn in accordance with the road sign. Because there is a blue regulatory sign just before the intersection with directions for motorized bicycles making a right turn (hook turn), you must follow those directions regardless of the number of lanes. Even if there is no regulatory sign, if there are three or more lanes (each side or one-way), you are required to make a hook turn. However, if there is a regulatory sign at the intersection prohibiting hook turns, you need to make a small turn.",
+      "sourceDerived": true,
+      "createdBy": "import-jaf-quiz-script",
+      "createdAt": "2026-03-12T01:31:07.919Z",
+      "updatedAt": "2026-03-12T01:31:07.919Z"
+    },
+    {
+      "id": "exp_0026_v1",
+      "questionId": "q_0026",
+      "origin": "source",
+      "bodyEn": "In Japan, no car is in principle allowed to turn left when a traffic light is red. You also cannot turn right when the light is red. However, you can move in the direction indicated with a green arrow even if there is also a red light.",
+      "sourceDerived": true,
+      "createdBy": "import-jaf-quiz-script",
+      "createdAt": "2026-03-12T01:31:07.919Z",
+      "updatedAt": "2026-03-12T01:31:07.919Z"
+    },
+    {
+      "id": "exp_0027_v1",
+      "questionId": "q_0027",
+      "origin": "source",
+      "bodyEn": "When the yellow arrow traffic signal is on, vehicles and pedestrians may not proceed. The yellow arrow traffic signal applies to streetcars, so only streetcars may turn right when this is on. For cars, this is the same as a red light, so they may not go in any direction.",
+      "sourceDerived": true,
+      "createdBy": "import-jaf-quiz-script",
+      "createdAt": "2026-03-12T01:31:07.919Z",
+      "updatedAt": "2026-03-12T01:31:07.919Z"
+    },
+    {
+      "id": "exp_0028_v1",
+      "questionId": "q_0028",
+      "origin": "source",
+      "bodyEn": "You may drive through the zebra zone. The zebra zone is a guidance zone for safe and smooth driving and is not closed to traffic. However, its purpose is not for driving on, so it is inadvisable to actively use.",
+      "sourceDerived": true,
+      "createdBy": "import-jaf-quiz-script",
+      "createdAt": "2026-03-12T01:31:07.919Z",
+      "updatedAt": "2026-03-12T01:31:07.919Z"
+    },
+    {
+      "id": "exp_0029_v1",
+      "questionId": "q_0029",
+      "origin": "source",
+      "bodyEn": "After overtaking another vehicle, you may not continue driving in the passing lane without returning to the driving lane. Once you have overtaken the vehicle if you can return to your original lane but you do not and you stay in the passing lane, you are committing a traffic zone violation. After you have finished passing, you must return to the driving lane.",
+      "sourceDerived": true,
+      "createdBy": "import-jaf-quiz-script",
+      "createdAt": "2026-03-12T01:31:07.919Z",
+      "updatedAt": "2026-03-12T01:31:07.919Z"
+    },
+    {
+      "id": "exp_0030_v1",
+      "questionId": "q_0030",
+      "origin": "source",
+      "bodyEn": "You may not make a U-turn here because the road markings prohibit it. Similarly, do not make a U-turn if there is a No U-turn sign. In other locations too, if there is any danger of obstructing pedestrian or other vehicle traffic, U-turns are not allowed.",
+      "sourceDerived": true,
+      "createdBy": "import-jaf-quiz-script",
+      "createdAt": "2026-03-12T01:31:07.919Z",
+      "updatedAt": "2026-03-12T01:31:07.919Z"
     }
   ],
   "translationReviews": [
@@ -1119,16 +1950,6 @@
       "naturalnessCheck": true,
       "notes": "The multiple-choice wording is concise and natural.",
       "reviewedAt": "2026-03-11T12:46:00Z"
-    },
-    {
-      "id": "tr_0015_v1",
-      "questionId": "q_0015",
-      "reviewer": "english-reviewer@example.com",
-      "status": "approved",
-      "accuracyCheck": true,
-      "naturalnessCheck": true,
-      "notes": "Image prompt and answer labels are clear for English learners.",
-      "reviewedAt": "2026-03-12T05:36:00Z"
     },
     {
       "id": "tr_0005_v1",
@@ -1220,6 +2041,136 @@
       "naturalnessCheck": false,
       "notes": "Changes requested in admin UI.",
       "reviewedAt": "2026-03-12T01:04:57.965Z"
+    },
+    {
+      "id": "tr_0015_v1",
+      "questionId": "q_0015",
+      "reviewer": "english-reviewer@example.com",
+      "status": "approved",
+      "accuracyCheck": true,
+      "naturalnessCheck": true,
+      "notes": "Image prompt and answer labels are clear for English learners.",
+      "reviewedAt": "2026-03-12T05:36:00Z"
+    },
+    {
+      "id": "tr_0016_v1",
+      "questionId": "q_0016",
+      "reviewer": "pending-jaf-import-review",
+      "status": "pending",
+      "accuracyCheck": false,
+      "naturalnessCheck": false
+    },
+    {
+      "id": "tr_0017_v1",
+      "questionId": "q_0017",
+      "reviewer": "pending-jaf-import-review",
+      "status": "pending",
+      "accuracyCheck": false,
+      "naturalnessCheck": false
+    },
+    {
+      "id": "tr_0018_v1",
+      "questionId": "q_0018",
+      "reviewer": "pending-jaf-import-review",
+      "status": "pending",
+      "accuracyCheck": false,
+      "naturalnessCheck": false
+    },
+    {
+      "id": "tr_0019_v1",
+      "questionId": "q_0019",
+      "reviewer": "pending-jaf-import-review",
+      "status": "pending",
+      "accuracyCheck": false,
+      "naturalnessCheck": false
+    },
+    {
+      "id": "tr_0020_v1",
+      "questionId": "q_0020",
+      "reviewer": "pending-jaf-import-review",
+      "status": "pending",
+      "accuracyCheck": false,
+      "naturalnessCheck": false
+    },
+    {
+      "id": "tr_0021_v1",
+      "questionId": "q_0021",
+      "reviewer": "pending-jaf-import-review",
+      "status": "pending",
+      "accuracyCheck": false,
+      "naturalnessCheck": false
+    },
+    {
+      "id": "tr_0022_v1",
+      "questionId": "q_0022",
+      "reviewer": "pending-jaf-import-review",
+      "status": "pending",
+      "accuracyCheck": false,
+      "naturalnessCheck": false
+    },
+    {
+      "id": "tr_0023_v1",
+      "questionId": "q_0023",
+      "reviewer": "pending-jaf-import-review",
+      "status": "pending",
+      "accuracyCheck": false,
+      "naturalnessCheck": false
+    },
+    {
+      "id": "tr_0024_v1",
+      "questionId": "q_0024",
+      "reviewer": "pending-jaf-import-review",
+      "status": "pending",
+      "accuracyCheck": false,
+      "naturalnessCheck": false
+    },
+    {
+      "id": "tr_0025_v1",
+      "questionId": "q_0025",
+      "reviewer": "pending-jaf-import-review",
+      "status": "pending",
+      "accuracyCheck": false,
+      "naturalnessCheck": false
+    },
+    {
+      "id": "tr_0026_v1",
+      "questionId": "q_0026",
+      "reviewer": "pending-jaf-import-review",
+      "status": "pending",
+      "accuracyCheck": false,
+      "naturalnessCheck": false
+    },
+    {
+      "id": "tr_0027_v1",
+      "questionId": "q_0027",
+      "reviewer": "pending-jaf-import-review",
+      "status": "pending",
+      "accuracyCheck": false,
+      "naturalnessCheck": false
+    },
+    {
+      "id": "tr_0028_v1",
+      "questionId": "q_0028",
+      "reviewer": "pending-jaf-import-review",
+      "status": "pending",
+      "accuracyCheck": false,
+      "naturalnessCheck": false
+    },
+    {
+      "id": "tr_0029_v1",
+      "questionId": "q_0029",
+      "reviewer": "pending-jaf-import-review",
+      "status": "pending",
+      "accuracyCheck": false,
+      "naturalnessCheck": false
+    },
+    {
+      "id": "tr_0030_v1",
+      "questionId": "q_0030",
+      "reviewer": "pending-jaf-import-review",
+      "status": "pending",
+      "accuracyCheck": false,
+      "naturalnessCheck": false
     }
   ],
   "explanationReviews": [
@@ -1262,16 +2213,6 @@
       "clarityCheck": true,
       "notes": "Imported explanation is clear and sufficient for the sample.",
       "reviewedAt": "2026-03-11T12:46:30Z"
-    },
-    {
-      "id": "er_0015_v1",
-      "explanationId": "exp_0015_v1",
-      "reviewer": "rule-reviewer@example.com",
-      "status": "approved",
-      "accuracyCheck": true,
-      "clarityCheck": true,
-      "notes": "Explanation states the meaning of the sign directly and correctly.",
-      "reviewedAt": "2026-03-12T05:37:00Z"
     },
     {
       "id": "er_0005_v1",
@@ -1363,6 +2304,136 @@
       "clarityCheck": false,
       "notes": "Changes requested in admin UI.",
       "reviewedAt": "2026-03-12T01:03:57.299Z"
+    },
+    {
+      "id": "er_0015_v1",
+      "explanationId": "exp_0015_v1",
+      "reviewer": "rule-reviewer@example.com",
+      "status": "approved",
+      "accuracyCheck": true,
+      "clarityCheck": true,
+      "notes": "Explanation states the meaning of the sign directly and correctly.",
+      "reviewedAt": "2026-03-12T05:37:00Z"
+    },
+    {
+      "id": "er_0016_v1",
+      "explanationId": "exp_0016_v1",
+      "reviewer": "pending-jaf-import-review",
+      "status": "pending",
+      "accuracyCheck": false,
+      "clarityCheck": false
+    },
+    {
+      "id": "er_0017_v1",
+      "explanationId": "exp_0017_v1",
+      "reviewer": "pending-jaf-import-review",
+      "status": "pending",
+      "accuracyCheck": false,
+      "clarityCheck": false
+    },
+    {
+      "id": "er_0018_v1",
+      "explanationId": "exp_0018_v1",
+      "reviewer": "pending-jaf-import-review",
+      "status": "pending",
+      "accuracyCheck": false,
+      "clarityCheck": false
+    },
+    {
+      "id": "er_0019_v1",
+      "explanationId": "exp_0019_v1",
+      "reviewer": "pending-jaf-import-review",
+      "status": "pending",
+      "accuracyCheck": false,
+      "clarityCheck": false
+    },
+    {
+      "id": "er_0020_v1",
+      "explanationId": "exp_0020_v1",
+      "reviewer": "pending-jaf-import-review",
+      "status": "pending",
+      "accuracyCheck": false,
+      "clarityCheck": false
+    },
+    {
+      "id": "er_0021_v1",
+      "explanationId": "exp_0021_v1",
+      "reviewer": "pending-jaf-import-review",
+      "status": "pending",
+      "accuracyCheck": false,
+      "clarityCheck": false
+    },
+    {
+      "id": "er_0022_v1",
+      "explanationId": "exp_0022_v1",
+      "reviewer": "pending-jaf-import-review",
+      "status": "pending",
+      "accuracyCheck": false,
+      "clarityCheck": false
+    },
+    {
+      "id": "er_0023_v1",
+      "explanationId": "exp_0023_v1",
+      "reviewer": "pending-jaf-import-review",
+      "status": "pending",
+      "accuracyCheck": false,
+      "clarityCheck": false
+    },
+    {
+      "id": "er_0024_v1",
+      "explanationId": "exp_0024_v1",
+      "reviewer": "pending-jaf-import-review",
+      "status": "pending",
+      "accuracyCheck": false,
+      "clarityCheck": false
+    },
+    {
+      "id": "er_0025_v1",
+      "explanationId": "exp_0025_v1",
+      "reviewer": "pending-jaf-import-review",
+      "status": "pending",
+      "accuracyCheck": false,
+      "clarityCheck": false
+    },
+    {
+      "id": "er_0026_v1",
+      "explanationId": "exp_0026_v1",
+      "reviewer": "pending-jaf-import-review",
+      "status": "pending",
+      "accuracyCheck": false,
+      "clarityCheck": false
+    },
+    {
+      "id": "er_0027_v1",
+      "explanationId": "exp_0027_v1",
+      "reviewer": "pending-jaf-import-review",
+      "status": "pending",
+      "accuracyCheck": false,
+      "clarityCheck": false
+    },
+    {
+      "id": "er_0028_v1",
+      "explanationId": "exp_0028_v1",
+      "reviewer": "pending-jaf-import-review",
+      "status": "pending",
+      "accuracyCheck": false,
+      "clarityCheck": false
+    },
+    {
+      "id": "er_0029_v1",
+      "explanationId": "exp_0029_v1",
+      "reviewer": "pending-jaf-import-review",
+      "status": "pending",
+      "accuracyCheck": false,
+      "clarityCheck": false
+    },
+    {
+      "id": "er_0030_v1",
+      "explanationId": "exp_0030_v1",
+      "reviewer": "pending-jaf-import-review",
+      "status": "pending",
+      "accuracyCheck": false,
+      "clarityCheck": false
     }
   ],
   "questionTags": [
@@ -1376,11 +2447,11 @@
     },
     {
       "questionId": "q_0002",
-      "tagId": "tag_parking"
+      "tagId": "tag_crosswalk"
     },
     {
       "questionId": "q_0002",
-      "tagId": "tag_crosswalk"
+      "tagId": "tag_parking"
     },
     {
       "questionId": "q_0003",
@@ -1392,35 +2463,27 @@
     },
     {
       "questionId": "q_0004",
-      "tagId": "tag_road_sign"
+      "tagId": "tag_no_entry"
     },
     {
       "questionId": "q_0004",
-      "tagId": "tag_no_entry"
-    },
-    {
-      "questionId": "q_0015",
       "tagId": "tag_road_sign"
-    },
-    {
-      "questionId": "q_0015",
-      "tagId": "tag_no_entry"
-    },
-    {
-      "questionId": "q_0005",
-      "tagId": "tag_turning_right"
     },
     {
       "questionId": "q_0005",
       "tagId": "tag_priority"
     },
     {
-      "questionId": "q_0006",
-      "tagId": "tag_stop_sign"
+      "questionId": "q_0005",
+      "tagId": "tag_turning_right"
     },
     {
       "questionId": "q_0006",
       "tagId": "tag_stop"
+    },
+    {
+      "questionId": "q_0006",
+      "tagId": "tag_stop_sign"
     },
     {
       "questionId": "q_0007",
@@ -1432,22 +2495,18 @@
     },
     {
       "questionId": "q_0008",
-      "tagId": "tag_seatbelt"
-    },
-    {
-      "questionId": "q_0008",
       "tagId": "tag_safety_check"
     },
     {
-      "questionId": "q_0009",
-      "tagId": "tag_parking"
+      "questionId": "q_0008",
+      "tagId": "tag_seatbelt"
     },
     {
       "questionId": "q_0009",
       "tagId": "tag_on_street_parking"
     },
     {
-      "questionId": "q_0010",
+      "questionId": "q_0009",
       "tagId": "tag_parking"
     },
     {
@@ -1455,12 +2514,16 @@
       "tagId": "tag_front_end_parking"
     },
     {
-      "questionId": "q_0011",
+      "questionId": "q_0010",
       "tagId": "tag_parking"
     },
     {
       "questionId": "q_0011",
       "tagId": "tag_disabled_parking"
+    },
+    {
+      "questionId": "q_0011",
+      "tagId": "tag_parking"
     },
     {
       "questionId": "q_0012",
@@ -1485,6 +2548,46 @@
     {
       "questionId": "q_0014",
       "tagId": "tag_priority"
+    },
+    {
+      "questionId": "q_0015",
+      "tagId": "tag_no_entry"
+    },
+    {
+      "questionId": "q_0015",
+      "tagId": "tag_road_sign"
+    },
+    {
+      "questionId": "q_0016",
+      "tagId": "tag_crosswalk"
+    },
+    {
+      "questionId": "q_0016",
+      "tagId": "tag_pedestrian"
+    },
+    {
+      "questionId": "q_0017",
+      "tagId": "tag_crosswalk"
+    },
+    {
+      "questionId": "q_0017",
+      "tagId": "tag_pedestrian"
+    },
+    {
+      "questionId": "q_0018",
+      "tagId": "tag_pedestrian"
+    },
+    {
+      "questionId": "q_0021",
+      "tagId": "tag_stop_sign"
+    },
+    {
+      "questionId": "q_0029",
+      "tagId": "tag_expressway"
+    },
+    {
+      "questionId": "q_0029",
+      "tagId": "tag_passing_lane"
     }
   ],
   "userProgress": [
