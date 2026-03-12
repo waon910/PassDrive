@@ -3,12 +3,12 @@ import {
   getCategoryProgressSummaries,
   getFeaturedQuestion,
   getLatestMockExam,
-  getPublishedQuestionBundles,
-  loadSampleDataset
+  getPublishedQuestionBundles
 } from "@/lib/sample-dataset";
+import { loadContentDataset } from "@/lib/content-store";
 
 export async function getHomeViewModel() {
-  const dataset = await loadSampleDataset();
+  const dataset = await loadContentDataset();
   const overview = buildDatasetOverview(dataset);
   const featuredQuestion = getFeaturedQuestion(dataset);
   const latestMockExam = getLatestMockExam(dataset);

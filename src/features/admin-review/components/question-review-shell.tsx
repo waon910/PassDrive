@@ -20,9 +20,27 @@ interface QuestionReviewShellProps {
 
 export function QuestionReviewShell({ viewModel }: QuestionReviewShellProps) {
   const { bundle, canPublish, stage, translationReview, explanationReview } = viewModel;
+  const controlsDisabled = !viewModel.contentStore.runtimeWritable;
 
   return (
     <section className="single-column-grid">
+      {controlsDisabled ? (
+        <article className="surface-card">
+          <div className="panel-head">
+            <div>
+              <p className="eyebrow">Storage Mode</p>
+              <h2>This deployment cannot save review changes.</h2>
+            </div>
+            <span className="chip">File store</span>
+          </div>
+
+          <p className="small-copy">
+            The current content store is still file-backed. Deployments on Vercel are read-only for this workflow, so
+            approve and publish actions stay disabled until the admin data moves to a database.
+          </p>
+        </article>
+      ) : null}
+
       <article className="surface-card">
         <div className="panel-head">
           <div>
@@ -46,12 +64,12 @@ export function QuestionReviewShell({ viewModel }: QuestionReviewShellProps) {
           </Link>
           <form action={publishQuestionAction}>
             <input type="hidden" name="questionId" value={bundle.question.id} />
-            <button className="primary-button" type="submit" disabled={!canPublish}>
+            <button className="primary-button" type="submit" disabled={!canPublish || controlsDisabled}>
               Publish Question
             </button>
           </form>
         </div>
-        {!canPublish ? (
+        {!canPublish && !controlsDisabled ? (
           <p className="small-copy">Publish stays disabled until rights, translation, and explanation are approved.</p>
         ) : null}
       </article>
@@ -100,13 +118,13 @@ export function QuestionReviewShell({ viewModel }: QuestionReviewShellProps) {
           <div className="action-row">
             <form action={approveTranslationAction}>
               <input type="hidden" name="questionId" value={bundle.question.id} />
-              <button className="primary-button" type="submit">
+              <button className="primary-button" type="submit" disabled={controlsDisabled}>
                 Approve Translation
               </button>
             </form>
             <form action={requestTranslationChangesAction}>
               <input type="hidden" name="questionId" value={bundle.question.id} />
-              <button className="secondary-button" type="submit">
+              <button className="secondary-button" type="submit" disabled={controlsDisabled}>
                 Request Changes
               </button>
             </form>
@@ -148,14 +166,14 @@ export function QuestionReviewShell({ viewModel }: QuestionReviewShellProps) {
             <form action={approveExplanationAction}>
               <input type="hidden" name="questionId" value={bundle.question.id} />
               <input type="hidden" name="explanationId" value={bundle.explanation.id} />
-              <button className="primary-button" type="submit">
+              <button className="primary-button" type="submit" disabled={controlsDisabled}>
                 Approve Explanation
               </button>
             </form>
             <form action={requestExplanationChangesAction}>
               <input type="hidden" name="questionId" value={bundle.question.id} />
               <input type="hidden" name="explanationId" value={bundle.explanation.id} />
-              <button className="secondary-button" type="submit">
+              <button className="secondary-button" type="submit" disabled={controlsDisabled}>
                 Request Changes
               </button>
             </form>
@@ -221,14 +239,14 @@ export function QuestionReviewShell({ viewModel }: QuestionReviewShellProps) {
             <form action={approveSourceRightsAction}>
               <input type="hidden" name="questionId" value={bundle.question.id} />
               <input type="hidden" name="sourceReferenceId" value={bundle.sourceReference.id} />
-              <button className="primary-button" type="submit">
+              <button className="primary-button" type="submit" disabled={controlsDisabled}>
                 Approve Rights
               </button>
             </form>
             <form action={requestSourceFollowUpAction}>
               <input type="hidden" name="questionId" value={bundle.question.id} />
               <input type="hidden" name="sourceReferenceId" value={bundle.sourceReference.id} />
-              <button className="secondary-button" type="submit">
+              <button className="secondary-button" type="submit" disabled={controlsDisabled}>
                 Keep Pending
               </button>
             </form>

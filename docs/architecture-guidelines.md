@@ -171,11 +171,14 @@ Short term:
 
 Mid term:
 
-- structured content store with ingestion and review workflow
+- structured relational content store with ingestion and review workflow
+- local development target: `SQLite`
+- deployed environment target: `Postgres`
 
 Rule:
 
 - content storage format must preserve source reference, translation review, explanation review, and version metadata
+- feature code must not depend on whether the backing store is JSON, SQLite, or Postgres
 
 ### 7.2 Learner progress persistence
 
@@ -187,6 +190,7 @@ Rule:
 
 - do not couple feature components directly to `localStorage`
 - expose learner progress through a dedicated adapter or service boundary
+- do not move learner history into the admin content store unless account sync becomes a real product requirement
 
 ## 8. Rendering Strategy
 

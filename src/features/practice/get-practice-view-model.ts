@@ -1,7 +1,8 @@
-import { getCategoryProgressSummaries, getMistakeQuestionBundles, getPublishedQuestionBundles, loadSampleDataset } from "@/lib/sample-dataset";
+import { loadContentDataset } from "@/lib/content-store";
+import { getCategoryProgressSummaries, getMistakeQuestionBundles, getPublishedQuestionBundles } from "@/lib/sample-dataset";
 
 export async function getPracticeViewModel() {
-  const dataset = await loadSampleDataset();
+  const dataset = await loadContentDataset();
   const questionBundles = getPublishedQuestionBundles(dataset);
   const categoryProgress = getCategoryProgressSummaries(dataset);
   const mistakeQuestionBundles = getMistakeQuestionBundles(dataset);

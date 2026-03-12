@@ -1,6 +1,7 @@
 import type { QuestionBundle } from "@/domain/content-types";
 import { getReviewQueueStage, type ReviewQueueStage } from "@/domain/review-rules";
-import { getAllQuestionBundles, loadSampleDataset } from "@/lib/sample-dataset";
+import { getContentStoreCapabilities, type ContentStoreCapabilities, loadContentDataset } from "@/lib/content-store";
+import { getAllQuestionBundles } from "@/lib/sample-dataset";
 
 export interface ReviewDashboardItem {
   bundle: QuestionBundle;
@@ -9,6 +10,7 @@ export interface ReviewDashboardItem {
 
 export interface ReviewDashboardViewModel {
   items: ReviewDashboardItem[];
+  contentStore: ContentStoreCapabilities;
   summary: {
     needsSourceReview: number;
     needsTranslationReview: number;
@@ -27,7 +29,7 @@ const STAGE_ORDER: ReviewQueueStage[] = [
 ];
 
 export async function getReviewDashboardViewModel(): Promise<ReviewDashboardViewModel> {
-  const dataset = await loadSampleDataset();
+  const dataset = await loadContentDataset();
   const items = getAllQuestionBundles(dataset)
     .map((bundle) => ({
       bundle,
@@ -44,6 +46,7 @@ export async function getReviewDashboardViewModel(): Promise<ReviewDashboardView
 
   return {
     items,
+    contentStore: getContentStoreCapabilities(),
     summary: {
       needsSourceReview: items.filter((item) => item.stage === "needs_source_review").length,
       needsTranslationReview: items.filter((item) => item.stage === "needs_translation_review").length,

@@ -1,7 +1,8 @@
-import { getCategoryProgressSummaries, getLatestMockExam, getPublishedQuestionBundles, loadSampleDataset } from "@/lib/sample-dataset";
+import { loadContentDataset } from "@/lib/content-store";
+import { getCategoryProgressSummaries, getLatestMockExam, getPublishedQuestionBundles } from "@/lib/sample-dataset";
 
 export async function getProgressViewModel() {
-  const dataset = await loadSampleDataset();
+  const dataset = await loadContentDataset();
   const categoryProgress = getCategoryProgressSummaries(dataset);
   const latestMockExam = getLatestMockExam(dataset);
   const totalAttempts = dataset.userProgress.reduce((total, item) => total + item.attemptsTotal, 0);

@@ -1,7 +1,8 @@
-import { getMistakeQuestionBundles, getPublishedQuestionBundles, loadSampleDataset } from "@/lib/sample-dataset";
+import { loadContentDataset } from "@/lib/content-store";
+import { getMistakeQuestionBundles, getPublishedQuestionBundles } from "@/lib/sample-dataset";
 
 export async function getMistakesViewModel() {
-  const dataset = await loadSampleDataset();
+  const dataset = await loadContentDataset();
   const mistakeBundles = getMistakeQuestionBundles(dataset);
 
   return {

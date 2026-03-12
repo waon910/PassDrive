@@ -1,5 +1,8 @@
 import Link from "next/link";
 
+import { logoutAction } from "@/features/access-gate/actions";
+import { isAccessGateEnabled } from "@/lib/access-gate";
+
 const NAV_ITEMS = [
   { href: "/", label: "Home" },
   { href: "/practice", label: "Practice" },
@@ -20,6 +23,8 @@ interface AppShellProps {
 }
 
 export function AppShell({ currentPath, eyebrow, title, description, meta, children }: AppShellProps) {
+  const showAccessGateControls = isAccessGateEnabled();
+
   return (
     <main className="app-shell">
       <aside className="app-nav">
@@ -42,6 +47,17 @@ export function AppShell({ currentPath, eyebrow, title, description, meta, child
             })}
           </ul>
         </nav>
+
+        {showAccessGateControls ? (
+          <div className="app-nav-footer">
+            <p className="small-copy nav-status">Shared access gate is active.</p>
+            <form action={logoutAction}>
+              <button className="secondary-button app-nav-button" type="submit">
+                Log Out
+              </button>
+            </form>
+          </div>
+        ) : null}
       </aside>
 
       <div className="app-main">

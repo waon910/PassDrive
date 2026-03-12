@@ -8,7 +8,8 @@
     "build": "next build",
     "start": "next start",
     "typecheck": "tsc --noEmit",
-    "validate:sample": "node scripts/validate-sample-data.mjs"
+    "validate:sample": "node scripts/validate-sample-data.mjs",
+    "content:seed": "tsx scripts/content-store-seed.ts"
   },
   "keywords": [
     "nextjs",
@@ -19,14 +20,18 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "knex": "^3.1.0",
     "next": "^16.1.6",
+    "pg": "^8.20.0",
     "react": "^19.2.4",
-    "react-dom": "^19.2.4"
+    "react-dom": "^19.2.4",
+    "sqlite3": "^5.1.7"
   },
   "devDependencies": {
     "@types/node": "^25.4.0",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
+    "tsx": "^4.21.0",
     "typescript": "^5.9.3"
   }
 }

@@ -1,13 +1,13 @@
+import { loadContentDataset } from "@/lib/content-store";
 import {
   buildDatasetOverview,
   getCategoryProgressSummaries,
   getExamEligibleQuestionBundles,
-  getLatestMockExam,
-  loadSampleDataset
+  getLatestMockExam
 } from "@/lib/sample-dataset";
 
 export async function getMockExamViewModel() {
-  const dataset = await loadSampleDataset();
+  const dataset = await loadContentDataset();
   const overview = buildDatasetOverview(dataset);
   const latestMockExam = getLatestMockExam(dataset);
   const categoryProgress = getCategoryProgressSummaries(dataset);

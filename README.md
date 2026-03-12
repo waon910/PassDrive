@@ -21,12 +21,42 @@ npm run dev
 npm run build
 npm run typecheck
 npm run validate:sample
+npm run content:seed
 ```
+
+## Shared access password
+
+If you want a simple site-wide password gate, set `PASSDRIVE_APP_PASSWORD`.
+
+```bash
+PASSDRIVE_APP_PASSWORD=your-shared-password
+```
+
+The gate is intentionally lightweight. It is meant to keep casual visitors out, not to replace real user authentication.
+
+## Deployment note
+
+The current admin review flow writes back to `data/samples/mvp-sample-question-set.json`. That works for local development, but it is not a durable production persistence strategy on Vercel. To keep review and publish changes after deployment, move that workflow to a real database or another persistent store before relying on it in production.
+
+Recommended direction:
+
+- learner history stays in browser `IndexedDB`
+- content browsing can keep using typed dataset view models
+- admin review and publish state should move to a relational content store
+- local development should target `SQLite`
+- deployed environments such as Vercel should target `Postgres`
+
+Current relational-store controls:
+
+- `CONTENT_STORE_MODE=file|sqlite|postgres`
+- `CONTENT_DATABASE_URL=...`
+- `CONTENT_DB_AUTO_SEED=true|false`
 
 ## Key files
 
 - `AGENTS.md`
 - `docs/architecture-guidelines.md`
+- `docs/operations.md`
 - `docs/uiux-guidelines.md`
 - `data/samples/mvp-sample-question-set.json`
 - `src/domain/content-types.ts`

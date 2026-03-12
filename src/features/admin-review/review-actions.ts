@@ -5,8 +5,9 @@ import { redirect } from "next/navigation";
 
 import { canQuestionBePublished } from "@/domain/content-rules";
 import type { ExplanationReview, Question, ReviewStatus, SourceReference, TranslationReview } from "@/domain/content-types";
-import { mutateSampleDataset, getNowTimestamp } from "@/lib/sample-dataset-admin";
-import { getQuestionBundleById, loadSampleDataset } from "@/lib/sample-dataset";
+import { mutateContentDataset, loadContentDataset } from "@/lib/content-store";
+import { getNowTimestamp } from "@/lib/sample-dataset-admin";
+import { getQuestionBundleById } from "@/lib/sample-dataset";
 
 function requireString(value: FormDataEntryValue | null, fieldName: string) {
   if (typeof value !== "string" || value.length === 0) {
@@ -70,7 +71,7 @@ export async function approveSourceRightsAction(formData: FormData) {
   const sourceReferenceId = requireString(formData.get("sourceReferenceId"), "sourceReferenceId");
   const reviewedAt = getNowTimestamp();
 
-  await mutateSampleDataset((dataset) => {
+  await mutateContentDataset((dataset) => {
     const sourceReference = dataset.sourceReferences.find((item) => item.id === sourceReferenceId);
     if (!sourceReference) {
       throw new Error(`Source reference not found: ${sourceReferenceId}`);
@@ -97,7 +98,7 @@ export async function requestSourceFollowUpAction(formData: FormData) {
   const sourceReferenceId = requireString(formData.get("sourceReferenceId"), "sourceReferenceId");
   const reviewedAt = getNowTimestamp();
 
-  await mutateSampleDataset((dataset) => {
+  await mutateContentDataset((dataset) => {
     const sourceReference = dataset.sourceReferences.find((item) => item.id === sourceReferenceId);
     if (!sourceReference) {
       throw new Error(`Source reference not found: ${sourceReferenceId}`);
@@ -117,7 +118,7 @@ export async function approveTranslationAction(formData: FormData) {
   const questionId = requireString(formData.get("questionId"), "questionId");
   const reviewedAt = getNowTimestamp();
 
-  await mutateSampleDataset((dataset) => {
+  await mutateContentDataset((dataset) => {
     const question = dataset.questions.find((item) => item.id === questionId);
     const review = dataset.translationReviews.find((item) => item.questionId === questionId);
 
@@ -144,7 +145,7 @@ export async function requestTranslationChangesAction(formData: FormData) {
   const questionId = requireString(formData.get("questionId"), "questionId");
   const reviewedAt = getNowTimestamp();
 
-  await mutateSampleDataset((dataset) => {
+  await mutateContentDataset((dataset) => {
     const question = dataset.questions.find((item) => item.id === questionId);
     const review = dataset.translationReviews.find((item) => item.questionId === questionId);
 
@@ -167,7 +168,7 @@ export async function approveExplanationAction(formData: FormData) {
   const explanationId = requireString(formData.get("explanationId"), "explanationId");
   const reviewedAt = getNowTimestamp();
 
-  await mutateSampleDataset((dataset) => {
+  await mutateContentDataset((dataset) => {
     const question = dataset.questions.find((item) => item.id === questionId);
     const review = dataset.explanationReviews.find((item) => item.explanationId === explanationId);
 
@@ -195,7 +196,7 @@ export async function requestExplanationChangesAction(formData: FormData) {
   const explanationId = requireString(formData.get("explanationId"), "explanationId");
   const reviewedAt = getNowTimestamp();
 
-  await mutateSampleDataset((dataset) => {
+  await mutateContentDataset((dataset) => {
     const question = dataset.questions.find((item) => item.id === questionId);
     const review = dataset.explanationReviews.find((item) => item.explanationId === explanationId);
 
@@ -216,14 +217,14 @@ export async function requestExplanationChangesAction(formData: FormData) {
 export async function publishQuestionAction(formData: FormData) {
   const questionId = requireString(formData.get("questionId"), "questionId");
   const reviewedAt = getNowTimestamp();
-  const dataset = await loadSampleDataset();
+  const dataset = await loadContentDataset();
   const bundle = getQuestionBundleById(dataset, questionId);
 
   if (!bundle || !canQuestionBePublished(bundle.question, bundle.sourceReference)) {
     throw new Error(`Question cannot be published yet: ${questionId}`);
   }
 
-  await mutateSampleDataset((mutableDataset) => {
+  await mutateContentDataset((mutableDataset) => {
     const question = mutableDataset.questions.find((item) => item.id === questionId);
     if (!question) {
       throw new Error(`Question not found: ${questionId}`);

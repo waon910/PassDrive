@@ -83,7 +83,7 @@ dl {
   border-radius: 24px;
   padding: 20px 14px;
   display: grid;
-  grid-template-rows: auto 1fr;
+  grid-template-rows: auto 1fr auto;
   gap: 20px;
   position: sticky;
   top: 16px;
@@ -115,6 +115,21 @@ dl {
   padding: 0;
   display: grid;
   gap: 8px;
+}
+
+.app-nav-footer {
+  display: grid;
+  gap: 10px;
+  padding: 14px 8px 0;
+  border-top: 1px solid rgba(20, 38, 60, 0.08);
+}
+
+.nav-status {
+  font-size: 0.84rem;
+}
+
+.app-nav-button {
+  width: 100%;
 }
 
 .nav-link {
@@ -481,6 +496,12 @@ dl {
   color: var(--ink-strong);
 }
 
+.field-label {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--ink-strong);
+}
+
 .compact-list {
   max-height: 56vh;
   overflow: auto;
@@ -818,6 +839,50 @@ dl {
 .chip.fail {
   background: rgba(159, 79, 73, 0.12);
   border-color: rgba(159, 79, 73, 0.2);
+  color: var(--danger);
+}
+
+.password-gate {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+}
+
+.password-gate-card {
+  width: min(100%, 560px);
+  display: grid;
+  gap: 24px;
+  padding: 28px;
+  border-radius: 28px;
+  background: rgba(251, 247, 240, 0.9);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow);
+}
+
+.password-gate-card h1 {
+  font-family: "Iowan Old Style", "Palatino Linotype", serif;
+  font-size: clamp(2rem, 4vw, 3rem);
+  line-height: 0.98;
+  letter-spacing: -0.04em;
+  max-width: 12ch;
+}
+
+.password-gate-form {
+  display: grid;
+  gap: 16px;
+}
+
+.password-gate-form .primary-button {
+  width: 100%;
+}
+
+.form-error {
+  padding: 12px 14px;
+  border-radius: 16px;
+  background: rgba(159, 79, 73, 0.12);
+  border: 1px solid rgba(159, 79, 73, 0.2);
   color: var(--danger);
 }
 
