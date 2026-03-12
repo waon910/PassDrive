@@ -35,7 +35,7 @@ export function ResetReviewStatePanel({ canReset }: ResetReviewStatePanelProps) 
           setIsDialogOpen(false);
           router.refresh();
         } catch (error) {
-          setErrorMessage(error instanceof Error ? error.message : "Failed to reset review state.");
+          setErrorMessage(error instanceof Error ? error.message : "Failed to reset admin state.");
         }
       })();
     });
@@ -47,21 +47,21 @@ export function ResetReviewStatePanel({ canReset }: ResetReviewStatePanelProps) 
         <div className="panel-head">
           <div>
             <p className="eyebrow">Reset State</p>
-            <h2>Clear all progress and review decisions.</h2>
+            <h2>Clear progress and restore all questions to published.</h2>
           </div>
           <span className="chip">Danger zone</span>
         </div>
 
         <p className="small-copy">
-          This resets content review statuses, publication flags, sample progress records, and the saved learner
-          history in this browser.
+          This restores every question to the default published state, clears saved progress records, and removes the
+          learner history stored in this browser.
         </p>
 
         {errorMessage ? <p className="form-error">{errorMessage}</p> : null}
 
         <div className="action-row">
           <button className="secondary-button danger-button" type="button" onClick={() => setIsDialogOpen(true)} disabled={!canReset}>
-            Reset All Progress and Reviews
+            Reset Visibility and Progress
           </button>
         </div>
 
@@ -81,8 +81,8 @@ export function ResetReviewStatePanel({ canReset }: ResetReviewStatePanelProps) 
             </div>
 
             <p className="small-copy">
-              All review approvals, publish states, sample progress, and local learner history on this device will be
-              cleared.
+              All questions will become published again. Sample progress and local learner history on this device will
+              also be cleared.
             </p>
 
             <div className="action-row">

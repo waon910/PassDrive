@@ -1,26 +1,18 @@
 import Link from "next/link";
 
 import { QuestionFigure } from "@/components/question-figure";
-import { formatQuestionTypeLabel, formatReviewStatusLabel, formatRightsStatusLabel } from "@/domain/content-rules";
-import { formatReviewQueueStageLabel } from "@/domain/review-rules";
+import { formatQuestionStatusLabel, formatQuestionTypeLabel } from "@/domain/content-rules";
 import type { QuestionReviewViewModel } from "@/features/admin-review/get-question-review-view-model";
-import {
-  approveExplanationAction,
-  approveSourceRightsAction,
-  approveTranslationAction,
-  publishQuestionAction,
-  requestExplanationChangesAction,
-  requestSourceFollowUpAction,
-  requestTranslationChangesAction
-} from "@/features/admin-review/review-actions";
+import { publishQuestionAction, unpublishQuestionAction } from "@/features/admin-review/review-actions";
 
 interface QuestionReviewShellProps {
   viewModel: QuestionReviewViewModel;
 }
 
 export function QuestionReviewShell({ viewModel }: QuestionReviewShellProps) {
-  const { bundle, canPublish, stage, translationReview, explanationReview } = viewModel;
+  const { bundle, canPublish } = viewModel;
   const controlsDisabled = !viewModel.contentStore.runtimeWritable;
+  const isPublished = bundle.question.status === "published";
 
   return (
     <section className="single-column-grid">
@@ -29,14 +21,14 @@ export function QuestionReviewShell({ viewModel }: QuestionReviewShellProps) {
           <div className="panel-head">
             <div>
               <p className="eyebrow">Storage Mode</p>
-              <h2>This deployment cannot save review changes.</h2>
+              <h2>This deployment cannot save visibility changes.</h2>
             </div>
             <span className="chip">File store</span>
           </div>
 
           <p className="small-copy">
             The current content store is still file-backed. Deployments on Vercel are read-only for this workflow, so
-            approve and publish actions stay disabled until the admin data moves to a database.
+            publish and unpublish actions stay disabled until the admin data moves to a database.
           </p>
         </article>
       ) : null}
@@ -44,10 +36,10 @@ export function QuestionReviewShell({ viewModel }: QuestionReviewShellProps) {
       <article className="surface-card">
         <div className="panel-head">
           <div>
-            <p className="eyebrow">Question Review</p>
+            <p className="eyebrow">Question Detail</p>
             <h2>{bundle.question.id}</h2>
           </div>
-          <span className="chip">{formatReviewQueueStageLabel(stage)}</span>
+          <span className="chip">{formatQuestionStatusLabel(bundle.question.status)}</span>
         </div>
 
         <p className="small-copy">
@@ -60,18 +52,24 @@ export function QuestionReviewShell({ viewModel }: QuestionReviewShellProps) {
 
         <div className="action-row">
           <Link className="secondary-button link-button" href="/admin/review">
-            Back to Queue
+            Back to List
           </Link>
-          <form action={publishQuestionAction}>
-            <input type="hidden" name="questionId" value={bundle.question.id} />
-            <button className="primary-button" type="submit" disabled={!canPublish || controlsDisabled}>
-              Publish Question
-            </button>
-          </form>
+          {isPublished ? (
+            <form action={unpublishQuestionAction}>
+              <input type="hidden" name="questionId" value={bundle.question.id} />
+              <button className="secondary-button danger-button" type="submit" disabled={controlsDisabled}>
+                Unpublish Question
+              </button>
+            </form>
+          ) : (
+            <form action={publishQuestionAction}>
+              <input type="hidden" name="questionId" value={bundle.question.id} />
+              <button className="primary-button" type="submit" disabled={!canPublish || controlsDisabled}>
+                Publish Question
+              </button>
+            </form>
+          )}
         </div>
-        {!canPublish && !controlsDisabled ? (
-          <p className="small-copy">Publish stays disabled until rights, translation, and explanation are approved.</p>
-        ) : null}
       </article>
 
       <div className="admin-review-layout">
@@ -81,7 +79,7 @@ export function QuestionReviewShell({ viewModel }: QuestionReviewShellProps) {
               <p className="eyebrow">Question</p>
               <h2>Learner-facing copy</h2>
             </div>
-            <span className="chip">{formatReviewStatusLabel(bundle.question.translationReviewStatus)}</span>
+            <span className="chip">{bundle.choices.length} choices</span>
           </div>
 
           <div className="detail-list">
@@ -109,26 +107,6 @@ export function QuestionReviewShell({ viewModel }: QuestionReviewShellProps) {
               </div>
             ))}
           </div>
-
-          <div className="admin-review-note">
-            <strong>Translation review notes</strong>
-            <p className="small-copy">{translationReview?.notes ?? "No review record."}</p>
-          </div>
-
-          <div className="action-row">
-            <form action={approveTranslationAction}>
-              <input type="hidden" name="questionId" value={bundle.question.id} />
-              <button className="primary-button" type="submit" disabled={controlsDisabled}>
-                Approve Translation
-              </button>
-            </form>
-            <form action={requestTranslationChangesAction}>
-              <input type="hidden" name="questionId" value={bundle.question.id} />
-              <button className="secondary-button" type="submit" disabled={controlsDisabled}>
-                Request Changes
-              </button>
-            </form>
-          </div>
         </article>
 
         <article className="surface-card">
@@ -137,7 +115,7 @@ export function QuestionReviewShell({ viewModel }: QuestionReviewShellProps) {
               <p className="eyebrow">Explanation</p>
               <h2>Why this answer is correct</h2>
             </div>
-            <span className="chip">{formatReviewStatusLabel(bundle.question.explanationReviewStatus)}</span>
+            <span className="chip">{bundle.explanation.origin}</span>
           </div>
 
           <p className="question-stem">{bundle.explanation.bodyEn}</p>
@@ -156,37 +134,15 @@ export function QuestionReviewShell({ viewModel }: QuestionReviewShellProps) {
               <dd>{bundle.explanation.createdBy}</dd>
             </div>
           </div>
-
-          <div className="admin-review-note">
-            <strong>Explanation review notes</strong>
-            <p className="small-copy">{explanationReview?.notes ?? "No review record."}</p>
-          </div>
-
-          <div className="action-row">
-            <form action={approveExplanationAction}>
-              <input type="hidden" name="questionId" value={bundle.question.id} />
-              <input type="hidden" name="explanationId" value={bundle.explanation.id} />
-              <button className="primary-button" type="submit" disabled={controlsDisabled}>
-                Approve Explanation
-              </button>
-            </form>
-            <form action={requestExplanationChangesAction}>
-              <input type="hidden" name="questionId" value={bundle.question.id} />
-              <input type="hidden" name="explanationId" value={bundle.explanation.id} />
-              <button className="secondary-button" type="submit" disabled={controlsDisabled}>
-                Request Changes
-              </button>
-            </form>
-          </div>
         </article>
 
         <article className="surface-card">
           <div className="panel-head">
             <div>
               <p className="eyebrow">Source</p>
-              <h2>Rights and audit context</h2>
+              <h2>Source context</h2>
             </div>
-            <span className="chip">{formatRightsStatusLabel(bundle.sourceReference.rightsStatus)}</span>
+            <span className="chip">{bundle.sourceReference.originalLanguage}</span>
           </div>
 
           <div className="detail-list admin-detail-list">
@@ -197,10 +153,6 @@ export function QuestionReviewShell({ viewModel }: QuestionReviewShellProps) {
             <div>
               <dt>Publisher</dt>
               <dd>{bundle.sourceReference.publisher ?? "n/a"}</dd>
-            </div>
-            <div>
-              <dt>Language</dt>
-              <dd>{bundle.sourceReference.originalLanguage}</dd>
             </div>
             <div>
               <dt>Fetched</dt>
@@ -220,10 +172,12 @@ export function QuestionReviewShell({ viewModel }: QuestionReviewShellProps) {
             </div>
           </div>
 
-          <div className="admin-review-note">
-            <strong>Rights notes</strong>
-            <p className="small-copy">{bundle.sourceReference.rightsNotes ?? "No rights notes."}</p>
-          </div>
+          {bundle.sourceReference.rightsNotes ? (
+            <div className="admin-review-note">
+              <strong>Source notes</strong>
+              <p className="small-copy">{bundle.sourceReference.rightsNotes}</p>
+            </div>
+          ) : null}
 
           {bundle.tags.length > 0 ? (
             <div className="admin-tag-row">
@@ -234,23 +188,6 @@ export function QuestionReviewShell({ viewModel }: QuestionReviewShellProps) {
               ))}
             </div>
           ) : null}
-
-          <div className="action-row">
-            <form action={approveSourceRightsAction}>
-              <input type="hidden" name="questionId" value={bundle.question.id} />
-              <input type="hidden" name="sourceReferenceId" value={bundle.sourceReference.id} />
-              <button className="primary-button" type="submit" disabled={controlsDisabled}>
-                Approve Rights
-              </button>
-            </form>
-            <form action={requestSourceFollowUpAction}>
-              <input type="hidden" name="questionId" value={bundle.question.id} />
-              <input type="hidden" name="sourceReferenceId" value={bundle.sourceReference.id} />
-              <button className="secondary-button" type="submit" disabled={controlsDisabled}>
-                Keep Pending
-              </button>
-            </form>
-          </div>
         </article>
       </div>
     </section>

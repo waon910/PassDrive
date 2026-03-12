@@ -87,9 +87,9 @@ npm run content:seed:neon
 問題を追加するときのルール:
 
 - 必ず対応する `SourceReference` を作るか紐付ける
-- 権利確認が終わっていない限り `rightsStatus` は `review_required` のままにする
-- 新規問題は `translation_review` などの未公開状態で入れる
-- `TranslationReview` と `ExplanationReview` のレコードを必ず用意する
+- 画像がある場合は `imageAssetPath` と `imageAltTextEn` を揃える
+- 新規問題は `published` を初期値にする
+- 初期公開したくない場合だけ `unpublished` に変更する
 
 ### 3.2 ローカルで検証する
 
@@ -103,11 +103,13 @@ npm run build
 
 どれかが失敗する状態では、コンテンツ変更を出荷しません。
 
-### 3.3 ローカルでレビューして公開する
+### 3.3 ローカルで公開状態を確認する
 
-ローカルの管理画面レビュー UI を使って、以下の順に確認します。
+ローカルの管理画面または Practice 画面から、問題の公開状態を確認します。
 
-- 権利確認を承認する
+- `published` の問題だけが learner routes に出ること
+- 必要な問題を `unpublished` に切り替えられること
+- Admin Review から `published` に戻せること
 - 翻訳レビューを承認する
 - 解説レビューを承認する
 - 公開する
@@ -195,9 +197,9 @@ JSON dataset の役割は今後こうします。
 DB ベースのコンテンツストア実装後は、以下の流れにします。
 
 1. 問題をリレーショナルなコンテンツストアへ取り込む
-2. ローカル SQLite または共有 preview DB で、権利・翻訳・解説をレビューする
-3. 管理画面から公開する
-4. 学習者向け画面は、Postgres に保存された公開済みデータを読む
+2. ローカル SQLite または共有 preview DB で内容と公開状態を確認する
+3. 管理画面から `published` / `unpublished` を切り替える
+4. 学習者向け画面は、Postgres に保存された `published` データを読む
 
 この段階でも JSON import 自体は有用ですが、公開状態の正本は DB に持たせます。
 
@@ -247,9 +249,9 @@ CONTENT_DB_AUTO_SEED=false
 2. JSON は seed / import 用フォーマットとして残す
 3. 現在の sample dataset からローカル SQLite を seed する
 4. Vercel で使う Postgres を preview 用に seed する
-5. review action を DB ベースの保存へ切り替える
+5. publish / unpublish action を DB ベースの保存へ切り替える
 6. publish と revalidate の挙動を確認する
-7. 通常運用から file-backed review を外す
+7. 通常運用から file-backed content control を外す
 
 ## 8. 今はやらないこと
 

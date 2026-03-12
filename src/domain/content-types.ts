@@ -1,18 +1,10 @@
 export type SourceType = "official_site" | "official_pdf" | "official_booklet" | "other";
 export type RegionScope = "national" | "prefecture_specific";
-export type RightsStatus = "unchecked" | "review_required" | "approved" | "rejected";
 export type ContentVersionStatus = "draft" | "active" | "superseded";
 export type QuestionType = "true_false" | "single_choice";
 export type Difficulty = "easy" | "medium" | "hard";
-export type QuestionStatus =
-  | "draft"
-  | "translation_review"
-  | "explanation_review"
-  | "ready"
-  | "published"
-  | "archived";
+export type QuestionStatus = "published" | "unpublished";
 export type ExplanationOrigin = "source" | "ai" | "manual";
-export type ReviewStatus = "pending" | "approved" | "changes_requested";
 export type MasteryLevel = "new" | "learning" | "needs_review" | "mastered";
 export type AnswerResult = "correct" | "incorrect";
 export type ExamMode = "mock_exam" | "practice_set" | "mistakes_only";
@@ -46,9 +38,7 @@ export interface SourceReference {
   originalLanguage: LocaleCode;
   fetchedAt: string;
   snapshotPath?: string;
-  rightsStatus: RightsStatus;
   rightsNotes?: string;
-  lastVerifiedAt?: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -97,8 +87,6 @@ export interface Question {
   imageCaptionEn?: string;
   explanationOrigin: ExplanationOrigin;
   activeExplanationId: string;
-  translationReviewStatus: ReviewStatus;
-  explanationReviewStatus: ReviewStatus;
   isExamEligible: boolean;
   publishedAt?: string;
   createdAt: string;
@@ -126,28 +114,6 @@ export interface Explanation {
   createdBy: string;
   createdAt: string;
   updatedAt: string;
-}
-
-export interface TranslationReview {
-  id: string;
-  questionId: string;
-  reviewer: string;
-  status: ReviewStatus;
-  accuracyCheck: boolean;
-  naturalnessCheck: boolean;
-  notes?: string;
-  reviewedAt?: string;
-}
-
-export interface ExplanationReview {
-  id: string;
-  explanationId: string;
-  reviewer: string;
-  status: ReviewStatus;
-  accuracyCheck: boolean;
-  clarityCheck: boolean;
-  notes?: string;
-  reviewedAt?: string;
 }
 
 export interface QuestionTag {
@@ -215,8 +181,6 @@ export interface SampleQuestionDataset {
   questions: Question[];
   choices: Choice[];
   explanations: Explanation[];
-  translationReviews: TranslationReview[];
-  explanationReviews: ExplanationReview[];
   questionTags: QuestionTag[];
   userProgress: UserProgress[];
   examSessions: ExamSession[];
@@ -230,8 +194,6 @@ export interface QuestionBundle {
   category: Category;
   choices: Choice[];
   explanation: Explanation;
-  translationReview?: TranslationReview;
-  explanationReview?: ExplanationReview;
   tags: Tag[];
 }
 

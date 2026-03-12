@@ -50,7 +50,7 @@ export async function mutateContentDataset(mutation: (dataset: SampleQuestionDat
 
   if (!capabilities.runtimeWritable) {
     throw new Error(
-      "File-backed content storage is read-only on Vercel. Configure a database-backed content store before using review actions in deployment."
+      "File-backed content storage is read-only on Vercel. Configure a database-backed content store before using publish controls in deployment."
     );
   }
 

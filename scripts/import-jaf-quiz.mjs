@@ -267,7 +267,7 @@ async function downloadImage(url, ref) {
 function ensureSourceReference(dataset, sourcePage, fetchedAt) {
   const existing = dataset.sourceReferences.find((sourceReference) => sourceReference.id === sourcePage.sourceId);
   const genericRightsNotes =
-    "Imported from a public JAF quiz page. Local image assets were downloaded for review only. Manual rights review is required before publication.";
+    "Imported from a public JAF quiz page. Local image assets were downloaded from the public source page.";
 
   if (existing) {
     existing.sourceName = sourcePage.sourceName;
@@ -276,9 +276,7 @@ function ensureSourceReference(dataset, sourcePage, fetchedAt) {
     existing.publisher = "Japan Automobile Federation (JAF)";
     existing.regionScope = "national";
     existing.originalLanguage = "en";
-    existing.rightsStatus = "review_required";
     existing.rightsNotes = genericRightsNotes;
-    existing.lastVerifiedAt = fetchedAt;
     existing.updatedAt = fetchedAt;
 
     if (!existing.fetchedAt) {
@@ -297,9 +295,7 @@ function ensureSourceReference(dataset, sourcePage, fetchedAt) {
     regionScope: "national",
     originalLanguage: "en",
     fetchedAt,
-    rightsStatus: "review_required",
     rightsNotes: genericRightsNotes,
-    lastVerifiedAt: fetchedAt,
     createdAt: fetchedAt,
     updatedAt: fetchedAt
   });
@@ -367,8 +363,6 @@ async function main() {
       const questionId = nextEntityId("q", dataset.questions);
       const questionNumber = questionId.slice(2);
       const explanationId = `exp_${questionNumber}_v1`;
-      const translationReviewId = `tr_${questionNumber}_v1`;
-      const explanationReviewId = `er_${questionNumber}_v1`;
 
       dataset.questions.push({
         id: questionId,
@@ -378,7 +372,7 @@ async function main() {
         questionType: "single_choice",
         mainCategoryId: CATEGORY_BY_REF[parsedQuestion.ref] ?? "cat_safety_checks",
         difficulty: DIFFICULTY_BY_REF[parsedQuestion.ref] ?? "medium",
-        status: "translation_review",
+        status: "published",
         originalStem: parsedQuestion.originalStem,
         originalLanguage: "en",
         englishStem: parsedQuestion.originalStem,
@@ -389,9 +383,8 @@ async function main() {
         imageCaptionEn: imageAssetPath ? parsedQuestion.title : undefined,
         explanationOrigin: "source",
         activeExplanationId: explanationId,
-        translationReviewStatus: "pending",
-        explanationReviewStatus: "pending",
         isExamEligible: true,
+        publishedAt: now,
         createdAt: now,
         updatedAt: now
       });
@@ -418,24 +411,6 @@ async function main() {
         updatedAt: now
       });
 
-      dataset.translationReviews.push({
-        id: translationReviewId,
-        questionId,
-        reviewer: "pending-jaf-import-review",
-        status: "pending",
-        accuracyCheck: false,
-        naturalnessCheck: false
-      });
-
-      dataset.explanationReviews.push({
-        id: explanationReviewId,
-        explanationId,
-        reviewer: "pending-jaf-import-review",
-        status: "pending",
-        accuracyCheck: false,
-        clarityCheck: false
-      });
-
       ensureQuestionTags(dataset, questionId, parsedQuestion.ref);
 
       existingQuestionsByRef.set(parsedQuestion.ref, dataset.questions[dataset.questions.length - 1]);
@@ -446,14 +421,12 @@ async function main() {
 
   dataset.meta.generatedAt = now;
   dataset.meta.notes =
-    "Sample fixture with synthetic MVP seed questions, JAF traffic-rules study prompts, and the full JAF Japan Traffic Rules Training quiz set with locally downloaded figure assets. All JAF-derived items remain blocked behind manual rights and review checks.";
+    "Sample fixture with synthetic MVP seed questions, JAF traffic-rules study prompts, and the full JAF Japan Traffic Rules Training quiz set with locally downloaded figure assets.";
 
   dataset.sourceReferences.sort((left, right) => left.id.localeCompare(right.id));
   dataset.questions.sort((left, right) => left.id.localeCompare(right.id));
   dataset.choices.sort((left, right) => left.id.localeCompare(right.id));
   dataset.explanations.sort((left, right) => left.id.localeCompare(right.id));
-  dataset.translationReviews.sort((left, right) => left.id.localeCompare(right.id));
-  dataset.explanationReviews.sort((left, right) => left.id.localeCompare(right.id));
   dataset.questionTags.sort((left, right) =>
     left.questionId === right.questionId
       ? left.tagId.localeCompare(right.tagId)

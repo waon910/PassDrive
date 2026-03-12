@@ -343,9 +343,7 @@ async function main() {
         regionScope: "national",
         originalLanguage: "en",
         fetchedAt: now,
-        rightsStatus: "approved",
         rightsNotes: `${licenseShortName}. Downloaded from the Wikimedia Commons road sign gallery for Japan.${credit ? ` Credit: ${credit}.` : ""}`,
-        lastVerifiedAt: now,
         createdAt: now,
         updatedAt: now
       },

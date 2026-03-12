@@ -25,7 +25,7 @@ export default async function QuestionReviewPage({ params }: QuestionReviewPageP
       currentPath="/admin/review"
       eyebrow="Admin Review"
       title="Question Detail"
-      description="Review one question before it reaches learners."
+      description="Check one question and adjust learner visibility."
       meta={
         <div className="hero-meta-stack">
           <div className="hero-meta-card">

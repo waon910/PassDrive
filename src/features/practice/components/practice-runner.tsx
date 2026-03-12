@@ -5,6 +5,7 @@ import { useState } from "react";
 import { QuestionFigure } from "@/components/question-figure";
 import { buildSessionSummary, isChoiceCorrect } from "@/domain/session-rules";
 import type { QuestionBundle } from "@/domain/content-types";
+import { unpublishQuestionAction } from "@/features/admin-review/review-actions";
 import { recordPracticeAttempt } from "@/lib/learner-history-store";
 import type { CategoryProgressSummary } from "@/lib/sample-dataset";
 
@@ -238,6 +239,16 @@ export function PracticeRunner({
             <span className="home-highlight-chip">Mode {modeLabel}</span>
             <span className="home-highlight-chip">{currentBundle.choices.length} choice(s)</span>
             <span className="home-highlight-chip">{submitted ? "Answer locked" : "Choose one answer"}</span>
+          </div>
+
+          <div className="action-row">
+            <form action={unpublishQuestionAction}>
+              <input type="hidden" name="questionId" value={currentBundle.question.id} />
+              <input type="hidden" name="redirectTo" value="/practice" />
+              <button className="secondary-button danger-button" type="submit">
+                Unpublish Question
+              </button>
+            </form>
           </div>
 
           <div className="progress-track" aria-hidden="true">

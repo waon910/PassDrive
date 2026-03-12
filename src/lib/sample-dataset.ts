@@ -6,14 +6,12 @@ import type {
   DatasetOverview,
   ExamSession,
   Explanation,
-  ExplanationReview,
   GlossaryTerm,
   Question,
   QuestionBundle,
   SampleQuestionDataset,
   SourceReference,
-  Tag,
-  TranslationReview
+  Tag
 } from "@/domain/content-types";
 
 const DEFAULT_SAMPLE_DATASET_PATH = path.join(
@@ -31,8 +29,6 @@ const REQUIRED_COLLECTIONS: Array<keyof Omit<SampleQuestionDataset, "meta">> = [
   "questions",
   "choices",
   "explanations",
-  "translationReviews",
-  "explanationReviews",
   "questionTags",
   "userProgress",
   "examSessions",
@@ -111,12 +107,6 @@ function getQuestionBundles(
   const categoryMap = buildMap<Category>(dataset.categories);
   const explanationMap = buildMap<Explanation>(dataset.explanations);
   const tagMap = buildMap<Tag>(dataset.tags);
-  const translationReviewMap = new Map<string, TranslationReview>(
-    dataset.translationReviews.map((review) => [review.questionId, review])
-  );
-  const explanationReviewMap = new Map<string, ExplanationReview>(
-    dataset.explanationReviews.map((review) => [review.explanationId, review])
-  );
   const choicesByQuestionId = new Map<string, SampleQuestionDataset["choices"]>();
   const tagsByQuestionId = new Map<string, Tag[]>();
 
@@ -156,8 +146,6 @@ function getQuestionBundles(
           (left, right) => left.displayOrder - right.displayOrder
         ),
         explanation,
-        translationReview: translationReviewMap.get(question.id),
-        explanationReview: explanationReviewMap.get(explanation.id),
         tags: tagsByQuestionId.get(question.id) ?? []
       };
     });

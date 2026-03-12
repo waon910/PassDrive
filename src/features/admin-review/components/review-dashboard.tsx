@@ -15,14 +15,14 @@ export function ReviewDashboard({ viewModel }: ReviewDashboardProps) {
           <div className="panel-head">
             <div>
               <p className="eyebrow">Storage Mode</p>
-              <h2>Review actions are read-only on this deployment.</h2>
+              <h2>Visibility actions are read-only on this deployment.</h2>
             </div>
             <span className="chip">File store</span>
           </div>
 
           <p className="small-copy">
-            This app is still using file-backed content storage. On Vercel, review and publish updates will not persist
-            until the admin workflow moves to a database-backed store.
+            This app is still using file-backed content storage. On Vercel, publish and unpublish updates will not
+            persist until the admin workflow moves to a database-backed store.
           </p>
         </article>
       ) : null}

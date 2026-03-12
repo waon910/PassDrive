@@ -11,12 +11,12 @@ export default async function AdminReviewPage() {
     <AppShell
       currentPath="/admin/review"
       eyebrow="Admin Review"
-      title="Content Review"
-      description="Check rights, question wording, and explanations before publication."
+      title="Content Visibility"
+      description="Publish or hide questions from learner-facing routes."
       meta={
         <div className="hero-meta-stack">
           <div className="hero-meta-card">
-            <span className="meta-label">In queue</span>
+            <span className="meta-label">Questions</span>
             <strong>{viewModel.items.length}</strong>
           </div>
           <div className="hero-meta-card">

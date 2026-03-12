@@ -306,7 +306,7 @@ async function downloadImage(url) {
 
 function ensureSourceReference(dataset, now) {
   const rightsNotes =
-    "Imported from Car License Navi Japanese question pages with machine-translated English drafts and locally downloaded figure assets. Rights review and language review are required before publication.";
+    "Imported from Car License Navi Japanese question pages with machine-translated English drafts and locally downloaded figure assets.";
   const existing = dataset.sourceReferences.find((sourceReference) => sourceReference.id === SOURCE_REFERENCE_ID);
 
   if (existing) {
@@ -316,9 +316,7 @@ function ensureSourceReference(dataset, now) {
     existing.publisher = "合宿免許ナビ";
     existing.regionScope = "national";
     existing.originalLanguage = "ja";
-    existing.rightsStatus = "review_required";
     existing.rightsNotes = rightsNotes;
-    existing.lastVerifiedAt = now;
     existing.updatedAt = now;
     if (!existing.fetchedAt) {
       existing.fetchedAt = now;
@@ -335,9 +333,7 @@ function ensureSourceReference(dataset, now) {
     regionScope: "national",
     originalLanguage: "ja",
     fetchedAt: now,
-    rightsStatus: "review_required",
     rightsNotes,
-    lastVerifiedAt: now,
     createdAt: now,
     updatedAt: now
   });
@@ -404,8 +400,6 @@ async function main() {
     const questionId = nextEntityId("q", dataset.questions);
     const questionNumber = questionId.slice(2);
     const explanationId = `exp_${questionNumber}_v1`;
-    const translationReviewId = `tr_${questionNumber}_v1`;
-    const explanationReviewId = `er_${questionNumber}_v1`;
     const englishStem = translationMap.get(record.originalStem) ?? record.originalStem;
     const explanationEn = translationMap.get(record.explanationJa) ?? record.explanationJa;
 
@@ -417,7 +411,7 @@ async function main() {
       questionType: "true_false",
       mainCategoryId: pickCategoryId(record.originalStem),
       difficulty: pickDifficulty(record.originalStem),
-      status: "translation_review",
+      status: "published",
       originalStem: record.originalStem,
       originalLanguage: "ja",
       englishStem,
@@ -428,9 +422,8 @@ async function main() {
       imageCaptionEn: imageAssetPath ? "Use the figure attached to the source question." : undefined,
       explanationOrigin: "source",
       activeExplanationId: explanationId,
-      translationReviewStatus: "pending",
-      explanationReviewStatus: "pending",
       isExamEligible: true,
+      publishedAt: now,
       createdAt: now,
       updatedAt: now
     });
@@ -467,24 +460,6 @@ async function main() {
       updatedAt: now
     });
 
-    dataset.translationReviews.push({
-      id: translationReviewId,
-      questionId,
-      reviewer: "pending-car-license-review",
-      status: "pending",
-      accuracyCheck: false,
-      naturalnessCheck: false
-    });
-
-    dataset.explanationReviews.push({
-      id: explanationReviewId,
-      explanationId,
-      reviewer: "pending-car-license-review",
-      status: "pending",
-      accuracyCheck: false,
-      clarityCheck: false
-    });
-
     existingQuestionsByRef.set(record.ref, dataset.questions[dataset.questions.length - 1]);
     existingQuestionsByOriginalStem.set(normalizeText(record.originalStem), dataset.questions[dataset.questions.length - 1]);
     addedQuestions += 1;
@@ -496,14 +471,12 @@ async function main() {
 
   dataset.meta.generatedAt = now;
   dataset.meta.notes =
-    "Sample fixture with synthetic MVP seed questions, the full JAF traffic quiz set, and Car License Navi Japanese honmen question imports translated into English drafts. All externally sourced items remain blocked behind manual rights and review checks.";
+    "Sample fixture with synthetic MVP seed questions, the full JAF traffic quiz set, and Car License Navi Japanese honmen question imports translated into English drafts.";
 
   dataset.sourceReferences.sort((left, right) => left.id.localeCompare(right.id));
   dataset.questions.sort((left, right) => left.id.localeCompare(right.id));
   dataset.choices.sort((left, right) => left.id.localeCompare(right.id));
   dataset.explanations.sort((left, right) => left.id.localeCompare(right.id));
-  dataset.translationReviews.sort((left, right) => left.id.localeCompare(right.id));
-  dataset.explanationReviews.sort((left, right) => left.id.localeCompare(right.id));
 
   await fs.writeFile(DATASET_PATH, `${JSON.stringify(dataset, null, 2)}\n`);
 

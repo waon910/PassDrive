@@ -10,7 +10,6 @@ import type {
   ExamSession,
   ExamSessionAnswer,
   Explanation,
-  ExplanationReview,
   GlossaryTerm,
   Question,
   QuestionTag,
@@ -18,7 +17,6 @@ import type {
   SampleDatasetMeta,
   SourceReference,
   Tag,
-  TranslationReview,
   UserProgress
 } from "@/domain/content-types";
 import { getContentDatabaseUrl, shouldAutoSeedContentDatabase, type ContentStoreMode } from "@/lib/content-store-config";
@@ -33,8 +31,6 @@ const TABLES = {
   questions: "questions",
   choices: "choices",
   explanations: "explanations",
-  translationReviews: "translation_reviews",
-  explanationReviews: "explanation_reviews",
   questionTags: "question_tags",
   userProgress: "user_progress",
   examSessions: "exam_sessions",
@@ -47,8 +43,6 @@ const DELETE_ORDER = [
   TABLES.examSessions,
   TABLES.userProgress,
   TABLES.questionTags,
-  TABLES.explanationReviews,
-  TABLES.translationReviews,
   TABLES.explanations,
   TABLES.choices,
   TABLES.questions,
@@ -59,6 +53,8 @@ const DELETE_ORDER = [
   TABLES.sourceReferences,
   TABLES.datasetMeta
 ] as const;
+
+const OBSOLETE_TABLES = ["translation_reviews", "explanation_reviews"] as const;
 
 type RelationalContentStoreMode = Exclude<ContentStoreMode, "file">;
 
@@ -98,9 +94,7 @@ function normalizeSourceReference(row: Record<string, unknown>): SourceReference
     originalLanguage: row.originalLanguage as SourceReference["originalLanguage"],
     fetchedAt: String(row.fetchedAt),
     snapshotPath: toOptionalString(row.snapshotPath),
-    rightsStatus: row.rightsStatus as SourceReference["rightsStatus"],
     rightsNotes: toOptionalString(row.rightsNotes),
-    lastVerifiedAt: toOptionalString(row.lastVerifiedAt),
     createdAt: String(row.createdAt),
     updatedAt: String(row.updatedAt)
   };
@@ -157,8 +151,6 @@ function normalizeQuestion(row: Record<string, unknown>): Question {
     imageCaptionEn: toOptionalString(row.imageCaptionEn),
     explanationOrigin: row.explanationOrigin as Question["explanationOrigin"],
     activeExplanationId: String(row.activeExplanationId),
-    translationReviewStatus: row.translationReviewStatus as Question["translationReviewStatus"],
-    explanationReviewStatus: row.explanationReviewStatus as Question["explanationReviewStatus"],
     isExamEligible: toBoolean(row.isExamEligible),
     publishedAt: toOptionalString(row.publishedAt),
     createdAt: String(row.createdAt),
@@ -190,32 +182,6 @@ function normalizeExplanation(row: Record<string, unknown>): Explanation {
     createdBy: String(row.createdBy),
     createdAt: String(row.createdAt),
     updatedAt: String(row.updatedAt)
-  };
-}
-
-function normalizeTranslationReview(row: Record<string, unknown>): TranslationReview {
-  return {
-    id: String(row.id),
-    questionId: String(row.questionId),
-    reviewer: String(row.reviewer),
-    status: row.status as TranslationReview["status"],
-    accuracyCheck: toBoolean(row.accuracyCheck),
-    naturalnessCheck: toBoolean(row.naturalnessCheck),
-    notes: toOptionalString(row.notes),
-    reviewedAt: toOptionalString(row.reviewedAt)
-  };
-}
-
-function normalizeExplanationReview(row: Record<string, unknown>): ExplanationReview {
-  return {
-    id: String(row.id),
-    explanationId: String(row.explanationId),
-    reviewer: String(row.reviewer),
-    status: row.status as ExplanationReview["status"],
-    accuracyCheck: toBoolean(row.accuracyCheck),
-    clarityCheck: toBoolean(row.clarityCheck),
-    notes: toOptionalString(row.notes),
-    reviewedAt: toOptionalString(row.reviewedAt)
   };
 }
 
@@ -355,9 +321,7 @@ async function ensureSchema(db: Knex) {
     table.string("originalLanguage").notNullable();
     table.string("fetchedAt").notNullable();
     table.text("snapshotPath");
-    table.string("rightsStatus").notNullable();
     table.text("rightsNotes");
-    table.string("lastVerifiedAt");
     table.string("createdAt").notNullable();
     table.string("updatedAt").notNullable();
   });
@@ -406,8 +370,6 @@ async function ensureSchema(db: Knex) {
     table.text("imageCaptionEn");
     table.string("explanationOrigin").notNullable();
     table.string("activeExplanationId").notNullable();
-    table.string("translationReviewStatus").notNullable();
-    table.string("explanationReviewStatus").notNullable();
     table.boolean("isExamEligible").notNullable();
     table.string("publishedAt");
     table.string("createdAt").notNullable();
@@ -439,30 +401,6 @@ async function ensureSchema(db: Knex) {
     table.string("createdAt").notNullable();
     table.string("updatedAt").notNullable();
     table.index(["questionId"]);
-  });
-
-  await ensureTable(db, TABLES.translationReviews, (table) => {
-    table.string("id").primary();
-    table.string("questionId").notNullable();
-    table.string("reviewer").notNullable();
-    table.string("status").notNullable();
-    table.boolean("accuracyCheck").notNullable();
-    table.boolean("naturalnessCheck").notNullable();
-    table.text("notes");
-    table.string("reviewedAt");
-    table.index(["questionId"]);
-  });
-
-  await ensureTable(db, TABLES.explanationReviews, (table) => {
-    table.string("id").primary();
-    table.string("explanationId").notNullable();
-    table.string("reviewer").notNullable();
-    table.string("status").notNullable();
-    table.boolean("accuracyCheck").notNullable();
-    table.boolean("clarityCheck").notNullable();
-    table.text("notes");
-    table.string("reviewedAt");
-    table.index(["explanationId"]);
   });
 
   await ensureTable(db, TABLES.questionTags, (table) => {
@@ -539,9 +477,9 @@ async function getStoredDatasetMeta(db: Knex) {
   return db(TABLES.datasetMeta).first<Record<string, unknown>>();
 }
 
-async function clearDatabase(trx: Knex.Transaction) {
-  for (const tableName of DELETE_ORDER) {
-    await trx(tableName).del();
+async function dropManagedTables(db: Knex) {
+  for (const tableName of [...DELETE_ORDER, ...OBSOLETE_TABLES]) {
+    await db.schema.dropTableIfExists(tableName);
   }
 }
 
@@ -568,11 +506,10 @@ function sanitizeRows<T extends object>(rows: T[]): Record<string, unknown>[] {
 
 export async function replaceContentDatasetInDatabase(mode: RelationalContentStoreMode, dataset: SampleQuestionDataset) {
   const db = await getContentDatabase(mode);
+  await dropManagedTables(db);
   await ensureSchema(db);
 
   await db.transaction(async (trx) => {
-    await clearDatabase(trx);
-
     await insertInChunks(trx, TABLES.datasetMeta, sanitizeRows([dataset.meta]));
     await insertInChunks(trx, TABLES.sourceReferences, sanitizeRows(dataset.sourceReferences));
     await insertInChunks(trx, TABLES.contentVersions, sanitizeRows(dataset.contentVersions));
@@ -581,8 +518,6 @@ export async function replaceContentDatasetInDatabase(mode: RelationalContentSto
     await insertInChunks(trx, TABLES.questions, sanitizeRows(dataset.questions));
     await insertInChunks(trx, TABLES.choices, sanitizeRows(dataset.choices));
     await insertInChunks(trx, TABLES.explanations, sanitizeRows(dataset.explanations));
-    await insertInChunks(trx, TABLES.translationReviews, sanitizeRows(dataset.translationReviews));
-    await insertInChunks(trx, TABLES.explanationReviews, sanitizeRows(dataset.explanationReviews));
     await insertInChunks(trx, TABLES.questionTags, sanitizeRows(dataset.questionTags));
     await insertInChunks(trx, TABLES.userProgress, sanitizeRows(dataset.userProgress));
     await insertInChunks(trx, TABLES.examSessions, sanitizeRows(dataset.examSessions));
@@ -604,8 +539,6 @@ export async function loadContentDatasetFromDatabase(mode: RelationalContentStor
     questions,
     choices,
     explanations,
-    translationReviews,
-    explanationReviews,
     questionTags,
     userProgress,
     examSessions,
@@ -620,8 +553,6 @@ export async function loadContentDatasetFromDatabase(mode: RelationalContentStor
     db(TABLES.questions).select<Record<string, unknown>[]>("*"),
     db(TABLES.choices).select<Record<string, unknown>[]>("*").orderBy(["questionId", "displayOrder"]),
     db(TABLES.explanations).select<Record<string, unknown>[]>("*"),
-    db(TABLES.translationReviews).select<Record<string, unknown>[]>("*"),
-    db(TABLES.explanationReviews).select<Record<string, unknown>[]>("*"),
     db(TABLES.questionTags).select<Record<string, unknown>[]>("*"),
     db(TABLES.userProgress).select<Record<string, unknown>[]>("*"),
     db(TABLES.examSessions).select<Record<string, unknown>[]>("*"),
@@ -642,8 +573,6 @@ export async function loadContentDatasetFromDatabase(mode: RelationalContentStor
     questions: questions.map(normalizeQuestion),
     choices: choices.map(normalizeChoice),
     explanations: explanations.map(normalizeExplanation),
-    translationReviews: translationReviews.map(normalizeTranslationReview),
-    explanationReviews: explanationReviews.map(normalizeExplanationReview),
     questionTags: questionTags.map(normalizeQuestionTag),
     userProgress: userProgress.map(normalizeUserProgress),
     examSessions: examSessions.map(normalizeExamSession),

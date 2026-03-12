@@ -86,11 +86,11 @@ export function HomeNextStepPanel({
               <p className="small-copy">
                 {featuredQuestion.category.labelEn}
                 {" · "}
-                {overview.publishedQuestionCount} published question(s)
+                {overview.publishedQuestionCount} available question(s)
               </p>
             </>
           ) : (
-            <p className="small-copy">No published practice question is currently available.</p>
+            <p className="small-copy">No practice question is currently available.</p>
           )}
 
           <div className="action-row">

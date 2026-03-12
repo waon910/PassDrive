@@ -15,8 +15,6 @@ const requiredCollections = [
   "questions",
   "choices",
   "explanations",
-  "translationReviews",
-  "explanationReviews",
   "questionTags",
   "userProgress",
   "examSessions",
@@ -109,8 +107,6 @@ const tags = buildMap(data.tags, "Tag");
 const questions = buildMap(data.questions, "Question");
 const choices = buildMap(data.choices, "Choice");
 const explanations = buildMap(data.explanations, "Explanation");
-const translationReviews = buildMap(data.translationReviews, "TranslationReview");
-const explanationReviews = buildMap(data.explanationReviews, "ExplanationReview");
 const examSessions = buildMap(data.examSessions, "ExamSession");
 const examSessionAnswers = buildMap(data.examSessionAnswers, "ExamSessionAnswer");
 const glossaryTerms = buildMap(data.glossaryTerms, "GlossaryTerm");
@@ -147,6 +143,10 @@ for (const question of data.questions) {
     fail(`Question ${question.id} must have exactly one correct choice in this MVP schema.`);
   }
 
+  if (!["published", "unpublished"].includes(question.status)) {
+    fail(`Question ${question.id} has an invalid status: ${question.status}`);
+  }
+
   if (question.hasImage) {
     assertImageAssetExists(question.imageAssetPath, `Question ${question.id}`);
     if (typeof question.imageAltTextEn !== "string" || question.imageAltTextEn.length === 0) {
@@ -165,19 +165,6 @@ for (const question of data.questions) {
     fail(`Question ${question.id} explanationOrigin does not match its active explanation.`);
   }
 
-  if (question.status === "published") {
-    const source = sourceReferences.get(question.sourceReferenceId);
-    if (question.translationReviewStatus !== "approved") {
-      fail(`Published question ${question.id} must have translationReviewStatus=approved.`);
-    }
-    if (question.explanationReviewStatus !== "approved") {
-      fail(`Published question ${question.id} must have explanationReviewStatus=approved.`);
-    }
-    if (source.rightsStatus !== "approved") {
-      fail(`Published question ${question.id} must point to an approved source reference.`);
-    }
-  }
-
   const questionExplanations = explanationsByQuestionId.get(question.id) ?? [];
   if (!questionExplanations.some((explanation) => explanation.id === question.activeExplanationId)) {
     fail(`Question ${question.id} active explanation is not included in its explanation collection.`);
@@ -190,14 +177,6 @@ for (const choice of data.choices) {
 
 for (const explanation of data.explanations) {
   assertRecordExists(questions, explanation.questionId, `Explanation ${explanation.id}`);
-}
-
-for (const review of data.translationReviews) {
-  assertRecordExists(questions, review.questionId, `TranslationReview ${review.id}`);
-}
-
-for (const review of data.explanationReviews) {
-  assertRecordExists(explanations, review.explanationId, `ExplanationReview ${review.id}`);
 }
 
 for (const mapping of data.questionTags) {
@@ -263,11 +242,6 @@ for (const term of data.glossaryTerms) {
     if (typeof term.sourceReferenceId !== "string" || term.sourceReferenceId.length === 0) {
       fail(`GlossaryTerm ${term.id} must include sourceReferenceId when imageAssetPath is provided.`);
     }
-
-    const sourceReference = sourceReferences.get(term.sourceReferenceId);
-    if (sourceReference?.rightsStatus !== "approved") {
-      fail(`GlossaryTerm ${term.id} must point to an approved source reference when imageAssetPath is provided.`);
-    }
   } else if (term.imageAltTextEn) {
     fail(`GlossaryTerm ${term.id} includes imageAltTextEn but has no imageAssetPath.`);
   }
@@ -285,21 +259,6 @@ for (const term of data.glossaryTerms) {
   }
 }
 
-for (const review of data.translationReviews) {
-  const question = questions.get(review.questionId);
-  if (question.translationReviewStatus !== review.status) {
-    fail(`Question ${question.id} translationReviewStatus does not match its review record.`);
-  }
-}
-
-for (const review of data.explanationReviews) {
-  const explanation = explanations.get(review.explanationId);
-  const question = questions.get(explanation.questionId);
-  if (question.explanationReviewStatus !== review.status) {
-    fail(`Question ${question.id} explanationReviewStatus does not match its review record.`);
-  }
-}
-
 console.log(`Validation passed for ${inputFilePath}`);
 console.log(
   JSON.stringify(
@@ -311,8 +270,6 @@ console.log(
       questions: data.questions.length,
       choices: data.choices.length,
       explanations: data.explanations.length,
-      translationReviews: data.translationReviews.length,
-      explanationReviews: data.explanationReviews.length,
       questionTags: data.questionTags.length,
       userProgress: data.userProgress.length,
       examSessions: data.examSessions.length,

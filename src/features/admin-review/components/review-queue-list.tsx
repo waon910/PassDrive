@@ -3,15 +3,15 @@
 import { startTransition, useDeferredValue, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 
-import { formatReviewStatusLabel, formatRightsStatusLabel } from "@/domain/content-rules";
-import { formatReviewQueueStageLabel, type ReviewQueueStage } from "@/domain/review-rules";
+import { formatQuestionStatusLabel } from "@/domain/content-rules";
+import type { QuestionStatus } from "@/domain/content-types";
 import type { ReviewDashboardItem } from "@/features/admin-review/get-review-dashboard-view-model";
 
 interface ReviewQueueListProps {
   items: ReviewDashboardItem[];
 }
 
-type StageFilter = "all" | "open_only" | ReviewQueueStage;
+type StatusFilter = "all" | QuestionStatus;
 const PAGE_SIZE = 10;
 
 function buildVisiblePageNumbers(currentPage: number, totalPages: number) {
@@ -30,23 +30,11 @@ function buildVisiblePageNumbers(currentPage: number, totalPages: number) {
   return [...pages].sort((left, right) => left - right);
 }
 
-function matchesStageFilter(item: ReviewDashboardItem, stageFilter: StageFilter) {
-  if (stageFilter === "all") {
-    return true;
-  }
-
-  if (stageFilter === "open_only") {
-    return item.stage !== "published";
-  }
-
-  return item.stage === stageFilter;
-}
-
 export function ReviewQueueList({ items }: ReviewQueueListProps) {
   const containerRef = useRef<HTMLElement | null>(null);
   const previousPageRef = useRef(1);
   const [query, setQuery] = useState("");
-  const [stageFilter, setStageFilter] = useState<StageFilter>("open_only");
+  const [statusFilter, setStatusFilter] = useState<StatusFilter>("unpublished");
   const [categoryFilter, setCategoryFilter] = useState("all");
   const [currentPage, setCurrentPage] = useState(1);
   const deferredQuery = useDeferredValue(query);
@@ -55,7 +43,7 @@ export function ReviewQueueList({ items }: ReviewQueueListProps) {
     left.localeCompare(right)
   );
   const filteredItems = items.filter((item) => {
-    if (!matchesStageFilter(item, stageFilter)) {
+    if (statusFilter !== "all" && item.bundle.question.status !== statusFilter) {
       return false;
     }
 
@@ -71,10 +59,8 @@ export function ReviewQueueList({ items }: ReviewQueueListProps) {
       item.bundle.question.englishStem,
       item.bundle.question.id,
       item.bundle.category.labelEn,
-      formatRightsStatusLabel(item.bundle.sourceReference.rightsStatus),
-      formatReviewStatusLabel(item.bundle.question.translationReviewStatus),
-      formatReviewStatusLabel(item.bundle.question.explanationReviewStatus),
-      formatReviewQueueStageLabel(item.stage)
+      item.bundle.sourceReference.sourceName,
+      formatQuestionStatusLabel(item.bundle.question.status)
     ]
       .join(" ")
       .toLowerCase()
@@ -88,7 +74,7 @@ export function ReviewQueueList({ items }: ReviewQueueListProps) {
 
   useEffect(() => {
     setCurrentPage(1);
-  }, [normalizedQuery, stageFilter, categoryFilter]);
+  }, [normalizedQuery, statusFilter, categoryFilter]);
 
   useEffect(() => {
     if (previousPageRef.current === safeCurrentPage) {
@@ -103,8 +89,8 @@ export function ReviewQueueList({ items }: ReviewQueueListProps) {
     <article ref={containerRef} className="surface-card">
       <div className="panel-head">
         <div>
-          <p className="eyebrow">Review Queue</p>
-          <h2>Open one item and move it forward.</h2>
+          <p className="eyebrow">Question Visibility</p>
+          <h2>Open one item and adjust learner access.</h2>
         </div>
         <span className="chip">{items.length} total</span>
       </div>
@@ -119,20 +105,16 @@ export function ReviewQueueList({ items }: ReviewQueueListProps) {
               const nextValue = event.target.value;
               startTransition(() => setQuery(nextValue));
             }}
-            placeholder="Search by question, id, category, or review stage"
+            placeholder="Search by question, id, category, source, or status"
           />
         </label>
 
         <label className="search-field admin-filter-field">
-          <span className="meta-label">Stage</span>
-          <select value={stageFilter} onChange={(event) => setStageFilter(event.target.value as StageFilter)}>
-            <option value="open_only">Open items</option>
-            <option value="needs_source_review">Needs source review</option>
-            <option value="needs_translation_review">Needs translation review</option>
-            <option value="needs_explanation_review">Needs explanation review</option>
-            <option value="ready_to_publish">Ready to publish</option>
+          <span className="meta-label">Status</span>
+          <select value={statusFilter} onChange={(event) => setStatusFilter(event.target.value as StatusFilter)}>
+            <option value="unpublished">Unpublished</option>
             <option value="published">Published</option>
-            <option value="all">All items</option>
+            <option value="all">All statuses</option>
           </select>
         </label>
 
@@ -149,21 +131,17 @@ export function ReviewQueueList({ items }: ReviewQueueListProps) {
         </label>
       </div>
 
-      <div className="home-highlight-row" aria-label="Review queue filters">
+      <div className="home-highlight-row" aria-label="Visibility filters">
         <span className="home-highlight-chip">{filteredItems.length} matching item(s)</span>
         <span className="home-highlight-chip">
           Page {safeCurrentPage} / {totalPages}
         </span>
         <span className="home-highlight-chip">
-          {stageFilter === "open_only"
-            ? "Open items only"
-            : stageFilter === "all"
-              ? "All stages"
-              : `Stage ${formatReviewQueueStageLabel(stageFilter)}`}
+          {statusFilter === "all" ? "All statuses" : formatQuestionStatusLabel(statusFilter)}
         </span>
       </div>
 
-      {filteredItems.length === 0 ? <p className="small-copy">No review items match the current filters.</p> : null}
+      {filteredItems.length === 0 ? <p className="small-copy">No questions match the current filters.</p> : null}
 
       <div className="stack-list admin-review-list">
         {visibleItems.map((item) => (
@@ -174,7 +152,7 @@ export function ReviewQueueList({ items }: ReviewQueueListProps) {
           >
             <div className="admin-review-card-main">
               <div className="admin-review-chip-row">
-                <span className="chip">{formatReviewQueueStageLabel(item.stage)}</span>
+                <span className="chip">{formatQuestionStatusLabel(item.bundle.question.status)}</span>
                 <span className="small-copy">{item.bundle.category.labelEn}</span>
                 <span className="small-copy">{item.bundle.question.id}</span>
               </div>
@@ -182,16 +160,10 @@ export function ReviewQueueList({ items }: ReviewQueueListProps) {
               <strong>{item.bundle.question.englishStem}</strong>
             </div>
 
-            <div className="admin-review-status-grid" aria-label="Review statuses">
-              <span className="admin-status-pill">
-                Rights: {formatRightsStatusLabel(item.bundle.sourceReference.rightsStatus)}
-              </span>
-              <span className="admin-status-pill">
-                Translation: {formatReviewStatusLabel(item.bundle.question.translationReviewStatus)}
-              </span>
-              <span className="admin-status-pill">
-                Explanation: {formatReviewStatusLabel(item.bundle.question.explanationReviewStatus)}
-              </span>
+            <div className="admin-review-status-grid" aria-label="Question metadata">
+              <span className="admin-status-pill">Source: {item.bundle.sourceReference.sourceName}</span>
+              <span className="admin-status-pill">Choices: {item.bundle.choices.length}</span>
+              <span className="admin-status-pill">Updated: {item.bundle.question.updatedAt.slice(0, 10)}</span>
             </div>
           </Link>
         ))}

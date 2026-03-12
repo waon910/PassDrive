@@ -6,7 +6,7 @@ This document defines the target software architecture for PassDrive before feat
 
 The goal is not abstract cleanliness. The goal is to ensure that:
 
-- content quality and review status remain enforceable
+- content quality and learner visibility remain enforceable
 - iPad-first product flows stay easy to evolve
 - AI agents can add features without breaking content integrity
 - the app can move from sample JSON to a real content pipeline without rewrites
@@ -16,18 +16,18 @@ The goal is not abstract cleanliness. The goal is to ensure that:
 The priorities of this product are ordered as follows.
 
 1. Content integrity
-2. Review-safe publication flow
+2. Predictable publication control
 3. iPad learning experience
 4. Evolvable feature delivery
 5. Performance and maintainability
 
-If two implementation options conflict, choose the one that preserves content integrity and review-safe behavior.
+If two implementation options conflict, choose the one that preserves content integrity and predictable publication behavior.
 
 ## 3. Core Architectural Principles
 
 ### 3.1 Content-first architecture
 
-- Questions, explanations, source references, and review states are product assets, not incidental UI data.
+- Questions, explanations, source references, and publication states are product assets, not incidental UI data.
 - UI must consume typed content objects, not ad-hoc JSON shapes.
 - Raw content and rendered view models must be separated.
 
@@ -50,11 +50,11 @@ If two implementation options conflict, choose the one that preserves content in
 - Feature-specific orchestration lives in `src/features`.
 - Reusable visual building blocks live in `src/components`.
 
-### 3.5 Review-safe publishing
+### 3.5 Publication control
 
-- No question may be considered publishable unless source rights and review statuses are valid.
+- Question visibility must be controlled by typed domain data, not by UI-only flags.
 - Publishability is a domain rule, not a UI convention.
-- Any future ingestion pipeline must preserve auditability of source, translation review, and explanation review.
+- Any future ingestion pipeline must preserve auditability of source and publication changes.
 
 ### 3.6 Offline-tolerant learning
 
@@ -171,13 +171,13 @@ Short term:
 
 Mid term:
 
-- structured relational content store with ingestion and review workflow
+- structured relational content store with ingestion and publication workflow
 - local development target: `SQLite`
 - deployed environment target: `Postgres`
 
 Rule:
 
-- content storage format must preserve source reference, translation review, explanation review, and version metadata
+- content storage format must preserve source reference, publication state, and version metadata
 - feature code must not depend on whether the backing store is JSON, SQLite, or Postgres
 
 ### 7.2 Learner progress persistence
