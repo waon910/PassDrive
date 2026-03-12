@@ -1,5 +1,6 @@
 import { ReviewStatusSummary } from "@/features/admin-review/components/review-status-summary";
 import { ReviewQueueList } from "@/features/admin-review/components/review-queue-list";
+import { ResetReviewStatePanel } from "@/features/admin-review/components/reset-review-state-panel";
 import type { ReviewDashboardViewModel } from "@/features/admin-review/get-review-dashboard-view-model";
 
 interface ReviewDashboardProps {
@@ -27,6 +28,7 @@ export function ReviewDashboard({ viewModel }: ReviewDashboardProps) {
       ) : null}
       <ReviewStatusSummary summary={viewModel.summary} />
       <ReviewQueueList items={viewModel.items} />
+      <ResetReviewStatePanel canReset={viewModel.contentStore.runtimeWritable} />
     </section>
   );
 }

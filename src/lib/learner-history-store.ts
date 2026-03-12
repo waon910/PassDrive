@@ -97,6 +97,11 @@ export async function loadLearnerHistorySnapshot() {
   return readHistory();
 }
 
+export async function resetLearnerHistorySnapshot() {
+  await writeHistory(EMPTY_HISTORY);
+  return EMPTY_HISTORY;
+}
+
 export async function recordPracticeAttempt(bundle: QuestionBundle, selectedChoiceKey: string) {
   const answeredAt = new Date().toISOString();
   const attempt: StoredQuestionAttempt = {

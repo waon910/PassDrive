@@ -27,6 +27,15 @@ function revalidateReviewPaths(questionId: string) {
   revalidatePath(`/admin/review/questions/${questionId}`);
 }
 
+function revalidateGlobalPaths() {
+  revalidatePath("/");
+  revalidatePath("/practice");
+  revalidatePath("/mock-exam");
+  revalidatePath("/mistakes");
+  revalidatePath("/progress");
+  revalidatePath("/admin/review");
+}
+
 function updateQuestionStatus(question: Question, sourceReference: SourceReference) {
   if (
     question.translationReviewStatus === "approved" &&
@@ -50,19 +59,19 @@ function updateQuestionStatus(question: Question, sourceReference: SourceReferen
   question.status = "translation_review";
 }
 
-function updateTranslationReviewRecord(review: TranslationReview, status: ReviewStatus, notes: string, reviewedAt?: string) {
+function updateTranslationReviewRecord(review: TranslationReview, status: ReviewStatus, notes?: string, reviewedAt?: string) {
   review.status = status;
   review.accuracyCheck = status === "approved";
   review.naturalnessCheck = status === "approved";
-  review.notes = notes;
+  review.notes = notes || undefined;
   review.reviewedAt = reviewedAt;
 }
 
-function updateExplanationReviewRecord(review: ExplanationReview, status: ReviewStatus, notes: string, reviewedAt?: string) {
+function updateExplanationReviewRecord(review: ExplanationReview, status: ReviewStatus, notes?: string, reviewedAt?: string) {
   review.status = status;
   review.accuracyCheck = status === "approved";
   review.clarityCheck = status === "approved";
-  review.notes = notes;
+  review.notes = notes || undefined;
   review.reviewedAt = reviewedAt;
 }
 
@@ -237,4 +246,39 @@ export async function publishQuestionAction(formData: FormData) {
 
   revalidateReviewPaths(questionId);
   redirect(`/admin/review/questions/${questionId}`);
+}
+
+export async function resetAdminReviewStateAction() {
+  const resetAt = getNowTimestamp();
+
+  await mutateContentDataset((dataset) => {
+    for (const sourceReference of dataset.sourceReferences) {
+      sourceReference.rightsStatus = "review_required";
+      sourceReference.rightsNotes = "Manual rights review required before publication.";
+      sourceReference.lastVerifiedAt = undefined;
+      sourceReference.updatedAt = resetAt;
+    }
+
+    for (const question of dataset.questions) {
+      question.translationReviewStatus = "pending";
+      question.explanationReviewStatus = "pending";
+      question.status = "translation_review";
+      question.publishedAt = undefined;
+      question.updatedAt = resetAt;
+    }
+
+    for (const review of dataset.translationReviews) {
+      updateTranslationReviewRecord(review, "pending", "", undefined);
+    }
+
+    for (const review of dataset.explanationReviews) {
+      updateExplanationReviewRecord(review, "pending", "", undefined);
+    }
+
+    dataset.userProgress = [];
+    dataset.examSessions = [];
+    dataset.examSessionAnswers = [];
+  });
+
+  revalidateGlobalPaths();
 }
