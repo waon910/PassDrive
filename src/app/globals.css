@@ -1187,6 +1187,15 @@ dl {
   align-content: start;
 }
 
+.practice-question-visual {
+  margin: 10px 0 18px;
+}
+
+.practice-question-visual .question-figure {
+  margin-top: 0;
+  max-width: min(100%, 620px);
+}
+
 .practice-setup-card {
   display: grid;
   gap: 18px;
@@ -1201,6 +1210,10 @@ dl {
   display: grid;
   gap: 14px;
   align-content: start;
+}
+
+.study-session-layout .study-side-stack {
+  align-self: stretch;
 }
 
 .study-support-card {
@@ -1300,8 +1313,22 @@ dl {
 
 .practice-actions {
   display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
   gap: 12px;
   margin-top: 16px;
+}
+
+.practice-actions-primary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.practice-actions-secondary {
+  display: flex;
+  justify-content: flex-end;
+  margin-left: auto;
 }
 
 .exam-actions {
@@ -1660,6 +1687,8 @@ dl {
 
   .app-topbar {
     display: grid;
+    position: static;
+    top: auto;
   }
 
   .overview-layout {
@@ -1882,6 +1911,15 @@ dl {
   .action-row,
   .exam-actions {
     flex-direction: column;
+  }
+
+  .practice-actions-secondary {
+    width: 100%;
+    margin-left: 0;
+  }
+
+  .practice-actions-secondary button {
+    width: 100%;
   }
 }
 

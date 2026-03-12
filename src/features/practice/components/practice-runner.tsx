@@ -241,22 +241,18 @@ export function PracticeRunner({
             <span className="home-highlight-chip">{submitted ? "Answer locked" : "Choose one answer"}</span>
           </div>
 
-          <div className="action-row">
-            <form action={unpublishQuestionAction}>
-              <input type="hidden" name="questionId" value={currentBundle.question.id} />
-              <input type="hidden" name="redirectTo" value="/practice" />
-              <button className="secondary-button danger-button" type="submit">
-                Unpublish Question
-              </button>
-            </form>
-          </div>
-
           <div className="progress-track" aria-hidden="true">
             <div
               className="progress-fill"
               style={{ width: `${((currentIndex + 1) / Math.max(sessionBundles.length, 1)) * 100}%` }}
             />
           </div>
+
+          {currentBundle.question.hasImage ? (
+            <div className="practice-question-visual">
+              <QuestionFigure question={currentBundle.question} />
+            </div>
+          ) : null}
 
           <p className="question-stem">{currentBundle.question.englishStem}</p>
 
@@ -290,31 +286,40 @@ export function PracticeRunner({
           </div>
 
           <div className="practice-actions study-action-bar">
-            <button
-              className="primary-button"
-              type="button"
-              onClick={submitCurrentAnswer}
-              disabled={!selectedChoiceKey || submitted}
-            >
-              Submit Answer
-            </button>
-            {submitted ? (
-              <button className="secondary-button" type="button" onClick={moveNext}>
-                {currentIndex === sessionBundles.length - 1 ? "Finish Set" : "Next Question"}
-              </button>
-            ) : (
+            <div className="practice-actions-primary">
               <button
-                className="secondary-button"
+                className="primary-button"
                 type="button"
-                onClick={() => {
-                  setSessionBundles([]);
-                  setSelectedChoiceKey(null);
-                  setSubmitted(false);
-                }}
+                onClick={submitCurrentAnswer}
+                disabled={!selectedChoiceKey || submitted}
               >
-                Back to Setup
+                Submit Answer
               </button>
-            )}
+              {submitted ? (
+                <button className="secondary-button" type="button" onClick={moveNext}>
+                  {currentIndex === sessionBundles.length - 1 ? "Finish Set" : "Next Question"}
+                </button>
+              ) : (
+                <button
+                  className="secondary-button"
+                  type="button"
+                  onClick={() => {
+                    setSessionBundles([]);
+                    setSelectedChoiceKey(null);
+                    setSubmitted(false);
+                  }}
+                >
+                  Back to Setup
+                </button>
+              )}
+            </div>
+            <form action={unpublishQuestionAction} className="practice-actions-secondary">
+              <input type="hidden" name="questionId" value={currentBundle.question.id} />
+              <input type="hidden" name="redirectTo" value="/practice" />
+              <button className="secondary-button danger-button" type="submit">
+                Unpublish Question
+              </button>
+            </form>
           </div>
 
           <div className="result-banner" aria-live="polite">
@@ -332,49 +337,6 @@ export function PracticeRunner({
 
         <aside className="study-side-stack">
           <article className="surface-card study-support-card study-sticky-card">
-            <div className="panel-head">
-              <div>
-                <p className="eyebrow">Question Context</p>
-                <h2>Keep the answer and the explanation close.</h2>
-              </div>
-            </div>
-
-            <div className="compact-metrics">
-              <div className="compact-metric">
-                <span>Mode</span>
-                <strong>{modeLabel}</strong>
-              </div>
-              <div className="compact-metric">
-                <span>Category</span>
-                <strong>{currentBundle.category.labelEn}</strong>
-              </div>
-              <div className="compact-metric">
-                <span>Question</span>
-                <strong>
-                  {currentIndex + 1} / {sessionBundles.length}
-                </strong>
-              </div>
-              <div className="compact-metric">
-                <span>Status</span>
-                <strong>{submitted ? "Submitted" : "Selecting"}</strong>
-              </div>
-            </div>
-          </article>
-
-          {currentBundle.question.hasImage ? (
-            <article className="surface-card study-support-card">
-              <div className="panel-head">
-                <div>
-                  <p className="eyebrow">Figure</p>
-                  <h2>Reference the visual without leaving the question.</h2>
-                </div>
-              </div>
-
-              <QuestionFigure question={currentBundle.question} size="compact" />
-            </article>
-          ) : null}
-
-          <article className="surface-card study-support-card">
             <div className="panel-head">
               <div>
                 <p className="eyebrow">Why</p>
