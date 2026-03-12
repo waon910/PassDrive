@@ -2,6 +2,8 @@ import { AppShell } from "@/components/app-shell";
 import { HomeNextStepPanel } from "@/features/home/components/home-next-step-panel";
 import { getHomeViewModel } from "@/features/home/get-home-view-model";
 
+export const dynamic = "force-dynamic";
+
 export default async function HomePage() {
   const viewModel = await getHomeViewModel();
 

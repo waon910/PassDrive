@@ -2,6 +2,8 @@ import { AppShell } from "@/components/app-shell";
 import { MockExamRunner } from "@/features/mock-exam/components/mock-exam-runner";
 import { getMockExamViewModel } from "@/features/mock-exam/get-mock-exam-view-model";
 
+export const dynamic = "force-dynamic";
+
 export default async function MockExamPage() {
   const viewModel = await getMockExamViewModel();
 

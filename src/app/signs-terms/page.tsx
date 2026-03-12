@@ -2,6 +2,8 @@ import { AppShell } from "@/components/app-shell";
 import { SignsTermsBrowser } from "@/features/signs-terms/components/signs-terms-browser";
 import { getSignsTermsViewModel } from "@/features/signs-terms/get-signs-terms-view-model";
 
+export const dynamic = "force-dynamic";
+
 export default async function SignsTermsPage() {
   const viewModel = await getSignsTermsViewModel();
 

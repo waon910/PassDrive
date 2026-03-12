@@ -2,6 +2,8 @@ import { AppShell } from "@/components/app-shell";
 import { getPracticeViewModel } from "@/features/practice/get-practice-view-model";
 import { PracticeRunner } from "@/features/practice/components/practice-runner";
 
+export const dynamic = "force-dynamic";
+
 export default async function PracticePage() {
   const viewModel = await getPracticeViewModel();
 

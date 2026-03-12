@@ -2,6 +2,8 @@ import { AppShell } from "@/components/app-shell";
 import { MistakesReviewList } from "@/features/mistakes/components/mistakes-review-list";
 import { getMistakesViewModel } from "@/features/mistakes/get-mistakes-view-model";
 
+export const dynamic = "force-dynamic";
+
 export default async function MistakesPage() {
   const viewModel = await getMistakesViewModel();
 

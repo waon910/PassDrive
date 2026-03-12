@@ -2,6 +2,8 @@ import { AppShell } from "@/components/app-shell";
 import { ProgressFocusPanel } from "@/features/progress/components/progress-focus-panel";
 import { getProgressViewModel } from "@/features/progress/get-progress-view-model";
 
+export const dynamic = "force-dynamic";
+
 export default async function ProgressPage() {
   const viewModel = await getProgressViewModel();
 
