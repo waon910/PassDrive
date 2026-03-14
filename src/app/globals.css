@@ -649,14 +649,21 @@ dl {
 
 .compact-metric {
   display: flex;
+  align-items: flex-start;
   justify-content: space-between;
   gap: 12px;
   padding: 12px 0;
   border-bottom: 1px solid rgba(20, 38, 60, 0.08);
 }
 
+.compact-metric-copy {
+  display: grid;
+  gap: 2px;
+}
+
 .compact-metric strong {
   color: var(--accent-deep);
+  text-align: right;
 }
 
 .home-question-preview {

@@ -73,7 +73,7 @@ export function HomeNextStepPanel({
                     <strong>{weakestCategory?.category.labelEn ?? "n/a"}</strong>
                   </div>
                   <div className="compact-metric">
-                    <span>Overall accuracy</span>
+                    <span>Overall accuracy rate</span>
                     <strong>{totals.overallAccuracyPercent}%</strong>
                   </div>
                   <div className="compact-metric">
@@ -140,7 +140,7 @@ export function HomeNextStepPanel({
         <div className="panel-head">
           <div>
             <p className="eyebrow">Weak Areas</p>
-            <h2>Fix the lowest categories before the next mock.</h2>
+            <h2>These categories have the lowest accuracy rates right now.</h2>
           </div>
         </div>
 

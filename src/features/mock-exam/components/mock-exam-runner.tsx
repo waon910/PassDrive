@@ -329,7 +329,7 @@ export function MockExamRunner({
                     {item.correct} / {item.total} correct
                   </small>
                 </div>
-                <strong>{item.accuracyPercent}%</strong>
+                <strong>{item.accuracyPercent}% accuracy</strong>
               </div>
             ))}
           </div>

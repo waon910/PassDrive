@@ -45,20 +45,20 @@ export function ProgressFocusPanel({
           <div className="panel-head">
             <div>
               <p className="eyebrow">Next Focus</p>
-              <h2>Improve the lowest category first.</h2>
+              <h2>Start with the category where your accuracy rate is lowest.</h2>
             </div>
             <span className="chip">{totals.totalAttempts} total attempts</span>
           </div>
 
           <p className="question-stem">{weakestCategory?.category.labelEn ?? "No progress data yet."}</p>
           <p className="small-copy support-note">
-            Start with the weakest category before you switch back to a full mock exam.
+            Work on the category with the lowest accuracy rate before you switch back to a full mock exam.
           </p>
 
           {weakestCategory ? (
             <div className="compact-metrics">
               <div className="compact-metric">
-                <span>Current accuracy</span>
+                <span>Current accuracy rate</span>
                 <strong>{weakestCategory.accuracyPercent}%</strong>
               </div>
               <div className="compact-metric">
@@ -95,7 +95,7 @@ export function ProgressFocusPanel({
 
             <div className="compact-metrics">
               <div className="compact-metric">
-                <span>Overall accuracy</span>
+                <span>Overall accuracy rate</span>
                 <strong>{totals.overallAccuracyPercent}%</strong>
               </div>
               <div className="compact-metric">
@@ -113,7 +113,7 @@ export function ProgressFocusPanel({
             <div className="panel-head">
               <div>
                 <p className="eyebrow">Priority Queue</p>
-                <h2>Fix these first.</h2>
+                <h2>Lowest accuracy rates first.</h2>
               </div>
             </div>
 
@@ -124,7 +124,7 @@ export function ProgressFocusPanel({
                     <span>{item.category.labelEn}</span>
                     <small>{item.needsReviewCount} item(s) need review</small>
                   </div>
-                  <strong>{item.accuracyPercent}%</strong>
+                  <strong>{item.accuracyPercent}% accuracy</strong>
                 </div>
               ))}
             </div>
@@ -135,8 +135,8 @@ export function ProgressFocusPanel({
       <article className="surface-card focus-card">
         <div className="panel-head">
           <div>
-            <p className="eyebrow">Category Progress</p>
-            <h2>Compare weak areas without a long list.</h2>
+            <p className="eyebrow">Accuracy Rate by Category</p>
+            <h2>Compare categories by your accuracy rate in each one.</h2>
           </div>
         </div>
 
@@ -145,7 +145,7 @@ export function ProgressFocusPanel({
             <article key={item.category.id} className="progress-category-card">
               <div className="progress-card-header">
                 <span className="chip">{item.category.labelEn}</span>
-                <strong>{item.accuracyPercent}%</strong>
+                <strong>{item.accuracyPercent}% accuracy</strong>
               </div>
               <div className="progress-track" aria-hidden="true">
                 <div className="progress-fill" style={{ width: `${item.accuracyPercent}%` }} />

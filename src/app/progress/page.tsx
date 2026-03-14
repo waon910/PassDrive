@@ -16,7 +16,7 @@ export default async function ProgressPage() {
       meta={
         <div className="hero-meta-stack">
           <div className="hero-meta-card">
-            <span className="meta-label">Overall accuracy</span>
+            <span className="meta-label">Overall accuracy rate</span>
             <strong>{viewModel.overallAccuracyPercent}%</strong>
           </div>
           <div className="hero-meta-card">

@@ -40,6 +40,14 @@ function getModeLabel(mode: PracticeMode) {
   return "Random";
 }
 
+function getCategoryProgressDetail(item: CategoryProgressSummary) {
+  if (item.attempts === 0) {
+    return "No attempts yet";
+  }
+
+  return `${item.correct} of ${item.attempts} answered correctly`;
+}
+
 export function PracticeRunner({
   questionBundles,
   categoryProgress,
@@ -200,16 +208,19 @@ export function PracticeRunner({
           <article className="surface-card study-support-card">
             <div className="panel-head">
               <div>
-                <p className="eyebrow">Category Accuracy</p>
-                <h2>Use one category when you need a focused repair pass.</h2>
+                <p className="eyebrow">Accuracy Rate by Category</p>
+                <h2>Each percentage shows your accuracy rate for that category.</h2>
               </div>
             </div>
 
             <div className="compact-metrics">
               {categoryProgress.map((item) => (
                 <div key={item.category.id} className="compact-metric">
-                  <span>{item.category.labelEn}</span>
-                  <strong>{item.accuracyPercent}%</strong>
+                  <div className="compact-metric-copy">
+                    <span>{item.category.labelEn}</span>
+                    <small>{getCategoryProgressDetail(item)}</small>
+                  </div>
+                  <strong>{item.accuracyPercent}% accuracy</strong>
                 </div>
               ))}
             </div>
@@ -393,7 +404,7 @@ export function PracticeRunner({
                 {item.correct} / {item.total} correct
               </small>
             </div>
-            <strong>{item.accuracyPercent}%</strong>
+            <strong>{item.accuracyPercent}% accuracy</strong>
           </div>
         ))}
       </div>
