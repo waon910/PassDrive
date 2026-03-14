@@ -1,10 +1,17 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { QuestionFigure } from "@/components/question-figure";
-import { buildSessionSummary, isChoiceCorrect } from "@/domain/session-rules";
-import type { QuestionBundle } from "@/domain/content-types";
+import {
+  buildSessionSummary,
+  getQuestionPromptCount,
+  isQuestionCorrect,
+  isResponseComplete,
+  type SessionAnswerMap,
+  type SessionQuestionResponse
+} from "@/domain/session-rules";
+import type { PromptChoiceKey, QuestionBundle } from "@/domain/content-types";
 import { unpublishQuestionAction } from "@/features/admin-review/review-actions";
 import { recordPracticeAttempt } from "@/lib/learner-history-store";
 import type { CategoryProgressSummary } from "@/lib/sample-dataset";
@@ -56,9 +63,9 @@ export function PracticeRunner({
   const [mode, setMode] = useState<PracticeMode>("random");
   const [selectedCategoryId, setSelectedCategoryId] = useState<string>(categoryProgress[0]?.category.id ?? "");
   const [sessionBundles, setSessionBundles] = useState<QuestionBundle[]>([]);
-  const [answers, setAnswers] = useState<Record<string, string>>({});
+  const [answers, setAnswers] = useState<SessionAnswerMap>({});
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [selectedChoiceKey, setSelectedChoiceKey] = useState<string | null>(null);
+  const [draftResponse, setDraftResponse] = useState<SessionQuestionResponse | undefined>(undefined);
   const [submitted, setSubmitted] = useState(false);
   const [completed, setCompleted] = useState(false);
 
@@ -83,22 +90,22 @@ export function PracticeRunner({
     setSessionBundles(nextBundles);
     setAnswers({});
     setCurrentIndex(0);
-    setSelectedChoiceKey(null);
+    setDraftResponse(undefined);
     setSubmitted(false);
     setCompleted(false);
   }
 
   function submitCurrentAnswer() {
-    if (!currentBundle || !selectedChoiceKey) {
+    if (!currentBundle || !draftResponse || !isResponseComplete(currentBundle, draftResponse)) {
       return;
     }
 
     setAnswers((currentAnswers) => ({
       ...currentAnswers,
-      [currentBundle.question.id]: selectedChoiceKey
+      [currentBundle.question.id]: draftResponse
     }));
     setSubmitted(true);
-    void recordPracticeAttempt(currentBundle, selectedChoiceKey);
+    void recordPracticeAttempt(currentBundle, draftResponse);
   }
 
   function moveNext() {
@@ -108,18 +115,43 @@ export function PracticeRunner({
 
     if (currentIndex === sessionBundles.length - 1) {
       setCompleted(true);
-      setSelectedChoiceKey(null);
+      setDraftResponse(undefined);
       setSubmitted(false);
       return;
     }
 
     setCurrentIndex((value) => value + 1);
-    setSelectedChoiceKey(null);
+    setDraftResponse(undefined);
     setSubmitted(false);
   }
 
+  function selectChoice(choiceKey: string) {
+    setDraftResponse({
+      kind: "single_choice",
+      selectedChoiceKey: choiceKey
+    });
+  }
+
+  function selectPromptChoice(promptKey: string, choiceKey: PromptChoiceKey) {
+    const currentPromptChoices = draftResponse?.kind === "hazard_prediction" ? draftResponse.promptChoiceKeys : {};
+
+    setDraftResponse({
+      kind: "hazard_prediction",
+      promptChoiceKeys: {
+        ...currentPromptChoices,
+        [promptKey]: choiceKey
+      }
+    });
+  }
+
+  useEffect(() => {
+    setDraftResponse(undefined);
+    setSubmitted(false);
+  }, [currentIndex]);
+
   const availableBundleCount = buildBundleSet().length;
   const modeLabel = getModeLabel(mode);
+  const lockedResponse = submitted && currentBundle ? answers[currentBundle.question.id] : draftResponse;
 
   if (!currentBundle && !completed) {
     return (
@@ -231,14 +263,16 @@ export function PracticeRunner({
   }
 
   if (currentBundle && !completed) {
-    const selectedChoice = currentBundle.choices.find((choice) => choice.choiceKey === selectedChoiceKey);
+    const singleChoiceResponse = lockedResponse?.kind === "single_choice" ? lockedResponse : undefined;
 
     return (
       <section className="study-session-layout">
         <article className="surface-card focus-card study-main-card practice-runner">
           <div className="panel-head">
             <div>
-              <p className="eyebrow">Practice Question</p>
+              <p className="eyebrow">
+                {currentBundle.question.questionType === "hazard_prediction" ? "Hazard Practice" : "Practice Question"}
+              </p>
               <h2>{currentBundle.category.labelEn}</h2>
             </div>
             <span className="chip">
@@ -248,8 +282,16 @@ export function PracticeRunner({
 
           <div className="study-status-row" aria-label="Practice status">
             <span className="home-highlight-chip">Mode {modeLabel}</span>
-            <span className="home-highlight-chip">{currentBundle.choices.length} choice(s)</span>
-            <span className="home-highlight-chip">{submitted ? "Answer locked" : "Choose one answer"}</span>
+            <span className="home-highlight-chip">
+              {getQuestionPromptCount(currentBundle)} {currentBundle.question.questionType === "hazard_prediction" ? "statements" : "choice(s)"}
+            </span>
+            <span className="home-highlight-chip">
+              {submitted
+                ? "Answer locked"
+                : currentBundle.question.questionType === "hazard_prediction"
+                  ? "Complete all statements"
+                  : "Choose one answer"}
+            </span>
           </div>
 
           <div className="progress-track" aria-hidden="true">
@@ -267,34 +309,84 @@ export function PracticeRunner({
 
           <p className="question-stem">{currentBundle.question.englishStem}</p>
 
-          <div className="choice-stack" role="radiogroup" aria-label="Answer choices">
-            {currentBundle.choices.map((choice) => {
-              const isSelected = selectedChoiceKey === choice.choiceKey;
-              const showCorrect = submitted && choice.isCorrect;
-              const showIncorrect = submitted && isSelected && !choice.isCorrect;
+          {currentBundle.question.questionType === "hazard_prediction" ? (
+            <div className="hazard-prompt-list">
+              {currentBundle.questionPrompts.map((prompt) => {
+                const hazardResponse = lockedResponse?.kind === "hazard_prediction" ? lockedResponse : undefined;
+                const selectedChoiceKey = hazardResponse?.promptChoiceKeys[prompt.promptKey];
 
-              return (
-                <button
-                  key={choice.id}
-                  className={[
-                    "choice-button",
-                    isSelected ? "selected" : "",
-                    showCorrect ? "correct" : "",
-                    showIncorrect ? "incorrect" : ""
-                  ]
-                    .filter(Boolean)
-                    .join(" ")}
-                  type="button"
-                  onClick={() => setSelectedChoiceKey(choice.choiceKey)}
-                  aria-pressed={isSelected}
-                  disabled={submitted}
-                >
-                  <span className="choice-key">{choice.choiceKey}</span>
-                  <span>{choice.englishText}</span>
-                </button>
-              );
-            })}
-          </div>
+                return (
+                  <article key={prompt.id} className="hazard-prompt-card">
+                    <div className="panel-head">
+                      <div>
+                        <p className="eyebrow">Statement {prompt.displayOrder}</p>
+                      </div>
+                    </div>
+
+                    <p>{prompt.englishText}</p>
+
+                    <div className="hazard-choice-row" role="radiogroup" aria-label={`Statement ${prompt.displayOrder} answer`}>
+                      {(["T", "F"] as PromptChoiceKey[]).map((choiceKey) => {
+                        const isSelected = selectedChoiceKey === choiceKey;
+                        const showCorrect = submitted && prompt.correctChoiceKey === choiceKey;
+                        const showIncorrect = submitted && isSelected && prompt.correctChoiceKey !== choiceKey;
+
+                        return (
+                          <button
+                            key={choiceKey}
+                            className={[
+                              "choice-button",
+                              "hazard-choice-button",
+                              isSelected ? "selected" : "",
+                              showCorrect ? "correct" : "",
+                              showIncorrect ? "incorrect" : ""
+                            ]
+                              .filter(Boolean)
+                              .join(" ")}
+                            type="button"
+                            onClick={() => selectPromptChoice(prompt.promptKey, choiceKey)}
+                            aria-pressed={isSelected}
+                            disabled={submitted}
+                          >
+                            <span className="choice-key">{choiceKey === "T" ? "True" : "False"}</span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </article>
+                );
+              })}
+            </div>
+          ) : (
+            <div className="choice-stack" role="radiogroup" aria-label="Answer choices">
+              {currentBundle.choices.map((choice) => {
+                const isSelected = singleChoiceResponse?.selectedChoiceKey === choice.choiceKey;
+                const showCorrect = submitted && choice.isCorrect;
+                const showIncorrect = submitted && isSelected && !choice.isCorrect;
+
+                return (
+                  <button
+                    key={choice.id}
+                    className={[
+                      "choice-button",
+                      isSelected ? "selected" : "",
+                      showCorrect ? "correct" : "",
+                      showIncorrect ? "incorrect" : ""
+                    ]
+                      .filter(Boolean)
+                      .join(" ")}
+                    type="button"
+                    onClick={() => selectChoice(choice.choiceKey)}
+                    aria-pressed={isSelected}
+                    disabled={submitted}
+                  >
+                    <span className="choice-key">{choice.choiceKey}</span>
+                    <span>{choice.englishText}</span>
+                  </button>
+                );
+              })}
+            </div>
+          )}
 
           <div className="practice-actions study-action-bar">
             <div className="practice-actions-primary">
@@ -302,7 +394,7 @@ export function PracticeRunner({
                 className="primary-button"
                 type="button"
                 onClick={submitCurrentAnswer}
-                disabled={!selectedChoiceKey || submitted}
+                disabled={!currentBundle || !draftResponse || !isResponseComplete(currentBundle, draftResponse) || submitted}
               >
                 Submit Answer
               </button>
@@ -316,7 +408,7 @@ export function PracticeRunner({
                   type="button"
                   onClick={() => {
                     setSessionBundles([]);
-                    setSelectedChoiceKey(null);
+                    setDraftResponse(undefined);
                     setSubmitted(false);
                   }}
                 >
@@ -336,13 +428,25 @@ export function PracticeRunner({
           <div className="result-banner" aria-live="polite">
             <strong>
               {submitted
-                ? isChoiceCorrect(currentBundle, selectedChoiceKey ?? undefined)
+                ? isQuestionCorrect(currentBundle, lockedResponse)
                   ? "Correct"
                   : "Incorrect"
-                : "Choose one answer"}
+                : currentBundle.question.questionType === "hazard_prediction"
+                  ? "Complete all statements"
+                  : "Choose one answer"}
             </strong>
             <span>{currentBundle.category.labelEn}</span>
-            <span>{selectedChoice ? `Selected ${selectedChoice.choiceKey}` : "No answer selected yet"}</span>
+            <span>
+              {submitted
+                ? currentBundle.question.questionType === "hazard_prediction"
+                  ? "All three statements must be correct."
+                  : singleChoiceResponse
+                    ? `Selected ${singleChoiceResponse.selectedChoiceKey}`
+                    : "No answer selected yet"
+                : currentBundle.question.questionType === "hazard_prediction"
+                  ? "True / False for each statement"
+                  : "No answer selected yet"}
+            </span>
           </div>
         </article>
 
@@ -361,7 +465,7 @@ export function PracticeRunner({
               </div>
             ) : (
               <p className="small-copy">
-                Submit one answer first. The explanation stays in this side panel so the next question remains in view.
+                Submit your answer first. The explanation stays in this side panel so the next question remains in view.
               </p>
             )}
           </article>
@@ -382,7 +486,13 @@ export function PracticeRunner({
 
       <dl className="detail-list">
         <div>
-          <dt>Correct answers</dt>
+          <dt>Earned points</dt>
+          <dd>
+            {summary.earnedPoints} / {summary.possiblePoints}
+          </dd>
+        </div>
+        <div>
+          <dt>Fully correct items</dt>
           <dd>{summary.correctAnswers}</dd>
         </div>
         <div>
@@ -418,6 +528,9 @@ export function PracticeRunner({
           type="button"
           onClick={() => {
             setSessionBundles([]);
+            setCurrentIndex(0);
+            setDraftResponse(undefined);
+            setSubmitted(false);
             setCompleted(false);
           }}
         >

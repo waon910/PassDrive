@@ -1,7 +1,7 @@
 import type { QuestionBundle } from "@/domain/content-types";
 import type { LearnerHistorySnapshot, StoredMockExamRun, StoredQuestionAttempt } from "@/domain/learner-history-types";
-import type { SessionAnswerMap, SessionSummary } from "@/domain/session-rules";
-import { isChoiceCorrect } from "@/domain/session-rules";
+import type { SessionAnswerMap, SessionQuestionResponse, SessionSummary } from "@/domain/session-rules";
+import { buildResponseStorageValue, isQuestionCorrect, isResponseComplete } from "@/domain/session-rules";
 
 const DB_NAME = "passdrive";
 const DB_VERSION = 1;
@@ -102,15 +102,15 @@ export async function resetLearnerHistorySnapshot() {
   return EMPTY_HISTORY;
 }
 
-export async function recordPracticeAttempt(bundle: QuestionBundle, selectedChoiceKey: string) {
+export async function recordPracticeAttempt(bundle: QuestionBundle, response: SessionQuestionResponse) {
   const answeredAt = new Date().toISOString();
   const attempt: StoredQuestionAttempt = {
     id: buildAttemptId(bundle.question.id, "practice", answeredAt),
     questionId: bundle.question.id,
     categoryId: bundle.category.id,
     mode: "practice",
-    selectedChoiceKey,
-    isCorrect: isChoiceCorrect(bundle, selectedChoiceKey),
+    selectedChoiceKey: buildResponseStorageValue(response),
+    isCorrect: isQuestionCorrect(bundle, response),
     answeredAt
   };
 
@@ -128,9 +128,9 @@ export async function recordMockExamResult(
 ) {
   const completedAt = new Date().toISOString();
   const attempts: StoredQuestionAttempt[] = questionBundles.flatMap((bundle) => {
-    const selectedChoiceKey = answers[bundle.question.id];
+    const response = answers[bundle.question.id];
 
-    if (!selectedChoiceKey) {
+    if (!response || !isResponseComplete(bundle, response)) {
       return [];
     }
 
@@ -140,8 +140,8 @@ export async function recordMockExamResult(
         questionId: bundle.question.id,
         categoryId: bundle.category.id,
         mode: "mock_exam",
-        selectedChoiceKey,
-        isCorrect: isChoiceCorrect(bundle, selectedChoiceKey),
+        selectedChoiceKey: buildResponseStorageValue(response),
+        isCorrect: isQuestionCorrect(bundle, response),
         answeredAt: completedAt
       }
     ];
@@ -151,6 +151,8 @@ export async function recordMockExamResult(
     id: buildMockRunId(completedAt),
     completedAt,
     questionCount: summary.totalQuestions,
+    possiblePoints: summary.possiblePoints,
+    scorePoints: summary.earnedPoints,
     correctCount: summary.correctAnswers,
     incorrectCount: summary.incorrectAnswers,
     unansweredCount: summary.unansweredQuestions,

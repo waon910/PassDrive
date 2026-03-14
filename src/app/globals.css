@@ -1398,6 +1398,30 @@ dl {
   align-content: start;
 }
 
+.hazard-prompt-list {
+  display: grid;
+  gap: 14px;
+}
+
+.hazard-prompt-card {
+  display: grid;
+  gap: 12px;
+  padding: 16px 18px;
+  border-radius: 20px;
+  border: 1px solid rgba(20, 38, 60, 0.08);
+  background: rgba(20, 38, 60, 0.03);
+}
+
+.hazard-choice-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.hazard-choice-button {
+  justify-content: center;
+}
+
 .admin-review-summary {
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));

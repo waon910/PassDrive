@@ -14,6 +14,8 @@ export interface StoredMockExamRun {
   id: string;
   completedAt: string;
   questionCount: number;
+  possiblePoints: number;
+  scorePoints: number;
   correctCount: number;
   incorrectCount: number;
   unansweredCount: number;

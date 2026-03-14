@@ -1,7 +1,7 @@
 export type SourceType = "official_site" | "official_pdf" | "official_booklet" | "other";
 export type RegionScope = "national" | "prefecture_specific";
 export type ContentVersionStatus = "draft" | "active" | "superseded";
-export type QuestionType = "true_false" | "single_choice";
+export type QuestionType = "true_false" | "single_choice" | "hazard_prediction";
 export type Difficulty = "easy" | "medium" | "hard";
 export type QuestionStatus = "published" | "unpublished";
 export type ExplanationOrigin = "source" | "ai" | "manual";
@@ -10,6 +10,7 @@ export type AnswerResult = "correct" | "incorrect";
 export type ExamMode = "mock_exam" | "practice_set" | "mistakes_only";
 export type ExamResult = "in_progress" | "pass" | "fail" | "abandoned";
 export type LocaleCode = "ja" | "en";
+export type PromptChoiceKey = "T" | "F";
 export type TrafficSignKind =
   | "warning"
   | "prohibitory"
@@ -80,7 +81,8 @@ export interface Question {
   originalStem: string;
   originalLanguage: LocaleCode;
   englishStem: string;
-  correctChoiceKey: string;
+  correctChoiceKey?: string;
+  pointValue?: number;
   hasImage: boolean;
   imageAssetPath?: string;
   imageAltTextEn?: string;
@@ -91,6 +93,16 @@ export interface Question {
   publishedAt?: string;
   createdAt: string;
   updatedAt: string;
+}
+
+export interface QuestionPrompt {
+  id: string;
+  questionId: string;
+  promptKey: string;
+  displayOrder: number;
+  originalText: string;
+  englishText: string;
+  correctChoiceKey: PromptChoiceKey;
 }
 
 export interface Choice {
@@ -142,6 +154,8 @@ export interface ExamSession {
   endedAt?: string;
   timeLimitSeconds?: number;
   questionCount: number;
+  possiblePoints?: number;
+  scorePoints?: number;
   correctCount?: number;
   scorePercent?: number;
   passThresholdPercent?: number;
@@ -179,6 +193,7 @@ export interface SampleQuestionDataset {
   categories: Category[];
   tags: Tag[];
   questions: Question[];
+  questionPrompts: QuestionPrompt[];
   choices: Choice[];
   explanations: Explanation[];
   questionTags: QuestionTag[];
@@ -192,6 +207,7 @@ export interface QuestionBundle {
   question: Question;
   sourceReference: SourceReference;
   category: Category;
+  questionPrompts: QuestionPrompt[];
   choices: Choice[];
   explanation: Explanation;
   tags: Tag[];

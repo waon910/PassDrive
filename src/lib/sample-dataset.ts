@@ -9,6 +9,7 @@ import type {
   GlossaryTerm,
   Question,
   QuestionBundle,
+  QuestionPrompt,
   SampleQuestionDataset,
   SourceReference,
   Tag
@@ -27,6 +28,7 @@ const REQUIRED_COLLECTIONS: Array<keyof Omit<SampleQuestionDataset, "meta">> = [
   "categories",
   "tags",
   "questions",
+  "questionPrompts",
   "choices",
   "explanations",
   "questionTags",
@@ -107,8 +109,15 @@ function getQuestionBundles(
   const categoryMap = buildMap<Category>(dataset.categories);
   const explanationMap = buildMap<Explanation>(dataset.explanations);
   const tagMap = buildMap<Tag>(dataset.tags);
+  const promptsByQuestionId = new Map<string, QuestionPrompt[]>();
   const choicesByQuestionId = new Map<string, SampleQuestionDataset["choices"]>();
   const tagsByQuestionId = new Map<string, Tag[]>();
+
+  for (const prompt of dataset.questionPrompts) {
+    const group = promptsByQuestionId.get(prompt.questionId) ?? [];
+    group.push(prompt);
+    promptsByQuestionId.set(prompt.questionId, group);
+  }
 
   for (const choice of dataset.choices) {
     const group = choicesByQuestionId.get(choice.questionId) ?? [];
@@ -142,6 +151,9 @@ function getQuestionBundles(
         question,
         sourceReference,
         category,
+        questionPrompts: [...(promptsByQuestionId.get(question.id) ?? [])].sort(
+          (left, right) => left.displayOrder - right.displayOrder
+        ),
         choices: [...(choicesByQuestionId.get(question.id) ?? [])].sort(
           (left, right) => left.displayOrder - right.displayOrder
         ),
@@ -157,6 +169,18 @@ export function getFeaturedQuestion(dataset: SampleQuestionDataset): QuestionBun
 
 export function getExamEligibleQuestionBundles(dataset: SampleQuestionDataset): QuestionBundle[] {
   return getPublishedQuestionBundles(dataset).filter((bundle) => bundle.question.isExamEligible);
+}
+
+export function getStandardExamQuestionBundles(dataset: SampleQuestionDataset): QuestionBundle[] {
+  return getExamEligibleQuestionBundles(dataset).filter((bundle) => bundle.question.questionType === "true_false");
+}
+
+export function getHazardPredictionQuestionBundles(dataset: SampleQuestionDataset): QuestionBundle[] {
+  return getExamEligibleQuestionBundles(dataset).filter((bundle) => bundle.question.questionType === "hazard_prediction");
+}
+
+export function getPracticeEligibleQuestionBundles(dataset: SampleQuestionDataset): QuestionBundle[] {
+  return getPublishedQuestionBundles(dataset).filter((bundle) => bundle.question.questionType !== "hazard_prediction");
 }
 
 export function getFeaturedMockExam(dataset: SampleQuestionDataset) {

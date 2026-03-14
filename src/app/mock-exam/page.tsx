@@ -12,11 +12,14 @@ export default async function MockExamPage() {
       currentPath="/mock-exam"
       eyebrow="Mock Exam"
       title="Mock Exam"
-      description="Start the timer. Finish the set. Review the result."
+      description="Run a timed final-test practice set with standard and hazard prediction items."
       shellVariant="study"
     >
       <MockExamRunner
-        questionBundles={viewModel.examQuestionBundles}
+        standardQuestionBundles={viewModel.standardQuestionBundles}
+        hazardQuestionBundles={viewModel.hazardQuestionBundles}
+        standardQuestionCount={viewModel.setup.standardQuestionCount}
+        hazardQuestionCount={viewModel.setup.hazardQuestionCount}
         passThresholdPercent={viewModel.setup.passThresholdPercent}
         timeLimitMinutes={viewModel.setup.timeLimitMinutes}
       />

@@ -12,6 +12,7 @@ import type {
   Explanation,
   GlossaryTerm,
   Question,
+  QuestionPrompt,
   QuestionTag,
   SampleQuestionDataset,
   SampleDatasetMeta,
@@ -29,6 +30,7 @@ const TABLES = {
   categories: "categories",
   tags: "tags",
   questions: "questions",
+  questionPrompts: "question_prompts",
   choices: "choices",
   explanations: "explanations",
   questionTags: "question_tags",
@@ -44,6 +46,7 @@ const DELETE_ORDER = [
   TABLES.userProgress,
   TABLES.questionTags,
   TABLES.explanations,
+  TABLES.questionPrompts,
   TABLES.choices,
   TABLES.questions,
   TABLES.glossaryTerms,
@@ -144,7 +147,8 @@ function normalizeQuestion(row: Record<string, unknown>): Question {
     originalStem: String(row.originalStem),
     originalLanguage: row.originalLanguage as Question["originalLanguage"],
     englishStem: String(row.englishStem),
-    correctChoiceKey: String(row.correctChoiceKey),
+    correctChoiceKey: toOptionalString(row.correctChoiceKey),
+    pointValue: row.pointValue === null || row.pointValue === undefined ? undefined : Number(row.pointValue),
     hasImage: toBoolean(row.hasImage),
     imageAssetPath: toOptionalString(row.imageAssetPath),
     imageAltTextEn: toOptionalString(row.imageAltTextEn),
@@ -155,6 +159,18 @@ function normalizeQuestion(row: Record<string, unknown>): Question {
     publishedAt: toOptionalString(row.publishedAt),
     createdAt: String(row.createdAt),
     updatedAt: String(row.updatedAt)
+  };
+}
+
+function normalizeQuestionPrompt(row: Record<string, unknown>): QuestionPrompt {
+  return {
+    id: String(row.id),
+    questionId: String(row.questionId),
+    promptKey: String(row.promptKey),
+    displayOrder: Number(row.displayOrder),
+    originalText: String(row.originalText),
+    englishText: String(row.englishText),
+    correctChoiceKey: row.correctChoiceKey as QuestionPrompt["correctChoiceKey"]
   };
 }
 
@@ -216,6 +232,8 @@ function normalizeExamSession(row: Record<string, unknown>): ExamSession {
     endedAt: toOptionalString(row.endedAt),
     timeLimitSeconds: row.timeLimitSeconds === null || row.timeLimitSeconds === undefined ? undefined : Number(row.timeLimitSeconds),
     questionCount: Number(row.questionCount),
+    possiblePoints: row.possiblePoints === null || row.possiblePoints === undefined ? undefined : Number(row.possiblePoints),
+    scorePoints: row.scorePoints === null || row.scorePoints === undefined ? undefined : Number(row.scorePoints),
     correctCount: row.correctCount === null || row.correctCount === undefined ? undefined : Number(row.correctCount),
     scorePercent: row.scorePercent === null || row.scorePercent === undefined ? undefined : Number(row.scorePercent),
     passThresholdPercent:
@@ -363,7 +381,8 @@ async function ensureSchema(db: Knex) {
     table.text("originalStem").notNullable();
     table.string("originalLanguage").notNullable();
     table.text("englishStem").notNullable();
-    table.string("correctChoiceKey").notNullable();
+    table.string("correctChoiceKey");
+    table.integer("pointValue");
     table.boolean("hasImage").notNullable();
     table.text("imageAssetPath");
     table.text("imageAltTextEn");
@@ -376,6 +395,17 @@ async function ensureSchema(db: Knex) {
     table.string("updatedAt").notNullable();
     table.index(["status"]);
     table.index(["mainCategoryId"]);
+  });
+
+  await ensureTable(db, TABLES.questionPrompts, (table) => {
+    table.string("id").primary();
+    table.string("questionId").notNullable();
+    table.string("promptKey").notNullable();
+    table.integer("displayOrder").notNullable();
+    table.text("originalText").notNullable();
+    table.text("englishText").notNullable();
+    table.string("correctChoiceKey").notNullable();
+    table.index(["questionId"]);
   });
 
   await ensureTable(db, TABLES.choices, (table) => {
@@ -431,6 +461,8 @@ async function ensureSchema(db: Knex) {
     table.string("endedAt");
     table.integer("timeLimitSeconds");
     table.integer("questionCount").notNullable();
+    table.integer("possiblePoints");
+    table.integer("scorePoints");
     table.integer("correctCount");
     table.integer("scorePercent");
     table.integer("passThresholdPercent");
@@ -470,6 +502,18 @@ async function ensureSchema(db: Knex) {
   });
   await ensureColumn(db, TABLES.glossaryTerms, "trafficSignKind", (table) => {
     table.string("trafficSignKind");
+  });
+  await ensureColumn(db, TABLES.questions, "correctChoiceKey", (table) => {
+    table.string("correctChoiceKey");
+  });
+  await ensureColumn(db, TABLES.questions, "pointValue", (table) => {
+    table.integer("pointValue");
+  });
+  await ensureColumn(db, TABLES.examSessions, "possiblePoints", (table) => {
+    table.integer("possiblePoints");
+  });
+  await ensureColumn(db, TABLES.examSessions, "scorePoints", (table) => {
+    table.integer("scorePoints");
   });
 }
 
@@ -516,6 +560,7 @@ export async function replaceContentDatasetInDatabase(mode: RelationalContentSto
     await insertInChunks(trx, TABLES.categories, sanitizeRows(dataset.categories));
     await insertInChunks(trx, TABLES.tags, sanitizeRows(dataset.tags));
     await insertInChunks(trx, TABLES.questions, sanitizeRows(dataset.questions));
+    await insertInChunks(trx, TABLES.questionPrompts, sanitizeRows(dataset.questionPrompts));
     await insertInChunks(trx, TABLES.choices, sanitizeRows(dataset.choices));
     await insertInChunks(trx, TABLES.explanations, sanitizeRows(dataset.explanations));
     await insertInChunks(trx, TABLES.questionTags, sanitizeRows(dataset.questionTags));
@@ -537,6 +582,7 @@ export async function loadContentDatasetFromDatabase(mode: RelationalContentStor
     categories,
     tags,
     questions,
+    questionPrompts,
     choices,
     explanations,
     questionTags,
@@ -551,6 +597,7 @@ export async function loadContentDatasetFromDatabase(mode: RelationalContentStor
     db(TABLES.categories).select<Record<string, unknown>[]>("*").orderBy("displayOrder", "asc"),
     db(TABLES.tags).select<Record<string, unknown>[]>("*"),
     db(TABLES.questions).select<Record<string, unknown>[]>("*"),
+    db(TABLES.questionPrompts).select<Record<string, unknown>[]>("*").orderBy(["questionId", "displayOrder"]),
     db(TABLES.choices).select<Record<string, unknown>[]>("*").orderBy(["questionId", "displayOrder"]),
     db(TABLES.explanations).select<Record<string, unknown>[]>("*"),
     db(TABLES.questionTags).select<Record<string, unknown>[]>("*"),
@@ -571,6 +618,7 @@ export async function loadContentDatasetFromDatabase(mode: RelationalContentStor
     categories: categories.map(normalizeCategory),
     tags: tags.map(normalizeTag),
     questions: questions.map(normalizeQuestion),
+    questionPrompts: questionPrompts.map(normalizeQuestionPrompt),
     choices: choices.map(normalizeChoice),
     explanations: explanations.map(normalizeExplanation),
     questionTags: questionTags.map(normalizeQuestionTag),

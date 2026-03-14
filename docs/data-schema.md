@@ -22,6 +22,7 @@ erDiagram
     SourceReference ||--o{ Question : supplies
     ContentVersion ||--o{ Question : versions
     Category ||--o{ Question : classifies
+    Question ||--o{ QuestionPrompt : decomposes_to
     Question ||--o{ Choice : has
     Question ||--o{ Explanation : has
     Question ||--o{ QuestionTag : tagged
@@ -40,6 +41,7 @@ erDiagram
 | `Category` | 主要カテゴリを管理する | Yes |
 | `Tag` | 補助タグを管理する | Yes |
 | `Question` | 出題単位。公開/非公開状態を持つ | Yes |
+| `QuestionPrompt` | 危険予測問題などの設問内判定文を持つ | Yes |
 | `Choice` | 問題の選択肢 | Yes |
 | `Explanation` | 問題に紐づく英語解説 | Yes |
 | `QuestionTag` | 問題とタグの関連付け | Yes |
@@ -106,14 +108,15 @@ erDiagram
 | `sourceReferenceId` | string | Yes | `SourceReference.id` |
 | `contentVersionId` | string | Yes | `ContentVersion.id` |
 | `sourceQuestionRef` | string | No | 元ページ番号、設問番号など |
-| `questionType` | enum | Yes | `true_false`, `single_choice` |
+| `questionType` | enum | Yes | `true_false`, `single_choice`, `hazard_prediction` |
+| `pointValue` | integer | No | 省略時は `1`、危険予測問題は `2` |
 | `mainCategoryId` | string | Yes | `Category.id` |
 | `difficulty` | enum | Yes | `easy`, `medium`, `hard` |
 | `status` | enum | Yes | `published`, `unpublished` |
 | `originalStem` | text | Yes | 原文問題文 |
 | `originalLanguage` | enum | Yes | `ja`, `en` |
 | `englishStem` | text | Yes | Learner 向け英語問題文 |
-| `correctChoiceKey` | string | Yes | `A`, `B`, `C`, `D`, `T`, `F` など |
+| `correctChoiceKey` | string | No | `true_false` / `single_choice` のみ |
 | `hasImage` | boolean | Yes | 画像有無 |
 | `imageAssetPath` | string | No | 画像パス |
 | `imageAltTextEn` | text | No | 画像付き問題で必須 |
@@ -130,8 +133,21 @@ erDiagram
 - Learner 向け画面は `status = published` の問題のみ表示する
 - `hasImage = true` の場合は `imageAssetPath` と `imageAltTextEn` を必須にする
 - 新規問題は `published` を初期値にする
+- `questionType = hazard_prediction` の場合は `QuestionPrompt` を `3件` 必須にし、`correctChoiceKey` は持たない
 
-### 5.6 `Choice`
+### 5.6 `QuestionPrompt`
+
+| Field | Type | Required | Notes |
+| --- | --- | --- | --- |
+| `id` | string | Yes | 例: `qp_hazard_0001_1` |
+| `questionId` | string | Yes | `Question.id` |
+| `promptKey` | string | Yes | `1`, `2`, `3` など |
+| `displayOrder` | integer | Yes | 表示順 |
+| `originalText` | text | Yes | 原文の判定文 |
+| `englishText` | text | Yes | 英語の判定文 |
+| `correctChoiceKey` | enum | Yes | `T`, `F` |
+
+### 5.7 `Choice`
 
 | Field | Type | Required | Notes |
 | --- | --- | --- | --- |
@@ -143,7 +159,12 @@ erDiagram
 | `englishText` | text | Yes | 英語選択肢 |
 | `isCorrect` | boolean | Yes | 正答か |
 
-### 5.7 `Explanation`
+注記:
+
+- `Choice` は `true_false` と `single_choice` のみで使う
+- 危険予測問題の `True / False` UI は固定選択肢として扱い、正答は `QuestionPrompt.correctChoiceKey` に保持する
+
+### 5.8 `Explanation`
 
 | Field | Type | Required | Notes |
 | --- | --- | --- | --- |
@@ -158,14 +179,14 @@ erDiagram
 | `createdAt` | datetime | Yes | 作成日時 |
 | `updatedAt` | datetime | Yes | 更新日時 |
 
-### 5.8 `QuestionTag`
+### 5.9 `QuestionTag`
 
 | Field | Type | Required | Notes |
 | --- | --- | --- | --- |
 | `questionId` | string | Yes | `Question.id` |
 | `tagId` | string | Yes | `Tag.id` |
 
-### 5.9 `UserProgress`
+### 5.10 `UserProgress`
 
 | Field | Type | Required | Notes |
 | --- | --- | --- | --- |
@@ -179,7 +200,7 @@ erDiagram
 | `masteryLevel` | enum | Yes | `new`, `learning`, `needs_review`, `mastered` |
 | `lastResult` | enum | Yes | `correct`, `incorrect` |
 
-### 5.10 `ExamSession`
+### 5.11 `ExamSession`
 
 | Field | Type | Required | Notes |
 | --- | --- | --- | --- |
@@ -191,12 +212,14 @@ erDiagram
 | `endedAt` | datetime | No | 終了時刻 |
 | `timeLimitSeconds` | integer | No | 制限時間 |
 | `questionCount` | integer | Yes | 出題数 |
+| `possiblePoints` | integer | No | 満点 |
+| `scorePoints` | integer | No | 実得点 |
 | `correctCount` | integer | No | 正答数 |
 | `scorePercent` | number | No | 得点率 |
 | `passThresholdPercent` | number | No | 合格ライン |
 | `result` | enum | Yes | `in_progress`, `pass`, `fail`, `abandoned` |
 
-### 5.11 `ExamSessionAnswer`
+### 5.12 `ExamSessionAnswer`
 
 | Field | Type | Required | Notes |
 | --- | --- | --- | --- |
@@ -208,7 +231,7 @@ erDiagram
 | `answeredAt` | datetime | Yes | 解答時刻 |
 | `responseTimeMs` | integer | No | 回答時間 |
 
-### 5.12 `GlossaryTerm`
+### 5.13 `GlossaryTerm`
 
 | Field | Type | Required | Notes |
 | --- | --- | --- | --- |
@@ -227,7 +250,8 @@ erDiagram
 ## 6. 主要な整合性ルール
 
 - `Question.activeExplanationId` は同じ `questionId` の `Explanation` を指すこと
-- `Question.correctChoiceKey` は `Choice.isCorrect = true` の選択肢と一致すること
+- `Question.questionType != hazard_prediction` の場合のみ `Question.correctChoiceKey` は `Choice.isCorrect = true` の選択肢と一致すること
+- `Question.questionType = hazard_prediction` の場合は `QuestionPrompt.correctChoiceKey` を3件持つこと
 - `Question.status = published` のみ learner routes の問題集合に含めること
 - `GlossaryTerm.imageAssetPath` がある場合は `imageAltTextEn` と `sourceReferenceId` も持つこと
 - `Traffic sign` は画像必須とする

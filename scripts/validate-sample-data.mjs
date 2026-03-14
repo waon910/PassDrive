@@ -13,6 +13,7 @@ const requiredCollections = [
   "categories",
   "tags",
   "questions",
+  "questionPrompts",
   "choices",
   "explanations",
   "questionTags",
@@ -105,6 +106,7 @@ const contentVersions = buildMap(data.contentVersions, "ContentVersion");
 const categories = buildMap(data.categories, "Category");
 const tags = buildMap(data.tags, "Tag");
 const questions = buildMap(data.questions, "Question");
+const questionPrompts = buildMap(data.questionPrompts, "QuestionPrompt");
 const choices = buildMap(data.choices, "Choice");
 const explanations = buildMap(data.explanations, "Explanation");
 const examSessions = buildMap(data.examSessions, "ExamSession");
@@ -112,6 +114,7 @@ const examSessionAnswers = buildMap(data.examSessionAnswers, "ExamSessionAnswer"
 const glossaryTerms = buildMap(data.glossaryTerms, "GlossaryTerm");
 
 const choicesByQuestionId = groupByQuestionId(data.choices);
+const promptsByQuestionId = groupByQuestionId(data.questionPrompts);
 const explanationsByQuestionId = groupByQuestionId(data.explanations);
 const answersBySessionId = new Map();
 
@@ -126,21 +129,61 @@ for (const question of data.questions) {
   assertRecordExists(contentVersions, question.contentVersionId, `Question ${question.id}`);
   assertRecordExists(categories, question.mainCategoryId, `Question ${question.id}`);
 
+  const pointValue = typeof question.pointValue === "number" ? question.pointValue : 1;
+  if (!Number.isInteger(pointValue) || pointValue <= 0) {
+    fail(`Question ${question.id} must have a positive integer pointValue when provided.`);
+  }
+
+  const questionPromptsForQuestion = promptsByQuestionId.get(question.id) ?? [];
   const questionChoices = choicesByQuestionId.get(question.id) ?? [];
-  if (questionChoices.length === 0) {
-    fail(`Question ${question.id} must have at least one choice.`);
-  }
+  if (question.questionType === "hazard_prediction") {
+    if (pointValue !== 2) {
+      fail(`Hazard prediction question ${question.id} must have pointValue=2.`);
+    }
 
-  const matchingCorrectChoice = questionChoices.find(
-    (choice) => choice.choiceKey === question.correctChoiceKey && choice.isCorrect === true
-  );
-  if (!matchingCorrectChoice) {
-    fail(`Question ${question.id} has no correct choice matching correctChoiceKey.`);
-  }
+    if (questionChoices.length !== 0) {
+      fail(`Hazard prediction question ${question.id} must not include question-level choices.`);
+    }
 
-  const correctChoices = questionChoices.filter((choice) => choice.isCorrect === true);
-  if (correctChoices.length !== 1) {
-    fail(`Question ${question.id} must have exactly one correct choice in this MVP schema.`);
+    if (questionPromptsForQuestion.length !== 3) {
+      fail(`Hazard prediction question ${question.id} must include exactly three questionPrompts.`);
+    }
+
+    const promptKeys = new Set();
+    for (const prompt of questionPromptsForQuestion) {
+      if (promptKeys.has(prompt.promptKey)) {
+        fail(`Hazard prediction question ${question.id} has a duplicate promptKey: ${prompt.promptKey}`);
+      }
+      promptKeys.add(prompt.promptKey);
+
+      if (!["T", "F"].includes(prompt.correctChoiceKey)) {
+        fail(`QuestionPrompt ${prompt.id} must use correctChoiceKey "T" or "F".`);
+      }
+    }
+
+    if (question.correctChoiceKey) {
+      fail(`Hazard prediction question ${question.id} must not define correctChoiceKey.`);
+    }
+  } else {
+    if (questionChoices.length === 0) {
+      fail(`Question ${question.id} must have at least one choice.`);
+    }
+
+    const matchingCorrectChoice = questionChoices.find(
+      (choice) => choice.choiceKey === question.correctChoiceKey && choice.isCorrect === true
+    );
+    if (!matchingCorrectChoice) {
+      fail(`Question ${question.id} has no correct choice matching correctChoiceKey.`);
+    }
+
+    const correctChoices = questionChoices.filter((choice) => choice.isCorrect === true);
+    if (correctChoices.length !== 1) {
+      fail(`Question ${question.id} must have exactly one correct choice in this MVP schema.`);
+    }
+
+    if (questionPromptsForQuestion.length > 0) {
+      fail(`Question ${question.id} is not a hazard prediction item but includes questionPrompts.`);
+    }
   }
 
   if (!["published", "unpublished"].includes(question.status)) {
@@ -171,6 +214,10 @@ for (const question of data.questions) {
   }
 }
 
+for (const prompt of data.questionPrompts) {
+  assertRecordExists(questions, prompt.questionId, `QuestionPrompt ${prompt.id}`);
+}
+
 for (const choice of data.choices) {
   assertRecordExists(questions, choice.questionId, `Choice ${choice.id}`);
 }
@@ -198,12 +245,32 @@ for (const session of data.examSessions) {
     fail(`ExamSession ${session.id} questionCount does not match its answer count.`);
   }
 
+  const possiblePoints = sessionAnswers.reduce((total, answer) => {
+    const question = questions.get(answer.questionId);
+    return total + (typeof question?.pointValue === "number" ? question.pointValue : 1);
+  }, 0);
   const computedCorrectCount = sessionAnswers.filter((answer) => answer.isCorrect).length;
   if (session.correctCount !== computedCorrectCount) {
     fail(`ExamSession ${session.id} correctCount does not match its answers.`);
   }
 
-  const computedScorePercent = session.questionCount === 0 ? 0 : (computedCorrectCount / session.questionCount) * 100;
+  const computedScorePoints = sessionAnswers.reduce((total, answer) => {
+    if (!answer.isCorrect) {
+      return total;
+    }
+
+    const question = questions.get(answer.questionId);
+    return total + (typeof question?.pointValue === "number" ? question.pointValue : 1);
+  }, 0);
+  if (session.scorePoints !== undefined && session.scorePoints !== computedScorePoints) {
+    fail(`ExamSession ${session.id} scorePoints does not match its answers.`);
+  }
+
+  if (session.possiblePoints !== undefined && session.possiblePoints !== possiblePoints) {
+    fail(`ExamSession ${session.id} possiblePoints does not match its answers.`);
+  }
+
+  const computedScorePercent = possiblePoints === 0 ? 0 : (computedScorePoints / possiblePoints) * 100;
   if (session.scorePercent !== computedScorePercent) {
     fail(`ExamSession ${session.id} scorePercent does not match its answers.`);
   }

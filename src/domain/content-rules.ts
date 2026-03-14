@@ -9,7 +9,15 @@ export function canQuestionBePublished(question: Question) {
 }
 
 export function formatQuestionTypeLabel(questionType: QuestionType) {
-  return questionType === "true_false" ? "True / False" : "Single Choice";
+  if (questionType === "true_false") {
+    return "True / False";
+  }
+
+  if (questionType === "hazard_prediction") {
+    return "Hazard Prediction";
+  }
+
+  return "Single Choice";
 }
 
 export function formatQuestionStatusLabel(status: QuestionStatus) {
