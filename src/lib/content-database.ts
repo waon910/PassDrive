@@ -40,10 +40,13 @@ const TABLES = {
   glossaryTerms: "glossary_terms"
 } as const;
 
-const DELETE_ORDER = [
+const LEARNER_PROGRESS_DELETE_ORDER = [
   TABLES.examSessionAnswers,
   TABLES.examSessions,
-  TABLES.userProgress,
+  TABLES.userProgress
+] as const;
+
+const CONTENT_DELETE_ORDER = [
   TABLES.questionTags,
   TABLES.explanations,
   TABLES.questionPrompts,
@@ -521,8 +524,16 @@ async function getStoredDatasetMeta(db: Knex) {
   return db(TABLES.datasetMeta).first<Record<string, unknown>>();
 }
 
-async function dropManagedTables(db: Knex) {
-  for (const tableName of [...DELETE_ORDER, ...OBSOLETE_TABLES]) {
+interface ReplaceContentDatasetOptions {
+  preserveLearnerProgress?: boolean;
+}
+
+async function dropManagedTables(db: Knex, options?: ReplaceContentDatasetOptions) {
+  const deleteOrder = options?.preserveLearnerProgress
+    ? [...CONTENT_DELETE_ORDER, ...OBSOLETE_TABLES]
+    : [...LEARNER_PROGRESS_DELETE_ORDER, ...CONTENT_DELETE_ORDER, ...OBSOLETE_TABLES];
+
+  for (const tableName of deleteOrder) {
     await db.schema.dropTableIfExists(tableName);
   }
 }
@@ -548,9 +559,13 @@ function sanitizeRows<T extends object>(rows: T[]): Record<string, unknown>[] {
   });
 }
 
-export async function replaceContentDatasetInDatabase(mode: RelationalContentStoreMode, dataset: SampleQuestionDataset) {
+export async function replaceContentDatasetInDatabase(
+  mode: RelationalContentStoreMode,
+  dataset: SampleQuestionDataset,
+  options?: ReplaceContentDatasetOptions
+) {
   const db = await getContentDatabase(mode);
-  await dropManagedTables(db);
+  await dropManagedTables(db, options);
   await ensureSchema(db);
 
   await db.transaction(async (trx) => {
@@ -564,9 +579,11 @@ export async function replaceContentDatasetInDatabase(mode: RelationalContentSto
     await insertInChunks(trx, TABLES.choices, sanitizeRows(dataset.choices));
     await insertInChunks(trx, TABLES.explanations, sanitizeRows(dataset.explanations));
     await insertInChunks(trx, TABLES.questionTags, sanitizeRows(dataset.questionTags));
-    await insertInChunks(trx, TABLES.userProgress, sanitizeRows(dataset.userProgress));
-    await insertInChunks(trx, TABLES.examSessions, sanitizeRows(dataset.examSessions));
-    await insertInChunks(trx, TABLES.examSessionAnswers, sanitizeRows(dataset.examSessionAnswers));
+    if (!options?.preserveLearnerProgress) {
+      await insertInChunks(trx, TABLES.userProgress, sanitizeRows(dataset.userProgress));
+      await insertInChunks(trx, TABLES.examSessions, sanitizeRows(dataset.examSessions));
+      await insertInChunks(trx, TABLES.examSessionAnswers, sanitizeRows(dataset.examSessionAnswers));
+    }
     await insertInChunks(trx, TABLES.glossaryTerms, sanitizeRows(dataset.glossaryTerms));
   });
 }
@@ -631,7 +648,7 @@ export async function loadContentDatasetFromDatabase(mode: RelationalContentStor
 
 export async function seedContentDatabaseFromSampleDataset(mode: RelationalContentStoreMode) {
   const dataset = await loadSampleDataset();
-  await replaceContentDatasetInDatabase(mode, dataset);
+  await replaceContentDatasetInDatabase(mode, dataset, { preserveLearnerProgress: true });
 }
 
 export async function getContentDatabase(mode: RelationalContentStoreMode) {
@@ -658,7 +675,7 @@ export async function ensureContentDatabaseReady(mode: RelationalContentStoreMod
           String(storedMeta.generatedAt) !== dataset.meta.generatedAt;
 
         if (shouldReplaceDataset) {
-          await replaceContentDatasetInDatabase(mode, dataset);
+          await replaceContentDatasetInDatabase(mode, dataset, { preserveLearnerProgress: true });
         }
       }
     })();
