@@ -23,6 +23,7 @@ interface PracticeRunnerProps {
 }
 
 type PracticeMode = "random" | "category" | "mistakes";
+type ChoiceStateTone = "selected" | "correct" | "incorrect";
 
 function shuffleBundles(bundles: QuestionBundle[]) {
   const next = [...bundles];
@@ -53,6 +54,38 @@ function getCategoryProgressDetail(item: CategoryProgressSummary) {
   }
 
   return `${item.correct} of ${item.attempts} answered correctly`;
+}
+
+function getChoiceStateTone(isSelected: boolean, showCorrect: boolean, showIncorrect: boolean): ChoiceStateTone | undefined {
+  if (showCorrect) {
+    return "correct";
+  }
+
+  if (showIncorrect) {
+    return "incorrect";
+  }
+
+  if (isSelected) {
+    return "selected";
+  }
+
+  return undefined;
+}
+
+function getChoiceStateLabel(stateTone?: ChoiceStateTone) {
+  if (stateTone === "correct") {
+    return "Correct answer";
+  }
+
+  if (stateTone === "incorrect") {
+    return "Your answer";
+  }
+
+  if (stateTone === "selected") {
+    return "Selected";
+  }
+
+  return undefined;
 }
 
 export function PracticeRunner({
@@ -330,6 +363,8 @@ export function PracticeRunner({
                         const isSelected = selectedChoiceKey === choiceKey;
                         const showCorrect = submitted && prompt.correctChoiceKey === choiceKey;
                         const showIncorrect = submitted && isSelected && prompt.correctChoiceKey !== choiceKey;
+                        const stateTone = getChoiceStateTone(isSelected, showCorrect, showIncorrect);
+                        const stateLabel = getChoiceStateLabel(stateTone);
 
                         return (
                           <button
@@ -349,6 +384,11 @@ export function PracticeRunner({
                             disabled={submitted}
                           >
                             <span className="choice-key">{choiceKey === "T" ? "True" : "False"}</span>
+                            {stateLabel ? (
+                              <span className={`choice-state-badge ${stateTone}`}>
+                                {stateLabel}
+                              </span>
+                            ) : null}
                           </button>
                         );
                       })}
@@ -363,6 +403,8 @@ export function PracticeRunner({
                 const isSelected = singleChoiceResponse?.selectedChoiceKey === choice.choiceKey;
                 const showCorrect = submitted && choice.isCorrect;
                 const showIncorrect = submitted && isSelected && !choice.isCorrect;
+                const stateTone = getChoiceStateTone(isSelected, showCorrect, showIncorrect);
+                const stateLabel = getChoiceStateLabel(stateTone);
 
                 return (
                   <button
@@ -381,7 +423,14 @@ export function PracticeRunner({
                     disabled={submitted}
                   >
                     <span className="choice-key">{choice.choiceKey}</span>
-                    <span>{choice.englishText}</span>
+                    <span className="choice-copy">
+                      <span className="choice-text">{choice.englishText}</span>
+                      {stateLabel ? (
+                        <span className={`choice-state-badge ${stateTone}`}>
+                          {stateLabel}
+                        </span>
+                      ) : null}
+                    </span>
                   </button>
                 );
               })}

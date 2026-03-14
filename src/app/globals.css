@@ -1277,45 +1277,117 @@ dl {
   gap: 14px;
   align-items: center;
   text-align: left;
-  min-height: 84px;
+  min-height: 92px;
   padding: 18px 18px;
   border-radius: 18px;
-  border: 1px solid rgba(20, 38, 60, 0.12);
-  background: rgba(20, 38, 60, 0.03);
+  border: 2px solid rgba(20, 38, 60, 0.12);
+  background: rgba(255, 252, 247, 0.92);
+  box-shadow: 0 12px 28px rgba(20, 38, 60, 0.05);
   cursor: pointer;
-  transition: border-color 140ms ease, background-color 140ms ease, transform 140ms ease;
+  transition: border-color 140ms ease, background-color 140ms ease, transform 140ms ease, box-shadow 140ms ease;
 }
 
 .choice-button:hover {
   transform: translateY(-1px);
-  border-color: rgba(117, 152, 174, 0.3);
+  border-color: rgba(196, 109, 76, 0.38);
+  box-shadow: 0 16px 34px rgba(20, 38, 60, 0.08);
 }
 
 .choice-button.selected {
-  border-color: rgba(117, 152, 174, 0.35);
-  background: rgba(117, 152, 174, 0.14);
+  border-color: rgba(196, 109, 76, 0.68);
+  background: linear-gradient(180deg, rgba(196, 109, 76, 0.18), rgba(196, 109, 76, 0.08));
+  box-shadow: 0 0 0 3px rgba(196, 109, 76, 0.14);
 }
 
 .choice-button.correct {
-  border-color: rgba(46, 111, 94, 0.3);
-  background: var(--success-soft);
+  border-color: rgba(46, 111, 94, 0.8);
+  background: linear-gradient(180deg, rgba(46, 111, 94, 0.2), rgba(46, 111, 94, 0.1));
+  box-shadow: 0 0 0 3px rgba(46, 111, 94, 0.12);
 }
 
 .choice-button.incorrect {
-  border-color: rgba(159, 79, 73, 0.3);
-  background: var(--danger-soft);
+  border-color: rgba(159, 79, 73, 0.8);
+  background: linear-gradient(180deg, rgba(159, 79, 73, 0.2), rgba(159, 79, 73, 0.09));
+  box-shadow: 0 0 0 3px rgba(159, 79, 73, 0.12);
+}
+
+.choice-button:disabled {
+  cursor: default;
+}
+
+.choice-copy {
+  min-width: 0;
+  display: grid;
+  gap: 8px;
+}
+
+.choice-text {
+  line-height: 1.55;
+  font-weight: 650;
 }
 
 .choice-key {
   display: inline-flex;
-  width: 36px;
-  height: 36px;
+  min-width: 42px;
+  height: 42px;
+  padding: 0 12px;
   align-items: center;
   justify-content: center;
   border-radius: 999px;
-  border: 1px solid rgba(20, 38, 60, 0.12);
+  border: 1px solid rgba(20, 38, 60, 0.14);
   background: var(--paper);
   font-weight: 800;
+  color: var(--ink-strong);
+}
+
+.choice-button.selected .choice-key {
+  border-color: rgba(196, 109, 76, 0.34);
+  background: rgba(196, 109, 76, 0.2);
+  color: var(--accent-deep);
+}
+
+.choice-button.correct .choice-key {
+  border-color: rgba(46, 111, 94, 0.28);
+  background: rgba(46, 111, 94, 0.22);
+  color: var(--success);
+}
+
+.choice-button.incorrect .choice-key {
+  border-color: rgba(159, 79, 73, 0.28);
+  background: rgba(159, 79, 73, 0.2);
+  color: var(--danger);
+}
+
+.choice-state-badge {
+  display: inline-flex;
+  width: fit-content;
+  align-items: center;
+  min-height: 30px;
+  padding: 0 10px;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  font-size: 0.74rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.choice-state-badge.selected {
+  border-color: rgba(196, 109, 76, 0.28);
+  background: rgba(196, 109, 76, 0.12);
+  color: var(--accent-deep);
+}
+
+.choice-state-badge.correct {
+  border-color: rgba(46, 111, 94, 0.24);
+  background: rgba(46, 111, 94, 0.12);
+  color: var(--success);
+}
+
+.choice-state-badge.incorrect {
+  border-color: rgba(159, 79, 73, 0.24);
+  background: rgba(159, 79, 73, 0.12);
+  color: var(--danger);
 }
 
 .practice-actions {
@@ -1419,7 +1491,10 @@ dl {
 }
 
 .hazard-choice-button {
-  justify-content: center;
+  grid-template-columns: minmax(0, 1fr);
+  justify-items: center;
+  gap: 10px;
+  text-align: center;
 }
 
 .admin-review-summary {

@@ -73,6 +73,10 @@ function countAnsweredQuestions(questionBundles: QuestionBundle[], answers: Sess
   return questionBundles.reduce((total, bundle) => total + (isResponseComplete(bundle, answers[bundle.question.id]) ? 1 : 0), 0);
 }
 
+function getSelectedChoiceLabel(isSelected: boolean) {
+  return isSelected ? "Selected" : undefined;
+}
+
 export function MockExamRunner({
   standardQuestionBundles,
   hazardQuestionBundles,
@@ -305,6 +309,7 @@ export function MockExamRunner({
                       <div className="hazard-choice-row" role="radiogroup" aria-label={`Statement ${prompt.displayOrder} answer`}>
                         {(["T", "F"] as PromptChoiceKey[]).map((choiceKey) => {
                           const isSelected = selectedChoiceKey === choiceKey;
+                          const stateLabel = getSelectedChoiceLabel(isSelected);
 
                           return (
                             <button
@@ -315,6 +320,7 @@ export function MockExamRunner({
                               aria-pressed={isSelected}
                             >
                               <span className="choice-key">{choiceKey === "T" ? "True" : "False"}</span>
+                              {stateLabel ? <span className="choice-state-badge selected">{stateLabel}</span> : null}
                             </button>
                           );
                         })}
@@ -329,6 +335,7 @@ export function MockExamRunner({
                   const questionResponse = answers[currentBundle.question.id];
                   const currentResponse = questionResponse?.kind === "single_choice" ? questionResponse : undefined;
                   const isSelected = currentResponse?.selectedChoiceKey === choice.choiceKey;
+                  const stateLabel = getSelectedChoiceLabel(isSelected);
 
                   return (
                     <button
@@ -339,7 +346,10 @@ export function MockExamRunner({
                       aria-pressed={isSelected}
                     >
                       <span className="choice-key">{choice.choiceKey}</span>
-                      <span>{choice.englishText}</span>
+                      <span className="choice-copy">
+                        <span className="choice-text">{choice.englishText}</span>
+                        {stateLabel ? <span className="choice-state-badge selected">{stateLabel}</span> : null}
+                      </span>
                     </button>
                   );
                 })}
