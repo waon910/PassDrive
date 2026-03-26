@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useTransition } from "react";
 
 import { QuestionFigure } from "@/components/question-figure";
 import {
@@ -12,7 +12,7 @@ import {
   type SessionQuestionResponse
 } from "@/domain/session-rules";
 import type { PromptChoiceKey, QuestionBundle } from "@/domain/content-types";
-import { unpublishQuestionAction } from "@/features/admin-review/review-actions";
+import { unpublishQuestionInPlaceAction } from "@/features/admin-review/review-actions";
 import { recordPracticeAttempt } from "@/lib/learner-history-store";
 import type { CategoryProgressSummary } from "@/lib/sample-dataset";
 
@@ -93,6 +93,8 @@ export function PracticeRunner({
   categoryProgress,
   mistakeQuestionIds
 }: PracticeRunnerProps) {
+  const [availableQuestionBundles, setAvailableQuestionBundles] = useState(questionBundles);
+  const [availableMistakeQuestionIds, setAvailableMistakeQuestionIds] = useState(mistakeQuestionIds);
   const [mode, setMode] = useState<PracticeMode>("random");
   const [selectedCategoryId, setSelectedCategoryId] = useState<string>(categoryProgress[0]?.category.id ?? "");
   const [sessionBundles, setSessionBundles] = useState<QuestionBundle[]>([]);
@@ -101,20 +103,30 @@ export function PracticeRunner({
   const [draftResponse, setDraftResponse] = useState<SessionQuestionResponse | undefined>(undefined);
   const [submitted, setSubmitted] = useState(false);
   const [completed, setCompleted] = useState(false);
+  const [unpublishError, setUnpublishError] = useState<string | undefined>(undefined);
+  const [isPending, startTransition] = useTransition();
 
   const currentBundle = sessionBundles[currentIndex];
   const summary = completed ? buildSessionSummary(sessionBundles, answers, 80) : null;
 
+  useEffect(() => {
+    setAvailableQuestionBundles(questionBundles);
+  }, [questionBundles]);
+
+  useEffect(() => {
+    setAvailableMistakeQuestionIds(mistakeQuestionIds);
+  }, [mistakeQuestionIds]);
+
   function buildBundleSet() {
     if (mode === "mistakes") {
-      return questionBundles.filter((bundle) => mistakeQuestionIds.includes(bundle.question.id));
+      return availableQuestionBundles.filter((bundle) => availableMistakeQuestionIds.includes(bundle.question.id));
     }
 
     if (mode === "category") {
-      return questionBundles.filter((bundle) => bundle.category.id === selectedCategoryId);
+      return availableQuestionBundles.filter((bundle) => bundle.category.id === selectedCategoryId);
     }
 
-    return shuffleBundles(questionBundles);
+    return shuffleBundles(availableQuestionBundles);
   }
 
   function startSession() {
@@ -126,6 +138,52 @@ export function PracticeRunner({
     setDraftResponse(undefined);
     setSubmitted(false);
     setCompleted(false);
+  }
+
+  function handleUnpublishCurrentQuestion() {
+    if (!currentBundle) {
+      return;
+    }
+
+    const unpublishedQuestionId = currentBundle.question.id;
+
+    startTransition(async () => {
+      try {
+        setUnpublishError(undefined);
+        await unpublishQuestionInPlaceAction(unpublishedQuestionId);
+
+        const nextAvailableBundles = availableQuestionBundles.filter((bundle) => bundle.question.id !== unpublishedQuestionId);
+        const nextMistakeQuestionIds = availableMistakeQuestionIds.filter((questionId) => questionId !== unpublishedQuestionId);
+        const nextSessionBundles = sessionBundles.filter((bundle) => bundle.question.id !== unpublishedQuestionId);
+        const nextAnswers = { ...answers };
+
+        delete nextAnswers[unpublishedQuestionId];
+
+        setAvailableQuestionBundles(nextAvailableBundles);
+        setAvailableMistakeQuestionIds(nextMistakeQuestionIds);
+        setSessionBundles(nextSessionBundles);
+        setAnswers(nextAnswers);
+        setDraftResponse(undefined);
+        setSubmitted(false);
+
+        if (nextSessionBundles.length === 0) {
+          setCompleted(false);
+          setCurrentIndex(0);
+          return;
+        }
+
+        if (currentIndex >= nextSessionBundles.length) {
+          setCompleted(true);
+          setCurrentIndex(nextSessionBundles.length - 1);
+          return;
+        }
+
+        setCompleted(false);
+        setCurrentIndex(currentIndex);
+      } catch (error) {
+        setUnpublishError(error instanceof Error ? error.message : "Failed to unpublish the question.");
+      }
+    });
   }
 
   function submitCurrentAnswer() {
@@ -257,7 +315,7 @@ export function PracticeRunner({
             <div className="compact-metrics">
               <div className="compact-metric">
                 <span>Question pool</span>
-                <strong>{questionBundles.length}</strong>
+                <strong>{availableQuestionBundles.length}</strong>
               </div>
               <div className="compact-metric">
                 <span>Categories</span>
@@ -265,7 +323,7 @@ export function PracticeRunner({
               </div>
               <div className="compact-metric">
                 <span>Mistakes ready</span>
-                <strong>{mistakeQuestionIds.length}</strong>
+                <strong>{availableMistakeQuestionIds.length}</strong>
               </div>
             </div>
           </article>
@@ -381,7 +439,7 @@ export function PracticeRunner({
                             type="button"
                             onClick={() => selectPromptChoice(prompt.promptKey, choiceKey)}
                             aria-pressed={isSelected}
-                            disabled={submitted}
+                            disabled={submitted || isPending}
                           >
                             <span className="choice-key">{choiceKey === "T" ? "True" : "False"}</span>
                             {stateLabel ? (
@@ -420,7 +478,7 @@ export function PracticeRunner({
                     type="button"
                     onClick={() => selectChoice(choice.choiceKey)}
                     aria-pressed={isSelected}
-                    disabled={submitted}
+                    disabled={submitted || isPending}
                   >
                     <span className="choice-key">{choice.choiceKey}</span>
                     <span className="choice-copy">
@@ -443,12 +501,14 @@ export function PracticeRunner({
                 className="primary-button"
                 type="button"
                 onClick={submitCurrentAnswer}
-                disabled={!currentBundle || !draftResponse || !isResponseComplete(currentBundle, draftResponse) || submitted}
+                disabled={
+                  !currentBundle || !draftResponse || !isResponseComplete(currentBundle, draftResponse) || submitted || isPending
+                }
               >
                 Submit Answer
               </button>
               {submitted ? (
-                <button className="secondary-button" type="button" onClick={moveNext}>
+                <button className="secondary-button" type="button" onClick={moveNext} disabled={isPending}>
                   {currentIndex === sessionBundles.length - 1 ? "Finish Set" : "Next Question"}
                 </button>
               ) : (
@@ -460,19 +520,25 @@ export function PracticeRunner({
                     setDraftResponse(undefined);
                     setSubmitted(false);
                   }}
+                  disabled={isPending}
                 >
                   Back to Setup
                 </button>
               )}
             </div>
-            <form action={unpublishQuestionAction} className="practice-actions-secondary">
-              <input type="hidden" name="questionId" value={currentBundle.question.id} />
-              <input type="hidden" name="redirectTo" value="/practice" />
-              <button className="secondary-button danger-button" type="submit">
-                Unpublish Question
+            <div className="practice-actions-secondary">
+              <button
+                className="secondary-button danger-button"
+                type="button"
+                onClick={handleUnpublishCurrentQuestion}
+                disabled={isPending}
+              >
+                {isPending ? "Unpublishing..." : "Unpublish Question"}
               </button>
-            </form>
+            </div>
           </div>
+
+          {unpublishError ? <p className="small-copy">{unpublishError}</p> : null}
 
           <div className="result-banner" aria-live="polite">
             <strong>

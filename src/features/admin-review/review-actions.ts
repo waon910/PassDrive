@@ -39,6 +39,19 @@ function revalidateGlobalPaths() {
   revalidatePath("/admin/review");
 }
 
+async function unpublishQuestion(questionId: string, updatedAt: string) {
+  await mutateContentDataset((dataset) => {
+    const question = dataset.questions.find((item) => item.id === questionId);
+    if (!question) {
+      throw new Error(`Question not found: ${questionId}`);
+    }
+
+    question.status = "unpublished";
+    question.publishedAt = undefined;
+    question.updatedAt = updatedAt;
+  });
+}
+
 export async function publishQuestionAction(formData: FormData) {
   const questionId = requireString(formData.get("questionId"), "questionId");
   const redirectTarget = getRedirectTarget(formData, `/admin/review/questions/${questionId}`);
@@ -68,19 +81,17 @@ export async function unpublishQuestionAction(formData: FormData) {
   const redirectTarget = getRedirectTarget(formData, `/admin/review/questions/${questionId}`);
   const updatedAt = getNowTimestamp();
 
-  await mutateContentDataset((dataset) => {
-    const question = dataset.questions.find((item) => item.id === questionId);
-    if (!question) {
-      throw new Error(`Question not found: ${questionId}`);
-    }
-
-    question.status = "unpublished";
-    question.publishedAt = undefined;
-    question.updatedAt = updatedAt;
-  });
+  await unpublishQuestion(questionId, updatedAt);
 
   revalidateQuestionPaths(questionId);
   redirect(redirectTarget);
+}
+
+export async function unpublishQuestionInPlaceAction(questionId: string) {
+  const updatedAt = getNowTimestamp();
+
+  await unpublishQuestion(questionId, updatedAt);
+  revalidateQuestionPaths(questionId);
 }
 
 export async function resetAdminReviewStateAction() {
