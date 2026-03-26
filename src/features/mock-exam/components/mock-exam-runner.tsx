@@ -12,6 +12,12 @@ import {
 } from "@/domain/session-rules";
 import type { PromptChoiceKey, QuestionBundle } from "@/domain/content-types";
 import { recordMockExamResult } from "@/lib/learner-history-store";
+import {
+  clearMockExamSessionSnapshot,
+  getRestoredRemainingSeconds,
+  loadMockExamSessionSnapshot,
+  saveMockExamSessionSnapshot
+} from "@/lib/learner-session-store";
 
 interface MockExamRunnerProps {
   standardQuestionBundles: QuestionBundle[];
@@ -78,6 +84,12 @@ function getSelectedChoiceLabel(isSelected: boolean) {
   return isSelected ? "Selected" : undefined;
 }
 
+function filterAnswersByQuestionIds(answers: SessionAnswerMap, questionIds: string[]) {
+  const allowedQuestionIds = new Set(questionIds);
+
+  return Object.fromEntries(Object.entries(answers).filter(([questionId]) => allowedQuestionIds.has(questionId)));
+}
+
 export function MockExamRunner({
   standardQuestionBundles,
   hazardQuestionBundles,
@@ -95,6 +107,60 @@ export function MockExamRunner({
   const [remainingSeconds, setRemainingSeconds] = useState(initialSeconds);
   const [sessionBundles, setSessionBundles] = useState<QuestionBundle[]>([]);
   const [answers, setAnswers] = useState<SessionAnswerMap>({});
+  const [hasHydratedSession, setHasHydratedSession] = useState(false);
+  const [resumeNotice, setResumeNotice] = useState<string | undefined>(undefined);
+
+  useEffect(() => {
+    let active = true;
+
+    void loadMockExamSessionSnapshot()
+      .then((snapshot) => {
+        if (!active) {
+          return;
+        }
+
+        if (!snapshot) {
+          setHasHydratedSession(true);
+          return;
+        }
+
+        const bundleById = new Map(
+          [...standardQuestionBundles, ...hazardQuestionBundles].map((bundle) => [bundle.question.id, bundle] as const)
+        );
+        const restoredSessionBundles = snapshot.questionIds
+          .map((questionId) => bundleById.get(questionId))
+          .filter((bundle): bundle is QuestionBundle => Boolean(bundle));
+
+        if (restoredSessionBundles.length === 0) {
+          void clearMockExamSessionSnapshot();
+          setHasHydratedSession(true);
+          return;
+        }
+
+        const restoredQuestionIds = restoredSessionBundles.map((bundle) => bundle.question.id);
+        const restoredAnswers = filterAnswersByQuestionIds(snapshot.answers, restoredQuestionIds);
+
+        setStarted(true);
+        setCompleted(false);
+        setSessionBundles(restoredSessionBundles);
+        setAnswers(restoredAnswers);
+        setCurrentIndex(Math.min(snapshot.currentIndex, restoredSessionBundles.length - 1));
+        setRemainingSeconds(getRestoredRemainingSeconds(snapshot));
+        setResumeNotice("Restored your in-progress mock exam.");
+        setHasHydratedSession(true);
+      })
+      .catch(() => {
+        if (!active) {
+          return;
+        }
+
+        setHasHydratedSession(true);
+      });
+
+    return () => {
+      active = false;
+    };
+  }, []);
 
   useEffect(() => {
     if (!started || completed) {
@@ -133,6 +199,7 @@ export function MockExamRunner({
     setCurrentIndex(0);
     setRemainingSeconds(initialSeconds);
     setAnswers({});
+    setResumeNotice(undefined);
   }
 
   function finishExam() {
@@ -150,9 +217,11 @@ export function MockExamRunner({
     setRemainingSeconds(initialSeconds);
     setSessionBundles([]);
     setAnswers({});
+    setResumeNotice(undefined);
   }
 
   function selectChoice(questionId: string, choiceKey: string) {
+    setResumeNotice(undefined);
     setAnswers((currentAnswers) => ({
       ...currentAnswers,
       [questionId]: {
@@ -163,6 +232,7 @@ export function MockExamRunner({
   }
 
   function selectPromptChoice(questionId: string, promptKey: string, choiceKey: PromptChoiceKey) {
+    setResumeNotice(undefined);
     setAnswers((currentAnswers) => {
       const currentResponse = currentAnswers[questionId];
       const promptChoiceKeys = currentResponse?.kind === "hazard_prediction" ? currentResponse.promptChoiceKeys : {};
@@ -179,6 +249,26 @@ export function MockExamRunner({
       };
     });
   }
+
+  useEffect(() => {
+    if (!hasHydratedSession) {
+      return;
+    }
+
+    if (!started || completed || sessionBundles.length === 0) {
+      void clearMockExamSessionSnapshot();
+      return;
+    }
+
+    void saveMockExamSessionSnapshot({
+      schemaVersion: 1,
+      questionIds: sessionBundles.map((bundle) => bundle.question.id),
+      answers,
+      currentIndex,
+      remainingSeconds,
+      savedAt: new Date().toISOString()
+    });
+  }, [answers, completed, currentIndex, hasHydratedSession, remainingSeconds, sessionBundles, started]);
 
   return (
     <>
@@ -218,6 +308,8 @@ export function MockExamRunner({
               This mock exam matches the real final written test format: 90 true / false questions plus 5 hazard prediction
               items, 50 minutes, and a 90-point pass line.
             </p>
+
+            {resumeNotice ? <p className="small-copy">{resumeNotice}</p> : null}
 
             <div className="action-row">
               <button
@@ -281,6 +373,8 @@ export function MockExamRunner({
                 {getQuestionPromptCount(currentBundle)} {currentBundle.question.questionType === "hazard_prediction" ? "statements" : "choices"}
               </span>
             </div>
+
+            {resumeNotice ? <p className="small-copy">{resumeNotice}</p> : null}
 
             {currentBundle.question.hasImage ? <QuestionFigure question={currentBundle.question} /> : null}
 
@@ -361,7 +455,10 @@ export function MockExamRunner({
               <button
                 className="secondary-button"
                 type="button"
-                onClick={() => setCurrentIndex((value) => Math.max(0, value - 1))}
+                onClick={() => {
+                  setResumeNotice(undefined);
+                  setCurrentIndex((value) => Math.max(0, value - 1));
+                }}
                 disabled={currentIndex === 0}
               >
                 Previous
@@ -369,7 +466,10 @@ export function MockExamRunner({
               <button
                 className="secondary-button"
                 type="button"
-                onClick={() => setCurrentIndex((value) => Math.min(sessionBundles.length - 1, value + 1))}
+                onClick={() => {
+                  setResumeNotice(undefined);
+                  setCurrentIndex((value) => Math.min(sessionBundles.length - 1, value + 1));
+                }}
                 disabled={currentIndex === sessionBundles.length - 1}
               >
                 Next

@@ -15,6 +15,11 @@ import {
 import type { PromptChoiceKey, QuestionBundle } from "@/domain/content-types";
 import { unpublishQuestionInPlaceAction } from "@/features/admin-review/review-actions";
 import { recordPracticeAttempt } from "@/lib/learner-history-store";
+import {
+  clearPracticeSessionSnapshot,
+  loadPracticeSessionSnapshot,
+  savePracticeSessionSnapshot
+} from "@/lib/learner-session-store";
 import type { CategoryProgressSummary } from "@/lib/sample-dataset";
 
 interface PracticeRunnerProps {
@@ -89,6 +94,12 @@ function getChoiceStateLabel(stateTone?: ChoiceStateTone) {
   return undefined;
 }
 
+function filterAnswersByQuestionIds(answers: SessionAnswerMap, questionIds: string[]) {
+  const allowedQuestionIds = new Set(questionIds);
+
+  return Object.fromEntries(Object.entries(answers).filter(([questionId]) => allowedQuestionIds.has(questionId)));
+}
+
 export function PracticeRunner({
   questionBundles,
   categoryProgress,
@@ -106,6 +117,8 @@ export function PracticeRunner({
   const [completed, setCompleted] = useState(false);
   const [unpublishError, setUnpublishError] = useState<string | undefined>(undefined);
   const [isPending, startTransition] = useTransition();
+  const [hasHydratedSession, setHasHydratedSession] = useState(false);
+  const [resumeNotice, setResumeNotice] = useState<string | undefined>(undefined);
 
   const currentBundle = sessionBundles[currentIndex];
   const summary = completed ? buildSessionSummary(sessionBundles, answers, 80) : null;
@@ -117,6 +130,60 @@ export function PracticeRunner({
   useEffect(() => {
     setAvailableMistakeQuestionIds(mistakeQuestionIds);
   }, [mistakeQuestionIds]);
+
+  useEffect(() => {
+    let active = true;
+
+    void loadPracticeSessionSnapshot()
+      .then((snapshot) => {
+        if (!active) {
+          return;
+        }
+
+        if (!snapshot) {
+          setHasHydratedSession(true);
+          return;
+        }
+
+        const bundleById = new Map(questionBundles.map((bundle) => [bundle.question.id, bundle] as const));
+        const restoredSessionBundles = snapshot.questionIds
+          .map((questionId) => bundleById.get(questionId))
+          .filter((bundle): bundle is QuestionBundle => Boolean(bundle));
+
+        if (restoredSessionBundles.length === 0) {
+          void clearPracticeSessionSnapshot();
+          setHasHydratedSession(true);
+          return;
+        }
+
+        const restoredQuestionIds = restoredSessionBundles.map((bundle) => bundle.question.id);
+        const restoredAnswers = filterAnswersByQuestionIds(snapshot.answers, restoredQuestionIds);
+        const boundedIndex = Math.min(snapshot.currentIndex, restoredSessionBundles.length - 1);
+        const restoredCurrentBundle = restoredSessionBundles[boundedIndex];
+
+        setMode(snapshot.mode);
+        setSelectedCategoryId(snapshot.selectedCategoryId || (categoryProgress[0]?.category.id ?? ""));
+        setSessionBundles(restoredSessionBundles);
+        setAnswers(restoredAnswers);
+        setCurrentIndex(Math.max(0, boundedIndex));
+        setDraftResponse(undefined);
+        setSubmitted(snapshot.submitted && Boolean(restoredCurrentBundle && restoredAnswers[restoredCurrentBundle.question.id]));
+        setCompleted(false);
+        setResumeNotice("Restored your in-progress practice set.");
+        setHasHydratedSession(true);
+      })
+      .catch(() => {
+        if (!active) {
+          return;
+        }
+
+        setHasHydratedSession(true);
+      });
+
+    return () => {
+      active = false;
+    };
+  }, []);
 
   function buildBundleSet() {
     if (mode === "mistakes") {
@@ -139,6 +206,7 @@ export function PracticeRunner({
     setDraftResponse(undefined);
     setSubmitted(false);
     setCompleted(false);
+    setResumeNotice(undefined);
   }
 
   function handleUnpublishCurrentQuestion() {
@@ -197,6 +265,7 @@ export function PracticeRunner({
       [currentBundle.question.id]: draftResponse
     }));
     setSubmitted(true);
+    setResumeNotice(undefined);
     void recordPracticeAttempt(currentBundle, draftResponse);
   }
 
@@ -209,12 +278,14 @@ export function PracticeRunner({
       setCompleted(true);
       setDraftResponse(undefined);
       setSubmitted(false);
+      setResumeNotice(undefined);
       return;
     }
 
     setCurrentIndex((value) => value + 1);
     setDraftResponse(undefined);
     setSubmitted(false);
+    setResumeNotice(undefined);
   }
 
   function selectChoice(choiceKey: string) {
@@ -237,9 +308,26 @@ export function PracticeRunner({
   }
 
   useEffect(() => {
-    setDraftResponse(undefined);
-    setSubmitted(false);
-  }, [currentIndex]);
+    if (!hasHydratedSession) {
+      return;
+    }
+
+    if (completed || sessionBundles.length === 0) {
+      void clearPracticeSessionSnapshot();
+      return;
+    }
+
+    void savePracticeSessionSnapshot({
+      schemaVersion: 1,
+      mode,
+      selectedCategoryId,
+      questionIds: sessionBundles.map((bundle) => bundle.question.id),
+      answers,
+      currentIndex,
+      submitted,
+      savedAt: new Date().toISOString()
+    });
+  }, [answers, completed, currentIndex, hasHydratedSession, mode, selectedCategoryId, sessionBundles, submitted]);
 
   const availableBundleCount = buildBundleSet().length;
   const modeLabel = getModeLabel(mode);
@@ -264,6 +352,8 @@ export function PracticeRunner({
                 ? "Pick one category and stay focused."
                 : "Use a mixed set for quick recall."}
           </p>
+
+          {resumeNotice ? <p className="small-copy">{resumeNotice}</p> : null}
 
           <div className="mode-toggle" role="tablist" aria-label="Practice mode">
             {(["random", "category", "mistakes"] as PracticeMode[]).map((option) => (
@@ -540,6 +630,7 @@ export function PracticeRunner({
           </div>
 
           {unpublishError ? <p className="small-copy">{unpublishError}</p> : null}
+          {resumeNotice ? <p className="small-copy">{resumeNotice}</p> : null}
 
           <div className="result-banner" aria-live="polite">
             <strong>
