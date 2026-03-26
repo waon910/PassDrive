@@ -3,6 +3,7 @@
 import { useEffect, useState, useTransition } from "react";
 
 import { QuestionFigure } from "@/components/question-figure";
+import { getOrderedChoices } from "@/domain/content-rules";
 import {
   buildSessionSummary,
   getQuestionPromptCount,
@@ -457,7 +458,7 @@ export function PracticeRunner({
             </div>
           ) : (
             <div className="choice-stack" role="radiogroup" aria-label="Answer choices">
-              {currentBundle.choices.map((choice) => {
+              {getOrderedChoices(currentBundle.question, currentBundle.choices).map((choice) => {
                 const isSelected = singleChoiceResponse?.selectedChoiceKey === choice.choiceKey;
                 const showCorrect = submitted && choice.isCorrect;
                 const showIncorrect = submitted && isSelected && !choice.isCorrect;

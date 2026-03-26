@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 
 import { QuestionFigure } from "@/components/question-figure";
+import { getOrderedChoices } from "@/domain/content-rules";
 import {
   buildSessionSummary,
   getQuestionPromptCount,
@@ -331,7 +332,7 @@ export function MockExamRunner({
               </div>
             ) : (
               <div className="choice-stack" role="radiogroup" aria-label="Mock exam answer choices">
-                {currentBundle.choices.map((choice) => {
+                {getOrderedChoices(currentBundle.question, currentBundle.choices).map((choice) => {
                   const questionResponse = answers[currentBundle.question.id];
                   const currentResponse = questionResponse?.kind === "single_choice" ? questionResponse : undefined;
                   const isSelected = currentResponse?.selectedChoiceKey === choice.choiceKey;

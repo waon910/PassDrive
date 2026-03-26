@@ -1,7 +1,7 @@
 import Link from "next/link";
 
 import { QuestionFigure } from "@/components/question-figure";
-import { formatQuestionStatusLabel, formatQuestionTypeLabel } from "@/domain/content-rules";
+import { formatQuestionStatusLabel, formatQuestionTypeLabel, getOrderedChoices } from "@/domain/content-rules";
 import type { QuestionReviewViewModel } from "@/features/admin-review/get-question-review-view-model";
 import { publishQuestionAction, unpublishQuestionAction } from "@/features/admin-review/review-actions";
 
@@ -96,7 +96,7 @@ export function QuestionReviewShell({ viewModel }: QuestionReviewShellProps) {
           <QuestionFigure question={bundle.question} size="compact" />
 
           <div className="stack-list admin-choice-list">
-            {bundle.choices.map((choice) => (
+            {getOrderedChoices(bundle.question, bundle.choices).map((choice) => (
               <div key={choice.id} className="list-card">
                 <div>
                   <span>
