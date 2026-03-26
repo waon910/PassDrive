@@ -9,6 +9,7 @@ export async function getPracticeViewModel() {
 
   return {
     availableQuestionCount: questionBundles.length,
+    baseUserProgress: dataset.userProgress,
     categoryProgress,
     questionBundles,
     mistakeQuestionIds: mistakeQuestionBundles.map((bundle) => bundle.question.id)

@@ -4,6 +4,7 @@ import { useEffect, useState, useTransition } from "react";
 
 import { QuestionFigure } from "@/components/question-figure";
 import { getOrderedChoices } from "@/domain/content-rules";
+import type { UserProgress } from "@/domain/content-types";
 import {
   buildSessionSummary,
   getQuestionPromptCount,
@@ -14,6 +15,7 @@ import {
 } from "@/domain/session-rules";
 import type { PromptChoiceKey, QuestionBundle } from "@/domain/content-types";
 import { unpublishQuestionInPlaceAction } from "@/features/admin-review/review-actions";
+import { mergeCategoryProgressWithHistory } from "@/lib/learner-history-aggregates";
 import { recordPracticeAttempt } from "@/lib/learner-history-store";
 import {
   clearPracticeSessionSnapshot,
@@ -21,10 +23,12 @@ import {
   savePracticeSessionSnapshot
 } from "@/lib/learner-session-store";
 import type { CategoryProgressSummary } from "@/lib/sample-dataset";
+import { useLearnerHistory } from "@/lib/use-learner-history";
 
 interface PracticeRunnerProps {
   questionBundles: QuestionBundle[];
   categoryProgress: CategoryProgressSummary[];
+  baseUserProgress: UserProgress[];
   mistakeQuestionIds: string[];
 }
 
@@ -103,8 +107,10 @@ function filterAnswersByQuestionIds(answers: SessionAnswerMap, questionIds: stri
 export function PracticeRunner({
   questionBundles,
   categoryProgress,
+  baseUserProgress,
   mistakeQuestionIds
 }: PracticeRunnerProps) {
+  const { history } = useLearnerHistory();
   const [availableQuestionBundles, setAvailableQuestionBundles] = useState(questionBundles);
   const [availableMistakeQuestionIds, setAvailableMistakeQuestionIds] = useState(mistakeQuestionIds);
   const [mode, setMode] = useState<PracticeMode>("random");
@@ -122,6 +128,12 @@ export function PracticeRunner({
 
   const currentBundle = sessionBundles[currentIndex];
   const summary = completed ? buildSessionSummary(sessionBundles, answers, 80) : null;
+  const visibleCategoryProgress = mergeCategoryProgressWithHistory(
+    categoryProgress,
+    availableQuestionBundles,
+    baseUserProgress,
+    history
+  );
 
   useEffect(() => {
     setAvailableQuestionBundles(questionBundles);
@@ -410,7 +422,7 @@ export function PracticeRunner({
               </div>
               <div className="compact-metric">
                 <span>Categories</span>
-                <strong>{categoryProgress.length}</strong>
+                <strong>{visibleCategoryProgress.length}</strong>
               </div>
               <div className="compact-metric">
                 <span>Mistakes ready</span>
@@ -428,7 +440,7 @@ export function PracticeRunner({
             </div>
 
             <div className="compact-metrics">
-              {categoryProgress.map((item) => (
+              {visibleCategoryProgress.map((item) => (
                 <div key={item.category.id} className="compact-metric">
                   <div className="compact-metric-copy">
                     <span>{item.category.labelEn}</span>

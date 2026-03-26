@@ -18,6 +18,7 @@ export default async function PracticePage() {
       <PracticeRunner
         questionBundles={viewModel.questionBundles}
         categoryProgress={viewModel.categoryProgress}
+        baseUserProgress={viewModel.baseUserProgress}
         mistakeQuestionIds={viewModel.mistakeQuestionIds}
       />
     </AppShell>
